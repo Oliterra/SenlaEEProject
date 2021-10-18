@@ -1,0 +1,166 @@
+SELECT count(*) FROM cd.facilities;
+
+SELECT count(*) FROM cd.facilities WHERE guestcost >= 10;
+
+SELECT recommendedby, count(*) FROM cd.members
+WHERE recommendedby IS NOT NULL
+GROUP BY recommendedby
+ORDER BY recommendedby;
+
+SELECT facid, sum(slots) FROM cd.bookings
+GROUP BY facid
+ORDER BY facid;
+
+SELECT facid, sum(slots) AS "Total Slots" FROM cd.bookings
+WHERE starttime >= '2012-09-01' AND starttime < '2012-10-01'
+GROUP BY facid
+ORDER BY "Total Slots";
+
+SELECT facid, extract(MONTH FROM starttime) AS month, sum(slots) AS "Total Slots"
+FROM cd.bookings
+WHERE extract(YEAR FROM starttime) = 2012
+GROUP BY facid, month
+ORDER BY facid, month;
+
+SELECT count(DISTINCT memid) FROM cd.bookings;
+
+SELECT facid, sum(slots) AS "Total Slots" FROM cd.bookings
+GROUP BY facid
+HAVING sum(slots) > 1000
+ORDER BY facid;
+
+SELECT f.name, sum(
+CASE
+WHEN b.memid = 0 THEN f.guestcost * b.slots
+ELSE f.membercost * b.slots
+END) AS revenue
+FROM cd.facilities AS f
+INNER JOIN cd.bookings AS b
+ON f.facid = b.facid
+GROUP BY f.name
+
+SELECT * FROM (
+SELECT f.name, sum(
+CASE
+WHEN b.memid = 0 THEN b.slots * f.guestcost
+ELSE b.slots * f.membercost
+END) AS revenue
+FROM cd.facilities AS f
+INNER JOIN cd.bookings AS b
+ON f.facid = b.facid
+GROUP BY f.name
+) AS a
+WHERE a.revenue < 1000
+ORDER BY a.revenue;
+
+SELECT facid, sum(slots) AS "Total Slots"
+FROM cd.bookings
+GROUP BY facid
+ORDER BY "Total Slots" DESC
+LIMIT 1;
+
+SELECT facid, extract(MONTH FROM starttime) AS month, sum(slots) AS "slots"
+FROM cd.bookings
+WHERE extract(YEAR FROM starttime)=2012
+GROUP BY rollup(facid, month)
+ORDER BY facid, month;
+
+SELECT b.facid, f.name, round(sum(b.slots) * 0.5, 2) AS "Total Hours"
+FROM cd.bookings AS b
+INNER JOIN cd.facilities AS f
+ON b.facid = f.facid
+GROUP BY b.facid, f.name
+ORDER BY b.facid;
+
+SELECT m.surname, m.firstname, b.memid, min(b.starttime) AS starttime
+FROM cd.members AS m
+INNER JOIN cd.bookings AS b
+ON m.memid = b.memid
+WHERE starttime >= '2012-09-01'
+GROUP BY b.memid, m.surname, m.firstname
+ORDER BY b.memid;
+
+SELECT(
+  SELECT count(*) FROM cd.members) AS count,
+  firstname, surname
+FROM cd.members
+ORDER BY joindate;
+
+SELECT count(*) over(ORDER BY joindate), firstname, surname
+FROM cd.members;
+
+SELECT facid, sum(slots) AS "total"
+FROM cd.bookings
+GROUP BY facid
+ORDER BY total DESC
+LIMIT 1;
+
+SELECT firstname, surname, (
+  (sum(b.slots) + 10) / 20) * 10 AS hours,
+rank() over (
+  ORDER BY ((sum(b.slots) + 10) / 20) * 10 DESC) AS rank
+FROM cd.bookings b
+INNER JOIN cd.members m
+ON b.memid = m.memid 
+GROUP BY m.memid
+ORDER BY rank, surname, firstname;   
+
+SELECT name, rank from (
+  SELECT f.name AS name, rank() over (
+	ORDER BY sum(
+	  CASE 
+	    WHEN memid = 0 then slots * f.guestcost
+	    ELSE slots * membercost
+	  END) DESC) AS rank
+	FROM cd.bookings b
+  INNER JOIN cd.facilities f 
+  ON b.facid = f.facid 
+  GROUP BY f.name) AS subq
+WHERE rank <= 3
+ORDER BY rank;   
+
+SELECT name, 
+CASE
+  WHEN class = 1 THEN 'high'
+  WHEN class = 2 THEN 'average'
+  ELSE 'low'
+END revenue
+FROM (
+  SELECT f.name as name, ntile(3) over (ORDER BY sum(
+	CASE 
+	  WHEN  memid = 0 THEN slots * f.guestcost
+	  ELSE slots * membercost
+	END) DESC) AS class
+  FROM cd.bookings b 
+  INNER JOIN cd.facilities f 
+  ON b.facid = f.facid
+  GROUP BY f.name) AS subq
+ORDER BY class, name;  
+
+SELECT f.name, f.initialoutlay / (
+  sum(b.slots *
+	    CASE
+	      WHEN b.memid = 0 THEN f.guestcost
+	      ELSE f.membercost
+	    END) / 3.0 - f.monthlymaintenance
+	) AS months
+FROM cd.facilities AS f
+INNER JOIN cd.bookings AS b
+ON f.facid = b.facid
+GROUP BY f.facid, f.name
+ORDER BY f.name;
+
+SELECT d.date, (
+  SELECT sum(
+	CASE
+	  WHEN memid = 0 THEN slots * f.guestcost
+	  ELSE slots * membercost
+    END) AS rev
+FROM cd.bookings b
+INNER JOIN cd.facilities f
+ON b.facid = f.facid
+WHERE b.starttime > d.date - interval '14 days'
+AND b.starttime < d.date + interval '1 day') / 15 AS revenue
+FROM (SELECT cast(generate_series(timestamp '2012-08-01','2012-08-31','1 day') 
+				  AS date) AS date) AS d
+ORDER BY d.date;          
