@@ -1,0 +1,40 @@
+WITH RECURSIVE recommenders(recommender) AS(
+  SELECT recommendedby FROM cd.members
+  WHERE memid = 27
+  UNION ALL
+  SELECT m.recommendedby FROM cd.members m
+  INNER JOIN recommenders r
+  ON m.memid = r.recommender
+)
+SELECT r.recommender, m.firstname, m.surname FROM cd.members m
+INNER JOIN recommenders r
+ON m.memid = r.recommender 
+ORDER BY memid DESC;
+
+
+WITH RECURSIVE recommenders AS(
+  SELECT memid, firstname, surname, recommendedby FROM cd.members
+  WHERE recommendedby = 1
+  UNION ALL
+  SELECT m.memid, m.firstname, m.surname, m.recommendedby FROM cd.members m, recommenders
+  WHERE m.recommendedby = recommenders.memid
+)
+SELECT memid, firstname, surname FROM recommenders 
+WHERE memid != 1
+ORDER BY memid;
+
+
+WITH RECURSIVE recommenders(member, recommender) AS(
+  SELECT memid, recommendedby FROM cd.members
+  UNION ALL
+  SELECT r.member, m.recommendedby FROM cd.members m 
+  INNER JOIN recommenders r
+  ON m.memid = r.recommender
+)
+SELECT r.member, r.recommender, m.firstname, m.surname FROM cd.members m
+INNER JOIN recommenders r
+ON m.memid = r.recommender
+WHERE r.member = 12 OR r.member = 22
+ORDER BY r.member, r.recommender DESC;
+
+
