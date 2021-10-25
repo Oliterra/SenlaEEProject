@@ -1,0 +1,33 @@
+SELECT * FROM Orders o
+INNER JOIN Clients c 
+ON o.ClientId = c.ClientId;
+
+SELECT * FROM Orders o
+INNER JOIN Couriers c 
+ON o.CourierId = c.CourierId;
+
+SELECT * FROM Dishes d
+INNER JOIN TypesOfDish t 
+ON d.DishTypeId = t.DishTypeId;
+
+SELECT * FROM TypesOfContainer_TypesOfDish cd
+INNER JOIN TypesOfContainer c 
+ON cd.NumberOfCalories = c.NumberOfCalories;
+
+SELECT * FROM TypesOfContainer_TypesOfDish cd
+INNER JOIN TypesOfDish d 
+ON cd.DishTypeId = d.DishTypeId;
+
+SELECT * FROM Orders_TypesOfContainer oc
+INNER JOIN Orders o 
+ON oc.OrderId = o.OrderId;
+
+SELECT * FROM Orders_TypesOfContainer oc
+INNER JOIN TypesOfContainer c 
+ON oc.NumberOfCalories = c.NumberOfCalories;
+
+
+
+
+
+
