@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog
+   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro 
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd"
+      logicalFilePath="homework-2">
+
+    <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/01.create-clients-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="2" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/02.create-couriers-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/03.create-orders-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="4" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/04.create-types_of_container-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="5" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/05.create-orders_types_of_container-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="6" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/06.create-dishes-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="7" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/07.create-types_of_container_types_of_dish-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>
+
+
+

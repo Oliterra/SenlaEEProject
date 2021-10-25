@@ -1,0 +1,29 @@
+SELECT * FROM orders o
+INNER JOIN clients c 
+ON o.client_id = c.id;
+
+SELECT * FROM orders o
+INNER JOIN couriers c 
+ON o.courier_id = c.id;
+
+SELECT * FROM types_of_container_types_of_dish cd
+INNER JOIN types_of_container c 
+ON cd.number_of_calories = c.number_of_calories;
+
+SELECT * FROM types_of_container_types_of_dish cd
+INNER JOIN dishes d 
+ON cd.dish_type = d.dish_type;
+
+SELECT * FROM orders_types_of_container oc
+INNER JOIN orders o 
+ON oc.order_id = o.id;
+
+SELECT * FROM orders_types_of_container oc
+INNER JOIN types_of_container c 
+ON oc.number_of_calories = c.number_of_calories;
+
+
+
+
+
+
