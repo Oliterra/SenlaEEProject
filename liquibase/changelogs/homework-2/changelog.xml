@@ -37,6 +37,10 @@
         <sqlFile encoding="utf8" path="./sql/07.create-types_of_container_types_of_dish-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="8" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/08.create-dish_information-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

@@ -22,6 +22,11 @@ SELECT * FROM orders_types_of_container oc
 INNER JOIN types_of_container c 
 ON oc.number_of_calories = c.number_of_calories;
 
+SELECT * FROM dish_information di
+INNER JOIN dishes d
+ON di.id = d.id;
+
+
 
 
 
