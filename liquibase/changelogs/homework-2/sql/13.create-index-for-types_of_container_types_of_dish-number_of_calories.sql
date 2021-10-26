@@ -1,0 +1,2 @@
+CREATE INDEX types_of_container_types_of_dish_number_of_calories_index
+ON types_of_container_types_of_dish(number_of_calories);

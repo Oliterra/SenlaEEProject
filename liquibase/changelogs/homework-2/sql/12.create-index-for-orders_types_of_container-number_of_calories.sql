@@ -1,0 +1,2 @@
+CREATE INDEX orders_types_of_container_number_of_calories_index
+ON orders_types_of_container(number_of_calories);

@@ -1,0 +1,2 @@
+CREATE INDEX types_of_container_types_of_dish_dish_type_index
+ON types_of_container_types_of_dish(dish_type);
