@@ -41,7 +41,34 @@
         <sqlFile encoding="utf8" path="./sql/08.create-dish_information-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-</databaseChangeLog>
+    <changeSet id="9" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/09.create-index-for-orders-client_id.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
+    <changeSet id="10" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/10.create-index-for-orders-courier_id.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="11" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/11.create-index-for-orders_types_of_container-order_id.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="12" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/12.create-index-for-orders_types_of_container-number_of_calories.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="13" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/13.create-index-for-types_of_container_types_of_dish-number_of_calories.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="14" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/14.create-index-for-types_of_container_types_of_dish-dish_type.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="15" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="./sql/15.create-index-for-dish_information-id.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>
 
 
