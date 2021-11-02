@@ -26,3 +26,8 @@ hs_err_pid*
 .idea/
 *.iml
 *.iws
+*.lst
+
+# Maven
+log/
+target/
