@@ -13,14 +13,6 @@ public class OrderDTO {
 
     private int id;
 
-    private int clientId;
-
-    private int courierId;
-
-    private Date date;
-
-    private Date time;
-
     private String paymentType;
 
     private String status;

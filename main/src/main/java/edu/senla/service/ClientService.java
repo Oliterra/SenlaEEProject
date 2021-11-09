@@ -3,13 +3,14 @@ package edu.senla.service;
 import edu.senla.dao.DAO;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
+import edu.senla.service.serviceinterface.ClientServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ClientService implements ClientServiceInterface{
+public class ClientService implements ClientServiceInterface {
 
     private final DAO<Client> clientDAO;
 

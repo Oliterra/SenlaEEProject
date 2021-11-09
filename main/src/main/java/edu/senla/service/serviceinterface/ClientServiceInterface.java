@@ -1,4 +1,4 @@
-package edu.senla.service;
+package edu.senla.service.serviceinterface;
 
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;

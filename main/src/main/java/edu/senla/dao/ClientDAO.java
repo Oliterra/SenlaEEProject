@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public class ClientDAO implements DAO<Client>{
 
-    public List<Client> clients = new ArrayList<>();
+    private List<Client> clients = new ArrayList<>();
 
     @Override
     public void create(Client entity) {
@@ -23,7 +23,7 @@ public class ClientDAO implements DAO<Client>{
 
     @Override
     public void update(Client updatedEntity) {
-        clients.add(updatedEntity);
+
     }
 
     @Override
