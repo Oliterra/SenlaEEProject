@@ -2,21 +2,31 @@ package edu.senla;
 
 import edu.senla.controller.*;
 import edu.senla.dto.*;
+import lombok.SneakyThrows;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
 @ComponentScan
 public class Application {
 
+    @SneakyThrows
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
 
+        JsonWorker jsonWorker = context.getBean(JsonWorker.class);
+
         System.out.println("For client:");
         ClientController clientController = context.getBean(ClientController.class);
-        String client1Json = "{\"id\" : \"0\", \"firstName\" : \"Sofia\", \"lastName\" : \"Makarova\", \"phone\" : \"+375296784510\", \"email\" : \"makarova@test.com\", \"address\" : \"Pushkin Street, Kolotushkin house\"}";
-        String client2Json = "{\"id\" : \"1\", \"firstName\" : \"Arina\", \"lastName\" : \"Levina\", \"phone\" : \"+375334568134\", \"email\" : \"levina@test.com\", \"address\" : \"Kolotushkina Street, Pushkin house\"}";
-        String client3Json = "{\"id\" : \"0\", \"firstName\" : \"Anna \", \"lastName\" : \"Koltsova\", \"phone\" : \"+375256767676\", \"email\" : \"koltsova@test.com\", \"address\" : \"Kolotushkina Street, Pushkin house\"}";
+        String client1Json = jsonWorker.getJson("client1.json");
+        String client2Json = jsonWorker.getJson("client2.json");
+        String client3Json = jsonWorker.getJson("client3.json");
 
         ClientDTO client1DTO = new ClientDTO(0, "Sofia", "Makarova", "+375296784510", "makarova@test.com", "Pushkin Street, Kolotushkin house");
         ClientDTO client2DTO = new ClientDTO(1, "Arina", "Levina", "+375334568134", "levina@test.com", "Kolotushkina Street, Pushkin house");
@@ -30,9 +40,9 @@ public class Application {
 
         System.out.println("For courier:");
         CourierController courierController = context.getBean(CourierController.class);
-        String courier1Json = "{\"id\" : \"0\", \"firstName\" : \"Matvey\", \"lastName\" : \"Zaitsev\"}";
-        String courier2Json = "{\"id\" : \"1\", \"firstName\" : \"George\", \"lastName\" : \"Drozdov\"}";
-        String courier3Json = "{\"id\" : \"0\", \"firstName\" : \"Konstantin\", \"lastName\" : \"Sergeyev\"}";
+        String courier1Json = jsonWorker.getJson("courier1.json");
+        String courier2Json = jsonWorker.getJson("courier2.json");
+        String courier3Json = jsonWorker.getJson("courier3.json");
 
         CourierDTO courier1DTO = new CourierDTO(0, "Matvey", "Zaitsev");
         CourierDTO courier2DTO = new CourierDTO(1, "George", "Drozdov");
@@ -46,9 +56,9 @@ public class Application {
 
         System.out.println("For dish:");
         DishController dishController = context.getBean(DishController.class);
-        String dish1Json = "{\"id\" : \"0\", \"name\" : \"Fried chicken\"}";
-        String dish2Json = "{\"id\" : \"1\", \"name\" : \"Barbecue\"}";
-        String dish3Json = "{\"id\" : \"0\", \"name\" : \"Baked pork\"}";
+        String dish1Json = jsonWorker.getJson("dish1.json");
+        String dish2Json = jsonWorker.getJson("dish2.json");
+        String dish3Json = jsonWorker.getJson("dish3.json");
 
         DishDTO dish1DTO = new DishDTO(0, "Fried chicken");
         DishDTO dish2DTO = new DishDTO(1, "Barbecue");
@@ -62,9 +72,9 @@ public class Application {
 
         System.out.println("For dish information:");
         DishInformationController dishInformationController = context.getBean(DishInformationController.class);
-        String dishInformation1Json = "{\"id\" : \"0\", \"description\" : \"Acceptable\", \"caloricContent\" : \"278\"}";
-        String dishInformation2Json = "{\"id\" : \"1\", \"description\" : \"Delicious\", \"caloricContent\" : \"425\"}";
-        String dishInformation3Json = "{\"id\" : \"0\", \"description\" : \"Very tasty\", \"caloricContent\" : \"389\"}";
+        String dishInformation1Json = jsonWorker.getJson("dishInformation1.json");
+        String dishInformation2Json = jsonWorker.getJson("dishInformation2.json");;
+        String dishInformation3Json = jsonWorker.getJson("dishInformation3.json");;
 
         DishInformationDTO dishInformation1DTO = new DishInformationDTO(0, "Acceptable", 278);
         DishInformationDTO dishInformation2DTO = new DishInformationDTO(1, "Delicious", 425);
@@ -78,9 +88,9 @@ public class Application {
 
         System.out.println("For order:");
         OrderController orderController = context.getBean(OrderController.class);
-        String order1Json = "{\"id\" : \"0\", \"paymentType\" : \"by card\", \"status\" : \"new\"}";
-        String order2Json = "{\"id\" : \"1\", \"paymentType\" : \"in cash\", \"status\" : \"new\"}";
-        String order3Json = "{\"id\" : \"0\", \"paymentType\" : \"in cash\", \"status\" : \"in process\"}";
+        String order1Json = jsonWorker.getJson("order1.json");
+        String order2Json = jsonWorker.getJson("order2.json");
+        String order3Json = jsonWorker.getJson("order3.json");
 
         OrderDTO order1DTO = new OrderDTO(0, "by card", "new");
         OrderDTO order2DTO = new OrderDTO(1, "in cash", "new");
@@ -94,9 +104,9 @@ public class Application {
 
         System.out.println("For type of container:");
         TypeOfContainerController typeOfContainerController = context.getBean(TypeOfContainerController.class);
-        String typeOfContainer1Json = "{\"numberOfCalories\" : \"0\", \"name\" : \"small\", \"price\" : \"5\"}";
-        String typeOfContainer2Json = "{\"numberOfCalories\" : \"1\", \"name\" : \"medium\", \"price\" : \"10\"}";
-        String typeOfContainer3Json = "{\"numberOfCalories\" : \"0\", \"name\" : \"large\", \"price\" : \"15\"}";
+        String typeOfContainer1Json = jsonWorker.getJson("typeOfContainer1.json");
+        String typeOfContainer2Json = jsonWorker.getJson("typeOfContainer2.json");
+        String typeOfContainer3Json = jsonWorker.getJson("typeOfContainer3.json");
 
         TypeOfContainerDTO typeOfContainer1DTO = new TypeOfContainerDTO(0, "small", 5);
         TypeOfContainerDTO typeOfContainer2DTO = new TypeOfContainerDTO(1, "medium", 10);
@@ -110,3 +120,5 @@ public class Application {
 
     }
 }
+
+
