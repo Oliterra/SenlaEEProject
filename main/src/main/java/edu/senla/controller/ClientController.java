@@ -33,10 +33,9 @@ public class ClientController implements ClientControllerInterface {
 
     @SneakyThrows
     @Override
-    public void updateClient(String clientToUpdateJson, String updatedClientJson) {
-        ClientDTO clientToUpdateDTO = jacksonObjectMapper.readValue(clientToUpdateJson, ClientDTO.class);
+    public void updateClient(int id, String updatedClientJson) {
         ClientDTO updatedClientDTO = jacksonObjectMapper.readValue(updatedClientJson, ClientDTO.class);
-        clientService.update(clientToUpdateDTO, updatedClientDTO);
+        clientService.update(id, updatedClientDTO);
         System.out.println("Client was successfully updated");
     }
 

@@ -2,23 +2,17 @@ package edu.senla;
 
 import edu.senla.controller.*;
 import edu.senla.dto.*;
+import edu.senla.helper.JsonWorker;
 import lombok.SneakyThrows;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 @ComponentScan
 public class Application {
 
     @SneakyThrows
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
 
         JsonWorker jsonWorker = context.getBean(JsonWorker.class);
 
@@ -35,7 +29,7 @@ public class Application {
         clientController.createClient(client2Json);
         System.out.println(clientController.readClient(client1DTO.getId()));
         clientController.deleteClient(client2DTO.getId());
-        clientController.updateClient(client1Json, client3Json);
+        clientController.updateClient(client1DTO.getId(), client3Json);
         System.out.println(clientController.readClient(client1DTO.getId()));
 
         System.out.println("For courier:");
@@ -118,6 +112,7 @@ public class Application {
         typeOfContainerController.updateTypeOfContainer(typeOfContainer1Json, typeOfContainer3Json);
         System.out.println(typeOfContainerController.readTypeOfContainer(typeOfContainer1DTO.getNumberOfCalories()));
 
+        context.registerShutdownHook();
     }
 }
 
