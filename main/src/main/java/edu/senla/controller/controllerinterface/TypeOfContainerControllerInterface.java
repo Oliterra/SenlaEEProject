@@ -6,7 +6,7 @@ public interface TypeOfContainerControllerInterface {
 
     public String readTypeOfContainer(int id);
 
-    public void updateTypeOfContainer(String typeOfContainerToUpdateJson, String updatedTypeOfContainerJson);
+    public void updateTypeOfContainer(int id, String updatedTypeOfContainerJson);
 
     public void deleteTypeOfContainer(int id);
 

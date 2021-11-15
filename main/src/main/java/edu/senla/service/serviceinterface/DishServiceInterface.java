@@ -9,7 +9,7 @@ public interface DishServiceInterface {
 
     public DishDTO read(int id);
 
-    public Dish update(DishDTO dishToUpdateDTO, DishDTO updatedDishDTO);
+    public Dish update(int id, DishDTO updatedDishDTO);
 
     public void delete(int id);
 

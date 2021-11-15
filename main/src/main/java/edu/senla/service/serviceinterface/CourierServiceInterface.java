@@ -9,7 +9,7 @@ public interface CourierServiceInterface {
 
     public CourierDTO read(int id);
 
-    public Courier update(CourierDTO courierToUpdateDTO, CourierDTO updatedCourierDTO);
+    public Courier update(int id, CourierDTO updatedCourierDTO);
 
     public void delete(int id);
 

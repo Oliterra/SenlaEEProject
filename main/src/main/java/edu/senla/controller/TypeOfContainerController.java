@@ -33,10 +33,9 @@ public class TypeOfContainerController implements TypeOfContainerControllerInter
 
     @SneakyThrows
     @Override
-    public void updateTypeOfContainer(String typeOfContainerToUpdateJson, String updatedTypeOfContainerJson) {
-        TypeOfContainerDTO typeOfContainerToUpdateDTO = jacksonObjectMapper.readValue(typeOfContainerToUpdateJson, TypeOfContainerDTO.class);
+    public void updateTypeOfContainer(int id, String updatedTypeOfContainerJson) {
         TypeOfContainerDTO updatedTypeOfContainerDTO = jacksonObjectMapper.readValue(updatedTypeOfContainerJson, TypeOfContainerDTO.class);
-        typeOfContainerService.update(typeOfContainerToUpdateDTO, updatedTypeOfContainerDTO);
+        typeOfContainerService.update(id, updatedTypeOfContainerDTO);
         System.out.println("TypeOfContainer was successfully updated");
     }
 

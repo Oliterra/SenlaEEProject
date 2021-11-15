@@ -28,9 +28,9 @@ public class CourierService implements CourierServiceInterface {
     }
 
     @Override
-    public Courier update(CourierDTO courierToUpdateDTO, CourierDTO updatedCourierDTO) {
+    public Courier update(int id, CourierDTO updatedCourierDTO) {
         Courier updatedCourier = mapper.map(updatedCourierDTO, Courier.class);
-        return updateCouriersOptions(courierDAO.read(courierToUpdateDTO.getId()), updatedCourier);
+        return updateCouriersOptions(courierDAO.read(id), updatedCourier);
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface OrderServiceInterface {
 
     public OrderDTO read(int id);
 
-    public Order update(OrderDTO orderToUpdateDTO, OrderDTO updatedOrderDTO);
+    public Order update(int id, OrderDTO updatedOrderDTO);
 
     public void delete(int id);
 

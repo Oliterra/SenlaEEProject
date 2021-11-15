@@ -6,7 +6,7 @@ public interface OrderControllerInterface {
 
     public String readOrder(int id);
 
-    public void updateOrder(String orderToUpdateJson, String updatedOrderJson);
+    public void updateOrder(int id, String updatedOrderJson);
 
     public void deleteOrder(int id);
 

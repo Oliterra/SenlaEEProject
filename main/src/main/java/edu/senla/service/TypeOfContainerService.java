@@ -28,9 +28,9 @@ public class TypeOfContainerService implements TypeOfContainerServiceInterface {
     }
 
     @Override
-    public TypeOfContainer update(TypeOfContainerDTO typeOfContainerToUpdateDTO, TypeOfContainerDTO updatedTypeOfContainerDTO) {
+    public TypeOfContainer update(int id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
         TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTO, TypeOfContainer.class);
-        return updateTypeOfContainerOptions(typeOfContainerDAO.read(typeOfContainerToUpdateDTO.getNumberOfCalories()), updatedTypeOfContainer);
+        return updateTypeOfContainerOptions(typeOfContainerDAO.read(id), updatedTypeOfContainer);
     }
 
     @Override
