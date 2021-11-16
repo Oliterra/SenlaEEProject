@@ -9,7 +9,7 @@ public interface ClientServiceInterface {
 
     public ClientDTO read(int id);
 
-    public Client update(ClientDTO clientToUpdateDTO, ClientDTO updatedClientDTO);
+    public void update(int id, ClientDTO updatedClientDTO);
 
     public void delete(int id);
 

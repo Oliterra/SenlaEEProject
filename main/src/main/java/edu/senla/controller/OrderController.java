@@ -33,10 +33,9 @@ public class OrderController implements OrderControllerInterface {
 
     @SneakyThrows
     @Override
-    public void updateOrder(String orderToUpdateJson, String updatedOrderJson) {
-        OrderDTO orderToUpdateDTO = jacksonObjectMapper.readValue(orderToUpdateJson, OrderDTO.class);
+    public void updateOrder(int id, String updatedOrderJson) {
         OrderDTO updatedOrderDTO = jacksonObjectMapper.readValue(updatedOrderJson, OrderDTO.class);
-        orderService.update(orderToUpdateDTO, updatedOrderDTO);
+        orderService.update(id, updatedOrderDTO);
         System.out.println("Order was successfully updated");
     }
 

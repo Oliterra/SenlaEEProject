@@ -6,7 +6,7 @@ public interface CourierControllerInterface {
 
     public String readCourier(int id);
 
-    public void updateCourier(String courierToUpdateJson, String updatedCourierJson);
+    public void updateCourier(int id, String updatedCourierJson);
 
     public void deleteCourier(int id);
 

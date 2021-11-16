@@ -33,10 +33,9 @@ public class DishInformationController implements DishInformationControllerInter
 
     @SneakyThrows
     @Override
-    public void updateDishInformation(String dishInformationToUpdateJson, String updatedDishInformationJson) {
-        DishInformationDTO dishInformationToUpdateDTO = jacksonObjectMapper.readValue(dishInformationToUpdateJson, DishInformationDTO.class);
+    public void updateDishInformation(int id, String updatedDishInformationJson) {
         DishInformationDTO updatedDishInformationDTO = jacksonObjectMapper.readValue(updatedDishInformationJson, DishInformationDTO.class);
-        dishInformationService.update(dishInformationToUpdateDTO, updatedDishInformationDTO);
+        dishInformationService.update(id, updatedDishInformationDTO);
         System.out.println("DishInformation was successfully updated");
     }
 

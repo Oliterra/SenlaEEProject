@@ -11,7 +11,7 @@ public interface TypeOfContainerServiceInterface {
 
     public TypeOfContainerDTO read(int id);
 
-    public TypeOfContainer update(TypeOfContainerDTO typeOfContainerToUpdateDTO, TypeOfContainerDTO updatedTypeOfContainerDTO);
+    public TypeOfContainer update(int id, TypeOfContainerDTO updatedTypeOfContainerDTO);
 
     public void delete(int id);
 

@@ -33,10 +33,9 @@ public class DishController implements DishControllerInterface {
 
     @SneakyThrows
     @Override
-    public void updateDish(String dishToUpdateJson, String updatedDishJson) {
-        DishDTO dishToUpdateDTO = jacksonObjectMapper.readValue(dishToUpdateJson, DishDTO.class);
+    public void updateDish(int id, String updatedDishJson) {
         DishDTO updatedDishDTO = jacksonObjectMapper.readValue(updatedDishJson, DishDTO.class);
-        dishService.update(dishToUpdateDTO, updatedDishDTO);
+        dishService.update(id, updatedDishDTO);
         System.out.println("Dish was successfully updated");
     }
 

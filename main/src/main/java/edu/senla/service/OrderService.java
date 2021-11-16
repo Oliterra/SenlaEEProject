@@ -28,9 +28,9 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public Order update(OrderDTO orderToUpdateDTO, OrderDTO updatedOrderDTO) {
+    public Order update(int id, OrderDTO updatedOrderDTO) {
         Order updatedOrder = mapper.map(updatedOrderDTO, Order.class);
-        return updateOrdersOptions(orderDAO.read(orderToUpdateDTO.getId()), updatedOrder);
+        return updateOrdersOptions(orderDAO.read(id), updatedOrder);
     }
 
     @Override

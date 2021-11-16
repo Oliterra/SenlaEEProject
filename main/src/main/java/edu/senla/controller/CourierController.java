@@ -33,10 +33,9 @@ public class CourierController implements CourierControllerInterface {
 
     @SneakyThrows
     @Override
-    public void updateCourier(String courierToUpdateJson, String updatedCourierJson) {
-        CourierDTO courierToUpdateDTO = jacksonObjectMapper.readValue(courierToUpdateJson, CourierDTO.class);
+    public void updateCourier(int id, String updatedCourierJson) {
         CourierDTO updatedCourierDTO = jacksonObjectMapper.readValue(updatedCourierJson, CourierDTO.class);
-        courierService.update(courierToUpdateDTO, updatedCourierDTO);
+        courierService.update(id, updatedCourierDTO);
         System.out.println("Courier was successfully updated");
     }
 

@@ -14,36 +14,46 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>5.3.12</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>5.3.12</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.9.7</version>
+        </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>2.4.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
@@ -54,7 +64,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <propertyFile>src/main/liquibase/liquibase.properties</propertyFile>
+                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
                     <changeLogFile>src/main/liquibase/changelog-master.xml</changeLogFile>
                 </configuration>
                 <executions>
@@ -67,6 +77,23 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>resources</directory>
+                <targetPath>ApplicationConfig.java</targetPath>
+                    <includes>
+                        <include>application.properties</include>
+                    </includes>
+            </resource>
+            <resource>
+                <directory>resources</directory>
+                <targetPath>DatabaseConfig.java</targetPath>
+                <includes>
+                    <include>liquibase.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

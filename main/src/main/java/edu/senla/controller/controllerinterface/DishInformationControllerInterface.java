@@ -8,7 +8,7 @@ public interface DishInformationControllerInterface {
 
     public String readDishInformation(int id) throws JsonProcessingException;
 
-    public void updateDishInformation(String dishInformationToUpdateJson, String updatedDishInformationJson);
+    public void updateDishInformation(int id, String updatedDishInformationJson);
 
     public void deleteDishInformation(int id);
 

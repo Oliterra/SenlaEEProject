@@ -6,7 +6,7 @@ public interface DishControllerInterface {
 
     public String readDish(int id);
 
-    public void updateDish(String dishToUpdateJson, String updatedDishJson);
+    public void updateDish(int id, String updatedDishJson);
 
     public void deleteDish(int id);
 

@@ -1,5 +1,6 @@
-package edu.senla;
+package edu.senla.helper;
 
+import edu.senla.Application;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;

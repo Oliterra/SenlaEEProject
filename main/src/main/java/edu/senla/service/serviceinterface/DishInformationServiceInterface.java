@@ -9,7 +9,7 @@ public interface DishInformationServiceInterface {
 
     public DishInformationDTO read(int id);
 
-    public DishInformation update(DishInformationDTO dishInformationToUpdateDTO, DishInformationDTO updatedDishInformationDTO);
+    public DishInformation update(int id, DishInformationDTO updatedDishInformationDTO);
 
     public void delete(int id);
 

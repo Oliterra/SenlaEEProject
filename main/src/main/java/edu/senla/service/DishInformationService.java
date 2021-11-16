@@ -28,9 +28,9 @@ public class DishInformationService implements DishInformationServiceInterface {
     }
 
     @Override
-    public DishInformation update(DishInformationDTO dishInformationToUpdateDTO, DishInformationDTO updatedDishInformationDTO) {
+    public DishInformation update(int id, DishInformationDTO updatedDishInformationDTO) {
         DishInformation updatedDishInformation = mapper.map(updatedDishInformationDTO, DishInformation.class);
-        return updateDishInformationOptions(dishInformationDAO.read(dishInformationToUpdateDTO.getId()), updatedDishInformation);
+        return updateDishInformationOptions(dishInformationDAO.read(id), updatedDishInformation);
     }
 
     @Override

@@ -2,23 +2,17 @@ package edu.senla;
 
 import edu.senla.controller.*;
 import edu.senla.dto.*;
+import edu.senla.helper.JsonWorker;
 import lombok.SneakyThrows;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 
 @ComponentScan
 public class Application {
 
     @SneakyThrows
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
 
         JsonWorker jsonWorker = context.getBean(JsonWorker.class);
 
@@ -35,10 +29,10 @@ public class Application {
         clientController.createClient(client2Json);
         System.out.println(clientController.readClient(client1DTO.getId()));
         clientController.deleteClient(client2DTO.getId());
-        clientController.updateClient(client1Json, client3Json);
+        clientController.updateClient(client1DTO.getId(), client3Json);
         System.out.println(clientController.readClient(client1DTO.getId()));
 
-        System.out.println("For courier:");
+        /*System.out.println("For courier:");
         CourierController courierController = context.getBean(CourierController.class);
         String courier1Json = jsonWorker.getJson("courier1.json");
         String courier2Json = jsonWorker.getJson("courier2.json");
@@ -51,7 +45,7 @@ public class Application {
         courierController.createCourier(courier2Json);
         System.out.println(courierController.readCourier(courier1DTO.getId()));
         courierController.deleteCourier(courier2DTO.getId());
-        courierController.updateCourier(courier1Json, courier3Json);
+        courierController.updateCourier(courier1DTO.getId(), courier3Json);
         System.out.println(courierController.readCourier(courier1DTO.getId()));
 
         System.out.println("For dish:");
@@ -67,7 +61,7 @@ public class Application {
         dishController.createDish(dish2Json);
         System.out.println(dishController.readDish(dish1DTO.getId()));
         dishController.deleteDish(dish2DTO.getId());
-        dishController.updateDish(dish1Json, dish3Json);
+        dishController.updateDish(dish1DTO.getId(), dish3Json);
         System.out.println(dishController.readDish(dish1DTO.getId()));
 
         System.out.println("For dish information:");
@@ -83,7 +77,7 @@ public class Application {
         dishInformationController.createDishInformation(dishInformation2Json);
         System.out.println(dishInformationController.readDishInformation(dishInformation1DTO.getId()));
         dishInformationController.deleteDishInformation(dishInformation2DTO.getId());
-        dishInformationController.updateDishInformation(dishInformation1Json, dishInformation3Json);
+        dishInformationController.updateDishInformation(dishInformation1DTO.getId(), dishInformation3Json);
         System.out.println(dishInformationController.readDishInformation(dishInformation1DTO.getId()));
 
         System.out.println("For order:");
@@ -99,7 +93,7 @@ public class Application {
         orderController.createOrder(order2Json);
         System.out.println(orderController.readOrder(order1DTO.getId()));
         orderController.deleteOrder(order2DTO.getId());
-        orderController.updateOrder(order1Json, order3Json);
+        orderController.updateOrder(order1DTO.getId(), order3Json);
         System.out.println(orderController.readOrder(order1DTO.getId()));
 
         System.out.println("For type of container:");
@@ -115,9 +109,10 @@ public class Application {
         typeOfContainerController.createTypeOfContainer(typeOfContainer2Json);
         System.out.println(typeOfContainerController.readTypeOfContainer(typeOfContainer1DTO.getNumberOfCalories()));
         typeOfContainerController.deleteTypeOfContainer(typeOfContainer2DTO.getNumberOfCalories());
-        typeOfContainerController.updateTypeOfContainer(typeOfContainer1Json, typeOfContainer3Json);
-        System.out.println(typeOfContainerController.readTypeOfContainer(typeOfContainer1DTO.getNumberOfCalories()));
+        typeOfContainerController.updateTypeOfContainer(typeOfContainer1DTO.getNumberOfCalories(), typeOfContainer3Json);
+        System.out.println(typeOfContainerController.readTypeOfContainer(typeOfContainer1DTO.getNumberOfCalories()));*/
 
+        context.registerShutdownHook();
     }
 }
 
