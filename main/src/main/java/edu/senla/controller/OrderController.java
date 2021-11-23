@@ -27,7 +27,7 @@ public class OrderController implements OrderControllerInterface {
     @SneakyThrows
     @Override
     public String readOrder(int id) {
-        OrderDTO orderDTO = orderService.read(id);
+        OrderDTO orderDTO = orderService.readOrder(id);
         return jacksonObjectMapper.writeValueAsString(orderDTO);
     }
 
@@ -35,13 +35,13 @@ public class OrderController implements OrderControllerInterface {
     @Override
     public void updateOrder(int id, String updatedOrderJson) {
         OrderDTO updatedOrderDTO = jacksonObjectMapper.readValue(updatedOrderJson, OrderDTO.class);
-        orderService.update(id, updatedOrderDTO);
+        orderService.updateOrder(id, updatedOrderDTO);
         System.out.println("Order was successfully updated");
     }
 
     @Override
     public void deleteOrder(int id) {
-        orderService.delete(id);
+        orderService.deleteOrder(id);
         System.out.println("Order was successfully deleted");
     }
 

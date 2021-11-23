@@ -27,7 +27,7 @@ public class TypeOfContainerController implements TypeOfContainerControllerInter
     @SneakyThrows
     @Override
     public String readTypeOfContainer(int id) {
-        TypeOfContainerDTO typeOfContainerDTO = typeOfContainerService.read(id);
+        TypeOfContainerDTO typeOfContainerDTO = typeOfContainerService.readTypeOfContainer(id);
         return jacksonObjectMapper.writeValueAsString(typeOfContainerDTO);
     }
 
@@ -35,13 +35,13 @@ public class TypeOfContainerController implements TypeOfContainerControllerInter
     @Override
     public void updateTypeOfContainer(int id, String updatedTypeOfContainerJson) {
         TypeOfContainerDTO updatedTypeOfContainerDTO = jacksonObjectMapper.readValue(updatedTypeOfContainerJson, TypeOfContainerDTO.class);
-        typeOfContainerService.update(id, updatedTypeOfContainerDTO);
+        typeOfContainerService.updateTypeOfContainer(id, updatedTypeOfContainerDTO);
         System.out.println("TypeOfContainer was successfully updated");
     }
 
     @Override
     public void deleteTypeOfContainer(int id) {
-        typeOfContainerService.delete(id);
+        typeOfContainerService.deleteTypeOfContainer(id);
         System.out.println("Type of container was successfully deleted");
     }
 

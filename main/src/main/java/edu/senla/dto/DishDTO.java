@@ -13,4 +13,6 @@ public class DishDTO {
 
     private String name;
 
+    private String dishType;
+
 }

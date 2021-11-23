@@ -1,5 +1,8 @@
 {
-  "id" : "0",
   "paymentType" : "by card",
-  "status" : "new"
+  "status" : "new",
+  "date" : "2021-11-23",
+  "time" : "12.45",
+  "client_id" : "22",
+  "courier_id" : "4"
 }

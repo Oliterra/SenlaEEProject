@@ -7,10 +7,10 @@ public interface OrderServiceInterface {
 
     public void createOrder(OrderDTO newOrderDTO);
 
-    public OrderDTO read(int id);
+    public OrderDTO readOrder(int id);
 
-    public Order update(int id, OrderDTO updatedOrderDTO);
+    public void updateOrder(int id, OrderDTO updatedOrderDTO);
 
-    public void delete(int id);
+    public void deleteOrder(int id);
 
 }

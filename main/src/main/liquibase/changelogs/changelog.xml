@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>   
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
-   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
-      http://www.liquibase.org/xml/ns/pro 
-      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd"
-      logicalFilePath="homework-2">
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
+        logicalFilePath="homework-2">
 
     <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
         <sqlFile encoding="utf8" path="./sql/01.create-clients-table.sql" relativeToChangelogFile="true"/>
@@ -26,7 +23,8 @@
     </changeSet>
 
     <changeSet id="5" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/05.create-orders_types_of_container-table.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/05.create-orders_types_of_container-table.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="6" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
@@ -34,7 +32,8 @@
     </changeSet>
 
     <changeSet id="7" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/07.create-types_of_container_types_of_dish-table.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/07.create-types_of_container_types_of_dish-table.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="8" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
@@ -50,23 +49,35 @@
     </changeSet>
 
     <changeSet id="11" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/11.create-index-for-orders_types_of_container-order_id.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/11.create-index-for-orders_types_of_container-order_id.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="12" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/12.create-index-for-orders_types_of_container-number_of_calories.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/12.create-index-for-orders_types_of_container-number_of_calories.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="13" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/13.create-index-for-types_of_container_types_of_dish-number_of_calories.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8"
+                 path="./sql/13.create-index-for-types_of_container_types_of_dish-number_of_calories.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="14" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/14.create-index-for-types_of_container_types_of_dish-dish_type.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/14.create-index-for-types_of_container_types_of_dish-dish_type.sql"
+                 relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="15" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="./sql/15.create-index-for-dish_information-id.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/15.create-index-for-dish_information-id.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="16" author="Nadezhda Tarasova">
+        <dropColumn  tableName="orders">
+            <column  name="time"/>
+        </dropColumn>
     </changeSet>
 
 </databaseChangeLog>

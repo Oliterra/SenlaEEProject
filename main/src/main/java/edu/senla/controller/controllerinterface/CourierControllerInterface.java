@@ -10,4 +10,6 @@ public interface CourierControllerInterface {
 
     public void deleteCourier(int id);
 
+    public int getCourierIdByPhone(String courierPhone);
+
 }

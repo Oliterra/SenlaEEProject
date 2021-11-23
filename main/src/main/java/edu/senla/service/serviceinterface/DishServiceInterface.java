@@ -7,10 +7,12 @@ public interface DishServiceInterface {
 
     public void createDish(DishDTO newDishDTO);
 
-    public DishDTO read(int id);
+    public DishDTO readDish(int id);
 
-    public Dish update(int id, DishDTO updatedDishDTO);
+    public void updateDish(int id, DishDTO updatedDishDTO);
 
-    public void delete(int id);
+    public void deleteDish(int id);
+
+    public int getDishIdByName(String dishName);
 
 }

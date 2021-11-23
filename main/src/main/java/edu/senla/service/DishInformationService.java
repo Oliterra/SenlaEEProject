@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.DAO;
+import edu.senla.dao.daointerface.DishInformationRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
 import edu.senla.entity.DishInformation;
 import edu.senla.service.serviceinterface.DishInformationServiceInterface;
@@ -8,39 +8,43 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class DishInformationService implements DishInformationServiceInterface {
 
-    private final DAO<DishInformation> dishInformationDAO;
+    private final DishInformationRepositoryInterface dishInformationRepository;
 
     private final ModelMapper mapper;
 
     @Override
     public void createDishInformation(DishInformationDTO newDishInformationDTO) {
-        dishInformationDAO.create(mapper.map(newDishInformationDTO, DishInformation.class));
+        dishInformationRepository.create(mapper.map(newDishInformationDTO, DishInformation.class));
     }
 
     @Override
-    public DishInformationDTO read(int id) {
-        DishInformation requestedDishInformation = dishInformationDAO.read(id);
+    public DishInformationDTO readDishInformation(int id) {
+        DishInformation requestedDishInformation = dishInformationRepository.read(id);
         return mapper.map(requestedDishInformation, DishInformationDTO.class);
     }
 
     @Override
-    public DishInformation update(int id, DishInformationDTO updatedDishInformationDTO) {
+    public void updateDishInformation(int id, DishInformationDTO updatedDishInformationDTO) {
         DishInformation updatedDishInformation = mapper.map(updatedDishInformationDTO, DishInformation.class);
-        return updateDishInformationOptions(dishInformationDAO.read(id), updatedDishInformation);
+        DishInformation dishInformationToUpdate = mapper.map(readDishInformation(id), DishInformation.class);
+        DishInformation dishInformationWithNewParameters = updateDishInformationOptions(dishInformationToUpdate, updatedDishInformation);
+        dishInformationRepository.update(dishInformationWithNewParameters);
     }
 
     @Override
-    public void delete(int id) {
-        dishInformationDAO.delete(id);
+    public void deleteDishInformation(int id) {
+        dishInformationRepository.delete(id);
     }
 
     private DishInformation updateDishInformationOptions(DishInformation dishInformation, DishInformation updatedDishInformation)
     {
-        dishInformation.setId(updatedDishInformation.getId());
         dishInformation.setCarbohydrates(updatedDishInformation.getCarbohydrates());
         dishInformation.setCaloricContent(updatedDishInformation.getCaloricContent());
         dishInformation.setDescription(updatedDishInformation.getDescription());

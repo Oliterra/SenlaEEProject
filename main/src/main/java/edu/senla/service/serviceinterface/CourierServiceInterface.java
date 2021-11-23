@@ -7,10 +7,12 @@ public interface CourierServiceInterface {
 
     public void createCourier(CourierDTO newCourierDTO);
 
-    public CourierDTO read(int id);
+    public CourierDTO readCourier(int id);
 
-    public Courier update(int id, CourierDTO updatedCourierDTO);
+    public void updateCourier(int id, CourierDTO updatedCourierDTO);
 
-    public void delete(int id);
+    public void deleteCourier(int id);
+
+    public int getCourierIdByPhone(String courierPhone);
 
 }

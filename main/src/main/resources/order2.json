@@ -1,5 +1,8 @@
 {
-  "id" : "1",
   "paymentType" : "in cash",
-  "status" : "new"
+  "status" : "new",
+  "date" : "23.11.2021",
+  "time" : "13.12",
+  "client_id" : "22",
+  "courier_id" : "4"
 }

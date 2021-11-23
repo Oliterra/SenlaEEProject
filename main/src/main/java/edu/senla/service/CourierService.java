@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.DAO;
+import edu.senla.dao.daointerface.CourierRepositoryInterface;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
@@ -8,43 +8,52 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
+@Transactional
 @Service
 @RequiredArgsConstructor
-public class CourierService implements CourierServiceInterface {
+public class CourierService implements CourierServiceInterface{
 
-    private final DAO<Courier> courierDAO;
+    private final CourierRepositoryInterface courierRepository;
 
     private final ModelMapper mapper;
 
     @Override
     public void createCourier(CourierDTO newCourierDTO) {
-        courierDAO.create(mapper.map(newCourierDTO, Courier.class));
+        courierRepository.create(mapper.map(newCourierDTO, Courier.class));
     }
 
     @Override
-    public CourierDTO read(int id) {
-        Courier requestedСourier = courierDAO.read(id);
-        return mapper.map(requestedСourier, CourierDTO.class);
+    public CourierDTO readCourier(int id) {
+        Courier requestedCourier = courierRepository.read(id);
+        return mapper.map(requestedCourier, CourierDTO.class);
     }
 
     @Override
-    public Courier update(int id, CourierDTO updatedCourierDTO) {
+    public void updateCourier(int id, CourierDTO updatedCourierDTO) {
         Courier updatedCourier = mapper.map(updatedCourierDTO, Courier.class);
-        return updateCouriersOptions(courierDAO.read(id), updatedCourier);
-    }
-
-    @Override
-    public void delete(int id) {
-        courierDAO.delete(id);
+        Courier courierToUpdate = mapper.map(readCourier(id), Courier.class);
+        Courier courierWithNewParameters = updateCouriersOptions(courierToUpdate, updatedCourier);
+        courierRepository.update(courierWithNewParameters);
     }
 
     private Courier updateCouriersOptions(Courier courier, Courier updatedCourier)
     {
-        courier.setId(updatedCourier.getId());
         courier.setFirstName(updatedCourier.getFirstName());
         courier.setLastName(updatedCourier.getLastName());
         courier.setPhone(updatedCourier.getPhone());
         return courier;
+    }
+
+    @Override
+    public void deleteCourier(int id) {
+        courierRepository.delete(id);
+    }
+
+    @Override
+    public int getCourierIdByPhone(String courierPhone) {
+        return courierRepository.getIdByPhone(courierPhone);
     }
 
 }

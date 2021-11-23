@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class ClientDTO {
 
+    public ClientDTO(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     private int id;
 
     private String firstName;

@@ -10,4 +10,6 @@ public interface DishControllerInterface {
 
     public void deleteDish(int id);
 
+    public int getDishIdByName(String dishName);
+
 }

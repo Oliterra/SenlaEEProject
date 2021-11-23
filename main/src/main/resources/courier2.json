@@ -1,5 +1,5 @@
 {
-  "id" : "1",
   "firstName" : "George",
-  "lastName" : "Drozdov"
+  "lastName" : "Drozdov",
+  "phone" : "+375336666666"
 }

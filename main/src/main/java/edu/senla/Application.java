@@ -1,7 +1,9 @@
 package edu.senla;
 
-import edu.senla.controller.*;
-import edu.senla.dto.*;
+import edu.senla.controller.ClientController;
+import edu.senla.controller.CourierController;
+import edu.senla.controller.DishController;
+import edu.senla.controller.OrderController;
 import edu.senla.helper.JsonWorker;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -16,37 +18,33 @@ public class Application {
 
         JsonWorker jsonWorker = context.getBean(JsonWorker.class);
 
-        System.out.println("For client:");
+        /*System.out.println("For client:");
+
         ClientController clientController = context.getBean(ClientController.class);
         String client1Json = jsonWorker.getJson("client1.json");
         String client2Json = jsonWorker.getJson("client2.json");
         String client3Json = jsonWorker.getJson("client3.json");
 
-        ClientDTO client1DTO = new ClientDTO(0, "Sofia", "Makarova", "+375296784510", "makarova@test.com", "Pushkin Street, Kolotushkin house");
-        ClientDTO client2DTO = new ClientDTO(1, "Arina", "Levina", "+375334568134", "levina@test.com", "Kolotushkina Street, Pushkin house");
-
         clientController.createClient(client1Json);
         clientController.createClient(client2Json);
-        System.out.println(clientController.readClient(client1DTO.getId()));
-        clientController.deleteClient(client2DTO.getId());
-        clientController.updateClient(client1DTO.getId(), client3Json);
-        System.out.println(clientController.readClient(client1DTO.getId()));
+        System.out.println(clientController.readClient(clientController.getClientIdByEmail("makarova@test.com")));
+        clientController.deleteClient(clientController.getClientIdByEmail("levina@test.com"));
+        clientController.updateClient(clientController.getClientIdByEmail("makarova@test.com"), client3Json);
+        System.out.println(clientController.readClient(clientController.getClientIdByEmail("koltsova@test.com")));
 
-        /*System.out.println("For courier:");
+        System.out.println("For courier:");
+
         CourierController courierController = context.getBean(CourierController.class);
         String courier1Json = jsonWorker.getJson("courier1.json");
         String courier2Json = jsonWorker.getJson("courier2.json");
         String courier3Json = jsonWorker.getJson("courier3.json");
 
-        CourierDTO courier1DTO = new CourierDTO(0, "Matvey", "Zaitsev");
-        CourierDTO courier2DTO = new CourierDTO(1, "George", "Drozdov");
-
         courierController.createCourier(courier1Json);
         courierController.createCourier(courier2Json);
-        System.out.println(courierController.readCourier(courier1DTO.getId()));
-        courierController.deleteCourier(courier2DTO.getId());
-        courierController.updateCourier(courier1DTO.getId(), courier3Json);
-        System.out.println(courierController.readCourier(courier1DTO.getId()));
+        System.out.println(courierController.readCourier(courierController.getCourierIdByPhone("+375255555555")));
+        courierController.deleteCourier(courierController.getCourierIdByPhone("+375336666666"));
+        courierController.updateCourier(courierController.getCourierIdByPhone("+375255555555"), courier3Json);
+        System.out.println(courierController.readCourier(courierController.getCourierIdByPhone("+375297777777")));
 
         System.out.println("For dish:");
         DishController dishController = context.getBean(DishController.class);
@@ -54,17 +52,27 @@ public class Application {
         String dish2Json = jsonWorker.getJson("dish2.json");
         String dish3Json = jsonWorker.getJson("dish3.json");
 
-        DishDTO dish1DTO = new DishDTO(0, "Fried chicken");
-        DishDTO dish2DTO = new DishDTO(1, "Barbecue");
-
         dishController.createDish(dish1Json);
         dishController.createDish(dish2Json);
-        System.out.println(dishController.readDish(dish1DTO.getId()));
-        dishController.deleteDish(dish2DTO.getId());
-        dishController.updateDish(dish1DTO.getId(), dish3Json);
-        System.out.println(dishController.readDish(dish1DTO.getId()));
+        System.out.println(dishController.readDish(dishController.getDishIdByName("Fried chicken")));
+        dishController.deleteDish(dishController.getDishIdByName("Barbecue"));
+        dishController.updateDish(dishController.getDishIdByName("Fried chicken"), dish3Json);
+        System.out.println(dishController.readDish(dishController.getDishIdByName("Fried pork")));*/
 
-        System.out.println("For dish information:");
+        System.out.println("For order:");
+        OrderController orderController = context.getBean(OrderController.class);
+        String order1Json = jsonWorker.getJson("order1.json");
+        String order2Json = jsonWorker.getJson("order2.json");
+        String order3Json = jsonWorker.getJson("order3.json");
+
+        orderController.createOrder(order1Json);
+        orderController.createOrder(order2Json);
+        //System.out.println(orderController.readOrder(order1DTO.getId()));
+        //orderController.deleteOrder(order2DTO.getId());
+        //orderController.updateOrder(order1DTO.getId(), order3Json);
+        //System.out.println(orderController.readOrder(order1DTO.getId()));
+
+        /*System.out.println("For dish information:");
         DishInformationController dishInformationController = context.getBean(DishInformationController.class);
         String dishInformation1Json = jsonWorker.getJson("dishInformation1.json");
         String dishInformation2Json = jsonWorker.getJson("dishInformation2.json");;
@@ -78,25 +86,9 @@ public class Application {
         System.out.println(dishInformationController.readDishInformation(dishInformation1DTO.getId()));
         dishInformationController.deleteDishInformation(dishInformation2DTO.getId());
         dishInformationController.updateDishInformation(dishInformation1DTO.getId(), dishInformation3Json);
-        System.out.println(dishInformationController.readDishInformation(dishInformation1DTO.getId()));
+        System.out.println(dishInformationController.readDishInformation(dishInformation1DTO.getId()));*/
 
-        System.out.println("For order:");
-        OrderController orderController = context.getBean(OrderController.class);
-        String order1Json = jsonWorker.getJson("order1.json");
-        String order2Json = jsonWorker.getJson("order2.json");
-        String order3Json = jsonWorker.getJson("order3.json");
-
-        OrderDTO order1DTO = new OrderDTO(0, "by card", "new");
-        OrderDTO order2DTO = new OrderDTO(1, "in cash", "new");
-
-        orderController.createOrder(order1Json);
-        orderController.createOrder(order2Json);
-        System.out.println(orderController.readOrder(order1DTO.getId()));
-        orderController.deleteOrder(order2DTO.getId());
-        orderController.updateOrder(order1DTO.getId(), order3Json);
-        System.out.println(orderController.readOrder(order1DTO.getId()));
-
-        System.out.println("For type of container:");
+        /*System.out.println("For type of container:");
         TypeOfContainerController typeOfContainerController = context.getBean(TypeOfContainerController.class);
         String typeOfContainer1Json = jsonWorker.getJson("typeOfContainer1.json");
         String typeOfContainer2Json = jsonWorker.getJson("typeOfContainer2.json");

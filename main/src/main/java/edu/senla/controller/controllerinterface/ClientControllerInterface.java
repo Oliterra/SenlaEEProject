@@ -10,4 +10,6 @@ public interface ClientControllerInterface {
 
     public void deleteClient(int id);
 
+    public int getClientIdByEmail(String clientEmail);
+
 }

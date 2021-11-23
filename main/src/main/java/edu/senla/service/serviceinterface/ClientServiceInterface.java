@@ -7,10 +7,12 @@ public interface ClientServiceInterface {
 
     public void createClient(ClientDTO newClientDTO);
 
-    public ClientDTO read(int id);
+    public ClientDTO readClient(int id);
 
-    public void update(int id, ClientDTO updatedClientDTO);
+    public void updateClient(int id, ClientDTO updatedClientDTO);
 
-    public void delete(int id);
+    public void deleteClient(int id);
+
+    public int getClientIdByEmail(String clientEmail);
 
 }
