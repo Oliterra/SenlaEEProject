@@ -13,16 +13,15 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="types_of_container")
-public class TypeOfContainer implements Serializable {
+public class TypeOfContainer implements Serializable{
 
     @Id
-    @Column(name = "number_of_calories", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "number_of_calories")
     private int numberOfCalories;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "price", nullable = false)
     private int price;
 
     @ManyToMany

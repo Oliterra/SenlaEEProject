@@ -2,7 +2,6 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.controllerinterface.CourierControllerInterface;
-import edu.senla.dto.ClientDTO;
 import edu.senla.dto.CourierDTO;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +48,18 @@ public class CourierController implements CourierControllerInterface {
     @Override
     public int getCourierIdByPhone(String courierPhone) {
         return courierService.getCourierIdByPhone(courierPhone);
+    }
+
+    @Override
+    public String getByIdWithOrders(int courierId) {
+        System.out.println("Client with his/her orders: ");
+        return courierService.getByIdWithOrders(courierId);
+    }
+
+    @Override
+    public String getByIdWithOrdersJPQL(int courierId) {
+        System.out.println("Client with his/her orders: ");
+        return courierService.getByIdWithOrdersJPQL(courierId).toString();
     }
 
 }

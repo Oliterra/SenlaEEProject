@@ -1,9 +1,13 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.DishInformationRepositoryInterface;
+import edu.senla.dao.daointerface.DishRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
+import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
+import edu.senla.entity.Order;
 import edu.senla.service.serviceinterface.DishInformationServiceInterface;
+import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,11 +21,16 @@ public class DishInformationService implements DishInformationServiceInterface {
 
     private final DishInformationRepositoryInterface dishInformationRepository;
 
+    private final DishServiceInterface dishService;
+
     private final ModelMapper mapper;
 
     @Override
     public void createDishInformation(DishInformationDTO newDishInformationDTO) {
-        dishInformationRepository.create(mapper.map(newDishInformationDTO, DishInformation.class));
+        DishInformation newDishInformation = mapper.map(newDishInformationDTO, DishInformation.class);
+        DishInformation newDishInformationEntity = dishInformationRepository.create(mapper.map(newDishInformationDTO, DishInformation.class));
+        System.out.println("bla" + newDishInformationEntity);
+        //dishService.setDishInformation(dishId, newDishInformationEntity);
     }
 
     @Override

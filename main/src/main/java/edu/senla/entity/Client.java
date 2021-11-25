@@ -1,14 +1,9 @@
 package edu.senla.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.annotation.processing.Generated;
 import javax.persistence.*;
-import javax.persistence.metamodel.ListAttribute;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.StaticMetamodel;
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,28 +11,30 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="clients")
-public class Client{
+@NamedEntityGraph(
+        name = "client-entity-graph",
+        attributeNodes = {@NamedAttributeNode(value = "orders")}
+)
+public class Client implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "address", nullable = false)
     private String address;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "client")
     private List<Order> orders;
 

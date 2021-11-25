@@ -1,10 +1,9 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.ClientRepositoryInterface;
 import edu.senla.dao.daointerface.DishRepositoryInterface;
 import edu.senla.dto.DishDTO;
-import edu.senla.entity.Client;
 import edu.senla.entity.Dish;
+import edu.senla.entity.DishInformation;
 import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -55,6 +54,14 @@ public class DishService implements DishServiceInterface {
     @Override
     public int getDishIdByName(String dishName) {
         return dishRepository.getIdByName(dishName);
+    }
+
+    @Override
+    public void setDishInformation(int dishId, DishInformation dishInformation) {
+        System.out.println("test  " + dishId);
+        Dish dish = dishRepository.read(dishId);
+        System.out.println("test2  " + dish);
+        dish.setDishInformation(dishInformation);
     }
 
 }

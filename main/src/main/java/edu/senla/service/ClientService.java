@@ -3,6 +3,7 @@ package edu.senla.service;
 import edu.senla.dao.daointerface.ClientRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
+import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.ClientServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -56,6 +57,16 @@ public class ClientService implements ClientServiceInterface{
     @Override
     public int getClientIdByEmail(String clientEmail){
         return clientRepository.getIdByEmail(clientEmail);
+    }
+
+    @Override
+    public ClientDTO getByIdWithOrders(int clientId) {
+        return mapper.map(clientRepository.getByIdWithOrders(clientId), ClientDTO.class);
+    }
+
+    @Override
+    public ClientDTO getByIdWithOrdersJPQL(int clientId) {
+        return mapper.map(clientRepository.getByIdWithOrdersJPQL(clientId), ClientDTO.class);
     }
 
 }

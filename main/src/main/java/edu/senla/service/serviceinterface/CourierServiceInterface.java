@@ -1,5 +1,6 @@
 package edu.senla.service.serviceinterface;
 
+import edu.senla.dto.ClientDTO;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 
@@ -14,5 +15,9 @@ public interface CourierServiceInterface {
     public void deleteCourier(int id);
 
     public int getCourierIdByPhone(String courierPhone);
+
+    public String getByIdWithOrders(int courierId);
+
+    public CourierDTO getByIdWithOrdersJPQL(int courierId);
 
 }

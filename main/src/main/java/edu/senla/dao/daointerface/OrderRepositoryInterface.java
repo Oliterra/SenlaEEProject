@@ -10,4 +10,6 @@ public interface OrderRepositoryInterface extends GenericDAO<Order, Integer>{
 
     public List<Order> getAllCouriersOrders(int courierId);
 
+    public Order getByIdWithOrders(int orderId);
+
 }

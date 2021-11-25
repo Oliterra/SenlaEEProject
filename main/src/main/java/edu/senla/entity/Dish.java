@@ -13,21 +13,19 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="dishes")
-public class Dish{
+public class Dish implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @Column(name = "dish_type", nullable = false)
+    @Column(name = "dish_type")
     private String dishType;
 
-    @Column(name = "name")
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "dish_information_id", unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dish_information_id")
     private DishInformation dishInformation;
 
     @ManyToMany(mappedBy = "dishes")

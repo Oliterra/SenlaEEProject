@@ -50,4 +50,16 @@ public class ClientController implements ClientControllerInterface {
         return clientService.getClientIdByEmail(clientEmail);
     }
 
+    @Override
+    public String getByIdWithOrders(int clientId) {
+        System.out.println("Client with his/her orders: ");
+        return clientService.getByIdWithOrders(clientId).toString();
+    }
+
+    @Override
+    public String getByIdWithOrdersJPQL(int clientId) {
+        System.out.println("Client with his/her orders: ");
+        return clientService.getByIdWithOrdersJPQL(clientId).toString();
+    }
+
 }

@@ -13,35 +13,30 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name="dish_information")
-public class DishInformation{
+public class DishInformation implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy="dishInformation")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="dishInformation")
     private Dish dish;
 
-    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "proteins", nullable = false)
     private int proteins;
 
-    @Column(name = "fats", nullable = false)
     private int fats;
 
-    @Column(name = "carbohydrates", nullable = false)
     private int carbohydrates;
 
-    @Column(name = "caloric_content", nullable = false)
+    @Column(name = "caloric_content")
     private int caloricContent;
 
-    @Column(name = "cooking_date", nullable = false)
+    @Column(name = "cooking_date")
     private LocalDate cookingDate;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "expiration_date")
     private LocalDate expirationDate;
 
 }

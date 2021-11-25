@@ -6,21 +6,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="orders")
-public class Order{
+@Table(name = "orders")
+@NamedEntityGraph(
+        name = "order-entity-graph",
+        attributeNodes = {@NamedAttributeNode(value = "typesOfContainer")}
+)
+public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,16 +32,11 @@ public class Order{
     @JoinColumn(name = "courier_id")
     private Courier courier;
 
-    @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "time")
-    private Timestamp time;
-
-    @Column(name = "payment_type", nullable = false)
+    @Column(name = "payment_type")
     private String paymentType;
 
-    @Column(name = "status", nullable = false)
     private String status;
 
     @ManyToMany(mappedBy = "orders")

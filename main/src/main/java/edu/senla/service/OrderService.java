@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 @Service
@@ -26,13 +28,11 @@ public class OrderService implements OrderServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public void createOrder(OrderDTO newOrderDTO) {
-        int clientId = newOrderDTO.getClient_id();
-        int courierId = newOrderDTO.getCourier_id();
+    public int createOrder(int clientId, OrderDTO newOrderDTO) {
         Order newOrder = mapper.map(newOrderDTO, Order.class);
         newOrder.setClient(clientRepository.read(clientId));
-        newOrder.setCourier(courierRepository.read(courierId));
-        orderRepository.create(newOrder);
+        Order order = orderRepository.create(newOrder);
+        return order.getId();
     }
 
     @Override
@@ -54,12 +54,34 @@ public class OrderService implements OrderServiceInterface {
         orderRepository.delete(id);
     }
 
-    private Order updateOrdersOptions(Order order, Order updatedOrder)
-    {
-        order.setClient(updatedOrder.getClient());
-        order.setCourier(updatedOrder.getCourier());
+    @Override
+    public void setOrderCourier(OrderDTO order, int courierId) {
+        Order orderEntity = mapper.map(order, Order.class);
+        orderEntity.setCourier(courierRepository.read(courierId));
+    }
+
+    @Override
+    public List<OrderDTO> getAllClientsOrders(int clientId) {
+        List<Order> orders = orderRepository.getAllClientsOrders(clientId);
+        List<OrderDTO> ordersDTO = new ArrayList<>();
+        for (Order order: orders) {
+            ordersDTO.add(mapper.map(order, OrderDTO.class));
+        }
+        return ordersDTO;
+    }
+
+    @Override
+    public List<OrderDTO> getAllCouriersOrders(int courierId) {
+        List<Order> orders = orderRepository.getAllCouriersOrders(courierId);
+        List<OrderDTO> ordersDTO = new ArrayList<>();
+        for (Order order: orders) {
+            ordersDTO.add(mapper.map(order, OrderDTO.class));
+        }
+        return ordersDTO;
+    }
+
+    private Order updateOrdersOptions(Order order, Order updatedOrder) {
         order.setDate(updatedOrder.getDate());
-        order.setTime(updatedOrder.getTime());
         order.setPaymentType(updatedOrder.getPaymentType());
         order.setStatus(updatedOrder.getStatus());
         return order;

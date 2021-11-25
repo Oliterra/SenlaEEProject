@@ -17,6 +17,7 @@ public class TypeOfContainerRepository extends AbstractDAO<TypeOfContainer, Inte
         super(TypeOfContainer.class);
     }
 
+    @Override
     public List<TypeOfContainer> getAllContainersByCaloricContent(int caloricContent) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<TypeOfContainer> typeOfContainerCriteriaQuery = criteriaBuilder.createQuery(TypeOfContainer.class);

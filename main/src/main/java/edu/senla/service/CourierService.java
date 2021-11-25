@@ -1,6 +1,7 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.CourierRepositoryInterface;
+import edu.senla.dto.ClientDTO;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
@@ -54,6 +55,19 @@ public class CourierService implements CourierServiceInterface{
     @Override
     public int getCourierIdByPhone(String courierPhone) {
         return courierRepository.getIdByPhone(courierPhone);
+    }
+
+    @Override
+    public String getByIdWithOrders(int courierId) {
+        System.out.println(courierRepository.getByIdWithOrders(courierId));
+        final Courier courier = courierRepository.getByIdWithOrders(courierId);
+        System.out.println(courier);
+        return courier.toString();
+    }
+
+    @Override
+    public CourierDTO getByIdWithOrdersJPQL(int courierId) {
+        return mapper.map(courierRepository.getByIdWithOrdersJPQL(courierId), CourierDTO.class);
     }
 
 }
