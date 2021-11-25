@@ -60,13 +60,13 @@ public class ClientService implements ClientServiceInterface{
     }
 
     @Override
-    public ClientDTO getByIdWithOrders(int clientId) {
-        return mapper.map(clientRepository.getByIdWithOrders(clientId), ClientDTO.class);
+    public String getByIdWithOrders(int clientId) {
+        return clientRepository.getByIdWithOrders(clientId).toString();
     }
 
     @Override
-    public ClientDTO getByIdWithOrdersJPQL(int clientId) {
-        return mapper.map(clientRepository.getByIdWithOrdersJPQL(clientId), ClientDTO.class);
+    public String getByIdWithOrdersJPQL(int clientId) {
+        return clientRepository.getByIdWithOrdersJPQL(clientId).toString();
     }
 
 }

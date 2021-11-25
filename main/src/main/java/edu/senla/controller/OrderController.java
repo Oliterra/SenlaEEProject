@@ -90,4 +90,10 @@ public class OrderController implements OrderControllerInterface {
         return sb.toString();
     }
 
+    @Override
+    public String getByIdWithWithTypeOfContainer(int orderId) {
+        System.out.println("Order with its types of contaibers: ");
+        return clientService.getByIdWithOrders(orderId).toString();
+    }
+
 }

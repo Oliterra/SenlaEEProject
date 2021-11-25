@@ -6,4 +6,6 @@ public interface DishRepositoryInterface extends GenericDAO<Dish, Integer>{
 
     public int getIdByName(String dishName);
 
+    public Dish getByIdWithFullInformation(int dishId);
+
 }

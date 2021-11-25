@@ -19,7 +19,7 @@ public class DishInformation implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="dishInformation")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy="dishInformation")
     private Dish dish;
 
     private String description;

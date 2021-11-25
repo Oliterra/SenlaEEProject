@@ -21,4 +21,6 @@ public interface OrderServiceInterface {
 
     public List<OrderDTO> getAllCouriersOrders(int courierId);
 
+    public OrderDTO getByIdWithWithTypeOfContainer(int orderId);
+
 }

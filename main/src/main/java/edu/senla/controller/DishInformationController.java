@@ -18,10 +18,10 @@ public class DishInformationController implements DishInformationControllerInter
 
     @SneakyThrows
     @Override
-    public void createDishInformation(String newDishInformationJson) {
+    public void createDishInformation(int dishId, String newDishInformationJson) {
         DishInformationDTO newDishInformationDTO = jacksonObjectMapper.readValue(newDishInformationJson, DishInformationDTO.class);
-        dishInformationService.createDishInformation(newDishInformationDTO);
-        System.out.println("DishInformation" + readDishInformation(newDishInformationDTO.getId()) + " was successfully created");
+        dishInformationService.createDishInformation(dishId, newDishInformationDTO);
+        System.out.println("DishInformation was successfully added");
     }
 
     @SneakyThrows

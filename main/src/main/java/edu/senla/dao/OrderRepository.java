@@ -45,7 +45,7 @@ public class OrderRepository extends AbstractDAO<Order, Integer> implements Orde
     }
 
     @Override
-    public Order getByIdWithOrders(int orderId) {
+    public Order getByIdWithWithTypeOfContainer(int orderId) {
         EntityGraph<?> graph = this.entityManager.getEntityGraph("order-entity-graph");
         Map<String, Object> hints = new HashMap<String, Object>();
         hints.put("javax.persistence.loadgraph", graph);

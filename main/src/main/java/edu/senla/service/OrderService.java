@@ -3,6 +3,7 @@ package edu.senla.service;
 import edu.senla.dao.ClientRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.daointerface.OrderRepositoryInterface;
+import edu.senla.dto.ClientDTO;
 import edu.senla.dto.OrderDTO;
 import edu.senla.entity.Order;
 import edu.senla.service.serviceinterface.OrderServiceInterface;
@@ -78,6 +79,11 @@ public class OrderService implements OrderServiceInterface {
             ordersDTO.add(mapper.map(order, OrderDTO.class));
         }
         return ordersDTO;
+    }
+
+    @Override
+    public OrderDTO getByIdWithWithTypeOfContainer(int orderId) {
+        return mapper.map(orderRepository.getByIdWithWithTypeOfContainer(orderId), OrderDTO.class);
     }
 
     private Order updateOrdersOptions(Order order, Order updatedOrder) {

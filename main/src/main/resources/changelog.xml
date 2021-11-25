@@ -128,6 +128,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="21" author="Nadezhda Tarasova">
+        <dropForeignKeyConstraint baseTableName="dish_information"
+                                  constraintName="dishinformation_id_fkey"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

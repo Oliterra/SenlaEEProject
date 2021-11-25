@@ -17,7 +17,6 @@ public class TypeOfContainer implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "number_of_calories")
     private int numberOfCalories;
 
     private String name;
@@ -26,16 +25,12 @@ public class TypeOfContainer implements Serializable{
 
     @ManyToMany
     @JoinTable(name = "types_of_container_types_of_dish",
-            joinColumns = @JoinColumn(name = "dish_id"),
-            inverseJoinColumns = @JoinColumn(name = "types_of_container_id")
+            joinColumns = @JoinColumn(name = "number_of_caloriesdish_type"),
+            inverseJoinColumns = @JoinColumn(name = "dish_type")
     )
     private List<Dish> dishes;
 
-    @ManyToMany
-    @JoinTable(name = "orders_types_of_container",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "types_of_container_id")
-    )
-    private List<Order> orders;
+    @OneToMany(mappedBy = "typeOfContainer")
+    private List<OrderTypeOfContainer> orders;
 
 }

@@ -1,8 +1,10 @@
 package edu.senla.controller.controllerinterface;
 
+import edu.senla.dto.DishDTO;
+
 public interface DishControllerInterface {
 
-    public void createDish(String newDishJson);
+    public int createDish(String newDishJson);
 
     public String readDish(int id);
 
@@ -11,5 +13,7 @@ public interface DishControllerInterface {
     public void deleteDish(int id);
 
     public int getDishIdByName(String dishName);
+
+    public String getByIdWithFullInformation(int dishId);
 
 }

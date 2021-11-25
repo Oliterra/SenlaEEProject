@@ -20,4 +20,6 @@ public interface OrderControllerInterface {
 
     public String getAllCouriersOrders(int courierId);
 
+    public String getByIdWithWithTypeOfContainer(int orderId);
+
 }

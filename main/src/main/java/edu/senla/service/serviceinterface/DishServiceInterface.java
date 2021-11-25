@@ -6,7 +6,7 @@ import edu.senla.entity.DishInformation;
 
 public interface DishServiceInterface {
 
-    public void createDish(DishDTO newDishDTO);
+    public int createDish(DishDTO newDishDTO);
 
     public DishDTO readDish(int id);
 
@@ -16,6 +16,6 @@ public interface DishServiceInterface {
 
     public int getDishIdByName(String dishName);
 
-    public void setDishInformation(int dishId, DishInformation dishInformation);
+    public DishDTO getByIdWithFullInformation(int dishId);
 
 }

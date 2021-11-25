@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface DishInformationControllerInterface {
 
-    public void createDishInformation(String newDishInformationJson);
+    public void createDishInformation(int dishId, String newDishInformationJson);
 
     public String readDishInformation(int id) throws JsonProcessingException;
 

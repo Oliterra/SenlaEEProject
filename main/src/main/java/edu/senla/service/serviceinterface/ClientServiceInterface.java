@@ -15,8 +15,8 @@ public interface ClientServiceInterface {
 
     public int getClientIdByEmail(String clientEmail);
 
-    public ClientDTO getByIdWithOrders(int clientId);
+    public String getByIdWithOrders(int clientId);
 
-    public ClientDTO getByIdWithOrdersJPQL(int clientId);
+    public String getByIdWithOrdersJPQL(int clientId);
 
 }

@@ -21,16 +21,17 @@ public class DishInformationService implements DishInformationServiceInterface {
 
     private final DishInformationRepositoryInterface dishInformationRepository;
 
-    private final DishServiceInterface dishService;
+    private final DishRepositoryInterface dishRepository;
 
     private final ModelMapper mapper;
 
     @Override
-    public void createDishInformation(DishInformationDTO newDishInformationDTO) {
+    public void createDishInformation(int dishId, DishInformationDTO newDishInformationDTO) {
         DishInformation newDishInformation = mapper.map(newDishInformationDTO, DishInformation.class);
-        DishInformation newDishInformationEntity = dishInformationRepository.create(mapper.map(newDishInformationDTO, DishInformation.class));
-        System.out.println("bla" + newDishInformationEntity);
-        //dishService.setDishInformation(dishId, newDishInformationEntity);
+        Dish dish = dishRepository.read(dishId);
+        newDishInformation.setDish(dish);
+        DishInformation createdInformation = dishInformationRepository.create(newDishInformation);
+        dish.setDishInformation(createdInformation);
     }
 
     @Override

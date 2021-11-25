@@ -18,10 +18,11 @@ public class DishController implements DishControllerInterface {
 
     @SneakyThrows
     @Override
-    public void createDish(String newDishJson) {
+    public int createDish(String newDishJson) {
         DishDTO newDishDTO = jacksonObjectMapper.readValue(newDishJson, DishDTO.class);
-        dishService.createDish(newDishDTO);
+        int newDishId = dishService.createDish(newDishDTO);
         System.out.println("Dish" + readDish(getDishIdByName(newDishDTO.getName())) + " was successfully created");
+        return newDishId;
     }
 
     @SneakyThrows
@@ -48,6 +49,12 @@ public class DishController implements DishControllerInterface {
     @Override
     public int getDishIdByName(String dishName) {
         return dishService.getDishIdByName(dishName);
+    }
+
+    @Override
+    public String getByIdWithFullInformation(int dishId) {
+        System.out.println("Dish with its info: ");
+        return dishService.getByIdWithFullInformation(dishId).toString();
     }
 
 }

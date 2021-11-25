@@ -39,7 +39,7 @@ public class Order implements Serializable {
 
     private String status;
 
-    @ManyToMany(mappedBy = "orders")
-    private List<TypeOfContainer> typesOfContainer;
+    @OneToMany(mappedBy = "order")
+    private List<OrderTypeOfContainer> typesOfContainer;
 
 }

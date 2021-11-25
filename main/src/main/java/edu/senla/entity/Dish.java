@@ -1,8 +1,6 @@
 package edu.senla.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +11,10 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="dishes")
+@NamedEntityGraph(
+        name = "dish-entity-graph",
+        attributeNodes = {@NamedAttributeNode(value = "dishInformation")}
+)
 public class Dish implements Serializable{
 
     @Id
@@ -24,7 +26,9 @@ public class Dish implements Serializable{
 
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name = "dish_information_id")
     private DishInformation dishInformation;
 

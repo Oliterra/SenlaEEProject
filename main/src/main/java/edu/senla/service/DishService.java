@@ -1,6 +1,7 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.DishRepositoryInterface;
+import edu.senla.dto.ClientDTO;
 import edu.senla.dto.DishDTO;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
@@ -21,8 +22,9 @@ public class DishService implements DishServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public void createDish(DishDTO newDishDTO) {
-        dishRepository.create(mapper.map(newDishDTO, Dish.class));
+    public int createDish(DishDTO newDishDTO) {
+        Dish newDish = dishRepository.create(mapper.map(newDishDTO, Dish.class));
+        return newDish.getId();
     }
 
     @Override
@@ -57,11 +59,8 @@ public class DishService implements DishServiceInterface {
     }
 
     @Override
-    public void setDishInformation(int dishId, DishInformation dishInformation) {
-        System.out.println("test  " + dishId);
-        Dish dish = dishRepository.read(dishId);
-        System.out.println("test2  " + dish);
-        dish.setDishInformation(dishInformation);
+    public DishDTO getByIdWithFullInformation(int dishId) {
+        return mapper.map(dishRepository.getByIdWithFullInformation(dishId), DishDTO.class);
     }
 
 }
