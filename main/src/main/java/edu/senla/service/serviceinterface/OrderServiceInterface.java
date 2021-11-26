@@ -3,14 +3,24 @@ package edu.senla.service.serviceinterface;
 import edu.senla.dto.OrderDTO;
 import edu.senla.entity.Order;
 
+import java.util.List;
+
 public interface OrderServiceInterface {
 
-    public void createOrder(OrderDTO newOrderDTO);
+    public int createOrder(int clientId, OrderDTO newOrderDTO);
 
-    public OrderDTO read(int id);
+    public OrderDTO readOrder(int id);
 
-    public Order update(int id, OrderDTO updatedOrderDTO);
+    public void updateOrder(int id, OrderDTO updatedOrderDTO);
 
-    public void delete(int id);
+    public void deleteOrder(int id);
+
+    public void setOrderCourier(OrderDTO order, int courierId);
+
+    public List<OrderDTO> getAllClientsOrders(int clientId);
+
+    public List<OrderDTO> getAllCouriersOrders(int courierId);
+
+    public OrderDTO getByIdWithWithTypeOfContainer(int orderId);
 
 }

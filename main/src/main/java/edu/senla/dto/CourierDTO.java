@@ -15,4 +15,6 @@ public class CourierDTO {
 
     private String lastName;
 
+    private String phone;
+
 }

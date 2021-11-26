@@ -1,45 +1,72 @@
 package edu.senla.service;
 
-import edu.senla.annotation.Transaction;
-import edu.senla.dao.ClientJDBC;
+import edu.senla.dao.daointerface.ClientRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
+import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.ClientServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
+@Transactional
 @Service
 @RequiredArgsConstructor
-public class ClientService implements ClientServiceInterface {
+public class ClientService implements ClientServiceInterface{
 
-    private final ClientJDBC clientDAO;
+    private final ClientRepositoryInterface clientRepository;
 
     private final ModelMapper mapper;
 
     @Override
-    @Transaction
     public void createClient(ClientDTO newClientDTO) {
-        clientDAO.create(mapper.map(newClientDTO, Client.class));
+        clientRepository.create(mapper.map(newClientDTO, Client.class));
     }
 
     @Override
-    @Transaction
-    public ClientDTO read(int id) {
-        Client requestedСlient = clientDAO.read(id);
+    public ClientDTO readClient(int id) {
+        Client requestedСlient = clientRepository.read(id);
         return mapper.map(requestedСlient, ClientDTO.class);
     }
 
     @Override
-    @Transaction
-    public void update(int id, ClientDTO updatedClientDTO) {
+    public void updateClient(int id, ClientDTO updatedClientDTO) {
         Client updatedClient = mapper.map(updatedClientDTO, Client.class);
-        clientDAO.update(id, updatedClient);
+        Client clientToUpdate = mapper.map(readClient(id), Client.class);
+        Client clientWithNewParameters = updateClientsOptions(clientToUpdate, updatedClient);
+        clientRepository.update(clientWithNewParameters);
+    }
+
+    private Client updateClientsOptions(Client client, Client updatedClient)
+    {
+        client.setFirstName(updatedClient.getFirstName());
+        client.setLastName(updatedClient.getLastName());
+        client.setEmail(updatedClient.getEmail());
+        client.setPhone(updatedClient.getPhone());
+        client.setAddress(updatedClient.getAddress());
+        return client;
     }
 
     @Override
-    @Transaction
-    public void delete(int id) {
-        clientDAO.delete(id);
+    public void deleteClient(int id) {
+        clientRepository.delete(id);
     }
+
+    @Override
+    public int getClientIdByEmail(String clientEmail){
+        return clientRepository.getIdByEmail(clientEmail);
+    }
+
+    @Override
+    public String getByIdWithOrders(int clientId) {
+        return clientRepository.getByIdWithOrders(clientId).toString();
+    }
+
+    @Override
+    public String getByIdWithOrdersJPQL(int clientId) {
+        return clientRepository.getByIdWithOrdersJPQL(clientId).toString();
+    }
+
 }

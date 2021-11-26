@@ -21,13 +21,13 @@ public class CourierController implements CourierControllerInterface {
     public void createCourier(String newCourierJson) {
         CourierDTO newCourierDTO = jacksonObjectMapper.readValue(newCourierJson, CourierDTO.class);
         courierService.createCourier(newCourierDTO);
-        System.out.println("Courier" + readCourier(newCourierDTO.getId()) + " was successfully created");
+        System.out.println("Courier" + readCourier(getCourierIdByPhone(newCourierDTO.getPhone())) + " was successfully created");
     }
 
     @SneakyThrows
     @Override
     public String readCourier(int id) {
-        CourierDTO courierDTO = courierService.read(id);
+        CourierDTO courierDTO = courierService.readCourier(id);
         return jacksonObjectMapper.writeValueAsString(courierDTO);
     }
 
@@ -35,14 +35,31 @@ public class CourierController implements CourierControllerInterface {
     @Override
     public void updateCourier(int id, String updatedCourierJson) {
         CourierDTO updatedCourierDTO = jacksonObjectMapper.readValue(updatedCourierJson, CourierDTO.class);
-        courierService.update(id, updatedCourierDTO);
+        courierService.updateCourier(id, updatedCourierDTO);
         System.out.println("Courier was successfully updated");
     }
 
     @Override
     public void deleteCourier(int id) {
-        courierService.delete(id);
+        courierService.deleteCourier(id);
         System.out.println("Courier was successfully deleted");
+    }
+
+    @Override
+    public int getCourierIdByPhone(String courierPhone) {
+        return courierService.getCourierIdByPhone(courierPhone);
+    }
+
+    @Override
+    public String getByIdWithOrders(int courierId) {
+        System.out.println("Client with his/her orders: ");
+        return courierService.getByIdWithOrders(courierId);
+    }
+
+    @Override
+    public String getByIdWithOrdersJPQL(int courierId) {
+        System.out.println("Client with his/her orders: ");
+        return courierService.getByIdWithOrdersJPQL(courierId).toString();
     }
 
 }

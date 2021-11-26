@@ -1,18 +1,30 @@
 package edu.senla.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Client {
+@Entity
+@Table(name="clients")
+@NamedEntityGraph(
+        name = "client-entity-graph",
+        attributeNodes = {@NamedAttributeNode(value = "orders")}
+)
+public class Client implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
+    @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "last_name")
     private String lastName;
 
     private String phone;
@@ -20,5 +32,10 @@ public class Client {
     private String email;
 
     private String address;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "client")
+    private List<Order> orders;
 
 }

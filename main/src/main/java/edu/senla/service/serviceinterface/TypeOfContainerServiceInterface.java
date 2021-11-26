@@ -9,10 +9,10 @@ public interface TypeOfContainerServiceInterface {
 
     public void createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO);
 
-    public TypeOfContainerDTO read(int id);
+    public TypeOfContainerDTO readTypeOfContainer(int id);
 
-    public TypeOfContainer update(int id, TypeOfContainerDTO updatedTypeOfContainerDTO);
+    public void updateTypeOfContainer(int id, TypeOfContainerDTO updatedTypeOfContainerDTO);
 
-    public void delete(int id);
+    public void deleteTypeOfContainer(int id);
 
 }

@@ -21,13 +21,13 @@ public class ClientController implements ClientControllerInterface {
     public void createClient(String newClientJson) {
         ClientDTO newClientDTO = jacksonObjectMapper.readValue(newClientJson, ClientDTO.class);
         clientService.createClient(newClientDTO);
-        System.out.println("Client" + readClient(newClientDTO.getId()) + " was successfully created");
+        System.out.println("Client" + readClient(getClientIdByEmail(newClientDTO.getEmail())) + " was successfully created");
     }
 
     @SneakyThrows
     @Override
     public String readClient(int id) {
-        ClientDTO clientDTO = clientService.read(id);
+        ClientDTO clientDTO = clientService.readClient(id);
         return jacksonObjectMapper.writeValueAsString(clientDTO);
     }
 
@@ -35,14 +35,31 @@ public class ClientController implements ClientControllerInterface {
     @Override
     public void updateClient(int id, String updatedClientJson) {
         ClientDTO updatedClientDTO = jacksonObjectMapper.readValue(updatedClientJson, ClientDTO.class);
-        clientService.update(id, updatedClientDTO);
+        clientService.updateClient(id, updatedClientDTO);
         System.out.println("Client was successfully updated");
     }
 
     @Override
     public void deleteClient(int id) {
-        clientService.delete(id);
+        clientService.deleteClient(id);
         System.out.println("Client was successfully deleted");
+    }
+
+    @Override
+    public int getClientIdByEmail(String clientEmail) {
+        return clientService.getClientIdByEmail(clientEmail);
+    }
+
+    @Override
+    public String getByIdWithOrders(int clientId) {
+        System.out.println("Client with his/her orders: ");
+        return clientService.getByIdWithOrders(clientId).toString();
+    }
+
+    @Override
+    public String getByIdWithOrdersJPQL(int clientId) {
+        System.out.println("Client with his/her orders: ");
+        return clientService.getByIdWithOrdersJPQL(clientId).toString();
     }
 
 }

@@ -4,14 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DishInformation {
+@Entity
+@Table(name="dish_information")
+public class DishInformation implements Serializable{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy="dishInformation")
+    private Dish dish;
 
     private String description;
 
@@ -21,10 +30,13 @@ public class DishInformation {
 
     private int carbohydrates;
 
+    @Column(name = "caloric_content")
     private int caloricContent;
 
-    private Date cookingDate;
+    @Column(name = "cooking_date")
+    private LocalDate cookingDate;
 
-    private Date expirationDate;
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
 
 }

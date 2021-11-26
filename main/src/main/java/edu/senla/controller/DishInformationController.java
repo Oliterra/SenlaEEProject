@@ -18,16 +18,16 @@ public class DishInformationController implements DishInformationControllerInter
 
     @SneakyThrows
     @Override
-    public void createDishInformation(String newDishInformationJson) {
+    public void createDishInformation(int dishId, String newDishInformationJson) {
         DishInformationDTO newDishInformationDTO = jacksonObjectMapper.readValue(newDishInformationJson, DishInformationDTO.class);
-        dishInformationService.createDishInformation(newDishInformationDTO);
-        System.out.println("DishInformation" + readDishInformation(newDishInformationDTO.getId()) + " was successfully created");
+        dishInformationService.createDishInformation(dishId, newDishInformationDTO);
+        System.out.println("DishInformation was successfully added");
     }
 
     @SneakyThrows
     @Override
     public String readDishInformation(int id) {
-        DishInformationDTO dishInformationDTO = dishInformationService.read(id);
+        DishInformationDTO dishInformationDTO = dishInformationService.readDishInformation(id);
         return jacksonObjectMapper.writeValueAsString(dishInformationDTO);
     }
 
@@ -35,13 +35,13 @@ public class DishInformationController implements DishInformationControllerInter
     @Override
     public void updateDishInformation(int id, String updatedDishInformationJson) {
         DishInformationDTO updatedDishInformationDTO = jacksonObjectMapper.readValue(updatedDishInformationJson, DishInformationDTO.class);
-        dishInformationService.update(id, updatedDishInformationDTO);
+        dishInformationService.updateDishInformation(id, updatedDishInformationDTO);
         System.out.println("DishInformation was successfully updated");
     }
 
     @Override
     public void deleteDishInformation(int id) {
-        dishInformationService.delete(id);
+        dishInformationService.deleteDishInformation(id);
         System.out.println("Dish information was successfully deleted");
     }
 

@@ -4,25 +4,42 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Order {
+@Entity
+@Table(name = "orders")
+@NamedEntityGraph(
+        name = "order-entity-graph",
+        attributeNodes = {@NamedAttributeNode(value = "typesOfContainer")}
+)
+public class Order implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    private int clientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    private int courierId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "courier_id")
+    private Courier courier;
 
-    private Date date;
+    private LocalDate date;
 
-    private Date time;
-
+    @Column(name = "payment_type")
     private String paymentType;
 
     private String status;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderTypeOfContainer> typesOfContainer;
 
 }

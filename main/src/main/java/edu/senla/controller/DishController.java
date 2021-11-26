@@ -18,16 +18,17 @@ public class DishController implements DishControllerInterface {
 
     @SneakyThrows
     @Override
-    public void createDish(String newDishJson) {
+    public int createDish(String newDishJson) {
         DishDTO newDishDTO = jacksonObjectMapper.readValue(newDishJson, DishDTO.class);
-        dishService.createDish(newDishDTO);
-        System.out.println("Dish" + readDish(newDishDTO.getId()) + " was successfully created");
+        int newDishId = dishService.createDish(newDishDTO);
+        System.out.println("Dish" + readDish(getDishIdByName(newDishDTO.getName())) + " was successfully created");
+        return newDishId;
     }
 
     @SneakyThrows
     @Override
     public String readDish(int id) {
-        DishDTO dishDTO = dishService.read(id);
+        DishDTO dishDTO = dishService.readDish(id);
         return jacksonObjectMapper.writeValueAsString(dishDTO);
     }
 
@@ -35,14 +36,25 @@ public class DishController implements DishControllerInterface {
     @Override
     public void updateDish(int id, String updatedDishJson) {
         DishDTO updatedDishDTO = jacksonObjectMapper.readValue(updatedDishJson, DishDTO.class);
-        dishService.update(id, updatedDishDTO);
+        dishService.updateDish(id, updatedDishDTO);
         System.out.println("Dish was successfully updated");
     }
 
     @Override
     public void deleteDish(int id) {
-        dishService.delete(id);
+        dishService.deleteDish(id);
         System.out.println("Dish was successfully deleted");
+    }
+
+    @Override
+    public int getDishIdByName(String dishName) {
+        return dishService.getDishIdByName(dishName);
+    }
+
+    @Override
+    public String getByIdWithFullInformation(int dishId) {
+        System.out.println("Dish with its info: ");
+        return dishService.getByIdWithFullInformation(dishId).toString();
     }
 
 }
