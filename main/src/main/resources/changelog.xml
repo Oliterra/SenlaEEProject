@@ -110,11 +110,11 @@
      </changeSet>
 
      <changeSet id="17" author="Nadezhda Tarasova">
-         <dropNotNullConstraint columnName="courier_id" tableName="orders"/>
+         <dropNotNullConstraint columnName="courier_id" columnDataType="number" tableName="orders"/>
      </changeSet>
 
     <changeSet id="18" author="Nadezhda Tarasova">
-        <dropNotNullConstraint columnName="client_id" tableName="orders"/>
+        <dropNotNullConstraint columnName="client_id" columnDataType="number" tableName="orders"/>
     </changeSet>
 
     <changeSet id="19" author="Nadezhda Tarasova">

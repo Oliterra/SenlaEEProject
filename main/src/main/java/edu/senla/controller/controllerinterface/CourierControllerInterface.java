@@ -1,22 +1,16 @@
 package edu.senla.controller.controllerinterface;
 
-import edu.senla.dto.ClientDTO;
-import edu.senla.dto.CourierDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface CourierControllerInterface {
 
-    public void createCourier(String newCourierJson);
+    public ResponseEntity<Void> createCourier(@RequestBody String courierJson);
 
-    public String readCourier(int id);
+    public ResponseEntity<String> getCourier(@PathVariable("id") int id);
 
-    public void updateCourier(int id, String updatedCourierJson);
+    public ResponseEntity<Void> updateCourier(@PathVariable int id, @RequestBody String updatedCourierJson);
 
-    public void deleteCourier(int id);
-
-    public int getCourierIdByPhone(String courierPhone);
-
-    public String getByIdWithOrders(int courierId);
-
-    public String getByIdWithOrdersJPQL(int courierId);
-
+    public ResponseEntity<Void> deleteCourier(@PathVariable("id") int id);
 }

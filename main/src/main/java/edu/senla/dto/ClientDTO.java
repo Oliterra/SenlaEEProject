@@ -12,7 +12,8 @@ import java.util.List;
 @Data
 public class ClientDTO {
 
-    public ClientDTO(String firstName, String lastName) {
+    public ClientDTO(int id, String firstName, String lastName) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }

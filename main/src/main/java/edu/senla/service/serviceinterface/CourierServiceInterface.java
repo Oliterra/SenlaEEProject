@@ -1,23 +1,19 @@
 package edu.senla.service.serviceinterface;
 
-import edu.senla.dto.ClientDTO;
 import edu.senla.dto.CourierDTO;
-import edu.senla.entity.Courier;
 
 public interface CourierServiceInterface {
 
-    public void createCourier(CourierDTO newCourierDTO);
+    public CourierDTO createCourier(CourierDTO newCourierDTO);
 
     public CourierDTO readCourier(int id);
 
-    public void updateCourier(int id, CourierDTO updatedCourierDTO);
+    public CourierDTO updateCourier(int id, CourierDTO updatedCourierDTO);
 
     public void deleteCourier(int id);
 
-    public int getCourierIdByPhone(String courierPhone);
+    public CourierDTO getByIdWithOrders(int courierId);
 
-    public String getByIdWithOrders(int courierId);
-
-    public CourierDTO getByIdWithOrdersJPQL(int courierId);
+    public boolean isCourierExists(CourierDTO courier);
 
 }

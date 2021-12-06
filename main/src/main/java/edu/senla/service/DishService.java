@@ -1,10 +1,8 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.DishRepositoryInterface;
-import edu.senla.dto.ClientDTO;
 import edu.senla.dto.DishDTO;
 import edu.senla.entity.Dish;
-import edu.senla.entity.DishInformation;
 import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -55,8 +53,13 @@ public class DishService implements DishServiceInterface {
 
     @Override
     public int getDishIdByName(String dishName) {
-        return dishRepository.getIdByName(dishName);
+        return 0;
     }
+
+    /*@Override
+    public int getDishIdByName(String dishName) {
+        return dishRepository.getIdByName(dishName);
+    }*/
 
     @Override
     public DishDTO getByIdWithFullInformation(int dishId) {
