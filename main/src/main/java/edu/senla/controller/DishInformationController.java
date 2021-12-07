@@ -1,48 +1,98 @@
 package edu.senla.controller;
 
+import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.controllerinterface.DishInformationControllerInterface;
+import edu.senla.dto.DishDTO;
 import edu.senla.dto.DishInformationDTO;
 import edu.senla.service.serviceinterface.DishInformationServiceInterface;
-import lombok.RequiredArgsConstructor;
+import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Component;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Component
-@RequiredArgsConstructor
+@RestController
+@RequestMapping("/dishesInformation")
 public class DishInformationController implements DishInformationControllerInterface {
 
-    private final DishInformationServiceInterface dishInformationService;
+    @Autowired
+    private DishInformationServiceInterface dishInformationService;
 
-    private final ObjectMapper jacksonObjectMapper;
+    @Autowired
+    private DishServiceInterface dishService;
+
+    @Autowired
+    private ObjectMapper jacksonObjectMapper;
+
+    private final Logger LOG = (Logger) LoggerFactory.getLogger(DishInformationController.class);
 
     @SneakyThrows
-    @Override
-    public void createDishInformation(int dishId, String newDishInformationJson) {
-        DishInformationDTO newDishInformationDTO = jacksonObjectMapper.readValue(newDishInformationJson, DishInformationDTO.class);
-        dishInformationService.createDishInformation(dishId, newDishInformationDTO);
-        System.out.println("DishInformation was successfully added");
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Void> createDishInformation(@RequestBody String dishInformationJson) {
+        LOG.info("Creating new dish information: {}", dishInformationJson);
+        DishInformationDTO dishInformationDTO = jacksonObjectMapper.readValue(dishInformationJson, DishInformationDTO.class);
+        int dishId = dishInformationDTO.getDishId();
+
+        try {
+            DishDTO dishDTO = dishService.readDish(dishId);
+        } catch (IllegalArgumentException exception) {
+            LOG.info("Dish for which the information is being created with id {} not found", dishId);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        dishInformationService.createDishInformation(dishId, dishInformationDTO);
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @SneakyThrows
-    @Override
-    public String readDishInformation(int id) {
-        DishInformationDTO dishInformationDTO = dishInformationService.readDishInformation(id);
-        return jacksonObjectMapper.writeValueAsString(dishInformationDTO);
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getDishInformation(@PathVariable("id") int id) {
+        LOG.info("Getting dish information with id: {}", id);
+
+        DishInformationDTO dishInformationDTO;
+        try {
+            dishInformationDTO = dishInformationService.readDishInformation(id);
+        } catch (IllegalArgumentException exception) {
+            LOG.info("Dish information with id {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<String>(jacksonObjectMapper.writeValueAsString(dishInformationDTO), HttpStatus.OK);
     }
 
     @SneakyThrows
-    @Override
-    public void updateDishInformation(int id, String updatedDishInformationJson) {
-        DishInformationDTO updatedDishInformationDTO = jacksonObjectMapper.readValue(updatedDishInformationJson, DishInformationDTO.class);
-        dishInformationService.updateDishInformation(id, updatedDishInformationDTO);
-        System.out.println("DishInformation was successfully updated");
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> updateDishInformation(@PathVariable int id, @RequestBody String updatedDishInformationJson) {
+        LOG.info("Updating dish information: ");
+
+        try {
+            DishInformationDTO currentDishInformation = dishInformationService.readDishInformation(id);
+        } catch (IllegalArgumentException exception) {
+            LOG.info("Dish information with id {} not found", id);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+        DishInformationDTO updatedDishInformation = jacksonObjectMapper.readValue(updatedDishInformationJson, DishInformationDTO.class);
+
+        dishInformationService.updateDishInformation(id, updatedDishInformation);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @Override
-    public void deleteDishInformation(int id) {
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> deleteDishInformation(@PathVariable("id") int id) {
+        LOG.info("Deleting dish information with id: {}", id);
+
+        try {
+            DishInformationDTO dishInformationDTO = dishInformationService.readDishInformation(id);
+        } catch (IllegalArgumentException exception) {
+            LOG.info("Unable to delete. Dish information with id {} not found", id);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+
         dishInformationService.deleteDishInformation(id);
-        System.out.println("Dish information was successfully deleted");
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 }

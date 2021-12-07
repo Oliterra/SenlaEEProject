@@ -5,9 +5,7 @@ import edu.senla.dao.daointerface.DishRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
-import edu.senla.entity.Order;
 import edu.senla.service.serviceinterface.DishInformationServiceInterface;
-import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,12 +24,13 @@ public class DishInformationService implements DishInformationServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public void createDishInformation(int dishId, DishInformationDTO newDishInformationDTO) {
+    public DishInformationDTO createDishInformation(int dishId, DishInformationDTO newDishInformationDTO) {
         DishInformation newDishInformation = mapper.map(newDishInformationDTO, DishInformation.class);
         Dish dish = dishRepository.read(dishId);
         newDishInformation.setDish(dish);
         DishInformation createdInformation = dishInformationRepository.create(newDishInformation);
         dish.setDishInformation(createdInformation);
+        return mapper.map(createdInformation, DishInformationDTO.class);
     }
 
     @Override
@@ -41,11 +40,14 @@ public class DishInformationService implements DishInformationServiceInterface {
     }
 
     @Override
-    public void updateDishInformation(int id, DishInformationDTO updatedDishInformationDTO) {
+    public DishInformationDTO updateDishInformation(int id, DishInformationDTO updatedDishInformationDTO) {
         DishInformation updatedDishInformation = mapper.map(updatedDishInformationDTO, DishInformation.class);
         DishInformation dishInformationToUpdate = mapper.map(readDishInformation(id), DishInformation.class);
+
         DishInformation dishInformationWithNewParameters = updateDishInformationOptions(dishInformationToUpdate, updatedDishInformation);
-        dishInformationRepository.update(dishInformationWithNewParameters);
+        DishInformation dishInformation = dishInformationRepository.update(dishInformationWithNewParameters);
+
+        return mapper.map(dishInformation, DishInformationDTO.class);
     }
 
     @Override

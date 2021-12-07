@@ -21,19 +21,17 @@ public class DishRepository extends AbstractDAO<Dish, Integer> implements DishRe
     }
 
     @Override
-    public int getIdByName(String dishName) {
+    public Dish getDishByName(String dishName) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Dish> dishCriteriaQuery = criteriaBuilder.createQuery(Dish.class);
         final Root<Dish> dishRoot = dishCriteriaQuery.from(Dish.class);
         return entityManager.createQuery(
                 dishCriteriaQuery.select(dishRoot).where(criteriaBuilder.equal(dishRoot.get(Dish_.name), dishName)))
-                .getSingleResult().getId();
+                .getSingleResult();
     }
 
     @Override
     public Dish getByIdWithFullInformation(int dishId) {
-        /*return entityManager.createQuery("SELECT dish FROM Dish dish LEFT JOIN FETCH dish.dishInformation WHERE dish.id =:id", Dish.class)
-                .setParameter("id", dishId).getSingleResult();*/
         EntityGraph<?> graph = this.entityManager.getEntityGraph("dish-entity-graph");
         Map<String, Object> hints = new HashMap<String, Object>();
         hints.put("javax.persistence.loadgraph", graph);

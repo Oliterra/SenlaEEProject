@@ -1,7 +1,6 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.CourierRepositoryInterface;
-import edu.senla.dto.ClientDTO;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
@@ -9,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -21,8 +21,9 @@ public class CourierService implements CourierServiceInterface{
     private final ModelMapper mapper;
 
     @Override
-    public void createCourier(CourierDTO newCourierDTO) {
-        courierRepository.create(mapper.map(newCourierDTO, Courier.class));
+    public CourierDTO createCourier(CourierDTO newCourierDTO) {
+        Courier newCourier = courierRepository.create(mapper.map(newCourierDTO, Courier.class));
+        return mapper.map(newCourier, CourierDTO.class);
     }
 
     @Override
@@ -32,11 +33,14 @@ public class CourierService implements CourierServiceInterface{
     }
 
     @Override
-    public void updateCourier(int id, CourierDTO updatedCourierDTO) {
-        Courier updatedCourier = mapper.map(updatedCourierDTO, Courier.class);
+    public CourierDTO updateCourier(int id, CourierDTO courierDTO) {
+        Courier updatedCourier = mapper.map(courierDTO, Courier.class);
         Courier courierToUpdate = mapper.map(readCourier(id), Courier.class);
+
         Courier courierWithNewParameters = updateCouriersOptions(courierToUpdate, updatedCourier);
-        courierRepository.update(courierWithNewParameters);
+        Courier courier = courierRepository.update(courierWithNewParameters);
+
+        return mapper.map(courier, CourierDTO.class);
     }
 
     private Courier updateCouriersOptions(Courier courier, Courier updatedCourier)
@@ -53,21 +57,18 @@ public class CourierService implements CourierServiceInterface{
     }
 
     @Override
-    public int getCourierIdByPhone(String courierPhone) {
-        return courierRepository.getIdByPhone(courierPhone);
+    public CourierDTO getByIdWithOrders(int courierId) {
+        return mapper.map(courierRepository.getByIdWithOrders(courierId), CourierDTO.class);
     }
 
     @Override
-    public String getByIdWithOrders(int courierId) {
-        System.out.println(courierRepository.getByIdWithOrders(courierId));
-        final Courier courier = courierRepository.getByIdWithOrders(courierId);
-        System.out.println(courier);
-        return courier.toString();
-    }
-
-    @Override
-    public CourierDTO getByIdWithOrdersJPQL(int courierId) {
-        return mapper.map(courierRepository.getByIdWithOrdersJPQL(courierId), CourierDTO.class);
+    public boolean isCourierExists(CourierDTO courier) {
+        try {
+            return courierRepository.getCourierByPhone(courier.getPhone()) != null;
+        }
+        catch (NoResultException e){
+            return false;
+        }
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.List;
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

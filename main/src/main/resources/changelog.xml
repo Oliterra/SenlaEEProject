@@ -37,84 +37,90 @@
     <changeSet id="8" author="Nadezhda Tarasova">
         <dropTable tableName="dish_information" cascadeConstraints="true"/>
     </changeSet>-->
-     <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/01.create-clients-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
 
-     <changeSet id="2" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/02.create-couriers-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/01.create-clients-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="3" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/03.create-orders-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="2" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/02.create-couriers-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="4" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/04.create-types_of_container-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="3" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/03.create-orders-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="5" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/05.create-orders_types_of_container-table.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="4" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/04.create-types_of_container-table.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="6" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/06.create-dishes-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="5" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/05.create-orders_types_of_container-table.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="7" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/07.create-types_of_container_types_of_dish-table.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="6" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/06.create-dishes-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="8" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/08.create-dish_information-table.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="7" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/07.create-types_of_container_types_of_dish-table.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="9" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/09.create-index-for-orders-client_id.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="8" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/08.create-dish_information-table.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="10" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/10.create-index-for-orders-courier_id.sql" relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="9" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/09.create-index-for-orders-client_id.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="11" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/11.create-index-for-orders_types_of_container-order_id.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="10" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/10.create-index-for-orders-courier_id.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="12" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/12.create-index-for-orders_types_of_container-number_of_calories.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="11" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/11.create-index-for-orders_types_of_container-order_id.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="13" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8"
-                  path="db.changelog/13.create-index-for-types_of_container_types_of_dish-number_of_calories.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="12" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8"
+                 path="db.changelog/12.create-index-for-orders_types_of_container-number_of_calories.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="14" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/14.create-index-for-types_of_container_types_of_dish-dish_type.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="13" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8"
+                 path="db.changelog/13.create-index-for-types_of_container_types_of_dish-number_of_calories.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="15" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-         <sqlFile encoding="utf8" path="db.changelog/15.create-index-for-dish_information-id.sql"
-                  relativeToChangelogFile="true"/>
-     </changeSet>
+    <changeSet id="14" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/14.create-index-for-types_of_container_types_of_dish-dish_type.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="16" author="Nadezhda Tarasova">
-         <dropColumn tableName="orders" columnName="time"/>
-     </changeSet>
+    <changeSet id="15" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+        <sqlFile encoding="utf8" path="db.changelog/15.create-index-for-dish_information-id.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 
-     <changeSet id="17" author="Nadezhda Tarasova">
-         <dropNotNullConstraint columnName="courier_id" tableName="orders"/>
-     </changeSet>
+    <changeSet id="16" author="Nadezhda Tarasova">
+        <dropColumn tableName="orders" columnName="time"/>
+    </changeSet>
+
+    <changeSet id="17" author="Nadezhda Tarasova">
+        <dropNotNullConstraint columnName="courier_id" columnDataType="number" tableName="orders"/>
+    </changeSet>
 
     <changeSet id="18" author="Nadezhda Tarasova">
-        <dropNotNullConstraint columnName="client_id" tableName="orders"/>
+        <dropNotNullConstraint columnName="client_id" columnDataType="number" tableName="orders"/>
     </changeSet>
 
     <changeSet id="19" author="Nadezhda Tarasova">
@@ -128,9 +134,25 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="22" author="Nadezhda Tarasova">
+        <addColumn tableName="dishes">
+            <column name="dish_information_id"
+                    type="integer"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="21" author="Nadezhda Tarasova">
         <dropForeignKeyConstraint baseTableName="dish_information"
                                   constraintName="dishinformation_id_fkey"/>
+    </changeSet>
+
+    <changeSet id="23" author="Nadezhda Tarasova">
+        <addForeignKeyConstraint  baseColumnNames="dish_information_id"
+                                  baseTableName="dishes"
+                                  constraintName="dishinformation_id_fkey"
+                                  onDelete="CASCADE"
+                                  referencedColumnNames="id"
+                                  referencedTableName="dish_information"/>
     </changeSet>
 
 </databaseChangeLog>

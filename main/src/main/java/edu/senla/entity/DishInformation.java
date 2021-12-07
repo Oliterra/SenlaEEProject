@@ -16,10 +16,11 @@ import java.time.LocalDate;
 public class DishInformation implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy="dishInformation")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy="dishInformation")
+    @PrimaryKeyJoinColumn
     private Dish dish;
 
     private String description;

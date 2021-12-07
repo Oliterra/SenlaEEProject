@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="dishes")
+@Table(name = "dishes")
 @NamedEntityGraph(
         name = "dish-entity-graph",
         attributeNodes = {@NamedAttributeNode(value = "dishInformation")}
@@ -18,7 +18,7 @@ import java.util.List;
 public class Dish implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "dish_type")

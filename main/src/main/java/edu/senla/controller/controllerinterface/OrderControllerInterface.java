@@ -1,25 +1,17 @@
 package edu.senla.controller.controllerinterface;
 
-import edu.senla.dto.OrderDTO;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface OrderControllerInterface {
 
-    public int createOrder(int clientId, String newOrderJson);
+    public ResponseEntity<Void> createOrder(@RequestBody String orderJson);
 
-    public String readOrder(int id);
+    public ResponseEntity<String> getOrder(@PathVariable("id") int id);
 
-    public void updateOrder(int id, String updatedOrderJson);
+    public ResponseEntity<Void> updateOrder(@PathVariable int id, @RequestBody String updatedOrderJson);
 
-    public void deleteOrder(int id);
-
-    public void setOrderCourier(int orderId, int courierId);
-
-    public String getAllClientsOrders(int clientId);
-
-    public String getAllCouriersOrders(int courierId);
-
-    public String getByIdWithWithTypeOfContainer(int orderId);
+    public ResponseEntity<Void> deleteOrder(@PathVariable("id") int id);
 
 }

@@ -11,7 +11,15 @@ import java.time.LocalDate;
 @Data
 public class DishInformationDTO {
 
+    public DishInformationDTO(int id, String description, int caloricContent) {
+        this.id = id;
+        this.description = description;
+        this.caloricContent = caloricContent;
+    }
+
     private int id;
+
+    private int dishId;
 
     private String description;
 

@@ -1,21 +1,18 @@
 package edu.senla.controller.controllerinterface;
 
-import edu.senla.dto.ClientDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ClientControllerInterface {
 
-    public void createClient(String newClientJson);
+    public ResponseEntity<Void> createClient(@RequestBody String clientJson);
 
-    public String readClient(int id);
+    public ResponseEntity<String> getClient(@PathVariable("id") int id);
 
-    public void updateClient(int id, String updatedClientJson);
+    public ResponseEntity<Void> updateClient(@PathVariable int id, @RequestBody String updatedClientJson);
 
-    public void deleteClient(int id);
-
-    public int getClientIdByEmail(String clientEmail);
-
-    public String getByIdWithOrders(int clientId);
-
-    public String getByIdWithOrdersJPQL(int clientId);
+    public ResponseEntity<Void> deleteClient(@PathVariable("id") int id);
 
 }
+

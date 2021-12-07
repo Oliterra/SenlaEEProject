@@ -1,15 +1,14 @@
 package edu.senla.service;
 
 import edu.senla.dao.daointerface.DishRepositoryInterface;
-import edu.senla.dto.ClientDTO;
 import edu.senla.dto.DishDTO;
 import edu.senla.entity.Dish;
-import edu.senla.entity.DishInformation;
 import edu.senla.service.serviceinterface.DishServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -22,9 +21,9 @@ public class DishService implements DishServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public int createDish(DishDTO newDishDTO) {
+    public DishDTO createDish(DishDTO newDishDTO) {
         Dish newDish = dishRepository.create(mapper.map(newDishDTO, Dish.class));
-        return newDish.getId();
+        return mapper.map(newDish, DishDTO.class);
     }
 
     @Override
@@ -34,11 +33,14 @@ public class DishService implements DishServiceInterface {
     }
 
     @Override
-    public void updateDish(int id, DishDTO updatedDishDTO) {
+    public DishDTO updateDish(int id, DishDTO updatedDishDTO) {
         Dish updatedDish = mapper.map(updatedDishDTO, Dish.class);
         Dish dishToUpdate = mapper.map(readDish(id), Dish.class);
+
         Dish dishWithNewParameters = updateDishesOptions(dishToUpdate, updatedDish);
-        dishRepository.update(dishWithNewParameters);
+        Dish dish = dishRepository.update(dishWithNewParameters);
+
+        return mapper.map(dish, DishDTO.class);
     }
 
     private Dish updateDishesOptions(Dish dish, Dish updatedDish)
@@ -54,13 +56,18 @@ public class DishService implements DishServiceInterface {
     }
 
     @Override
-    public int getDishIdByName(String dishName) {
-        return dishRepository.getIdByName(dishName);
+    public DishDTO getByIdWithFullInformation(int dishId) {
+        return mapper.map(dishRepository.getByIdWithFullInformation(dishId), DishDTO.class);
     }
 
     @Override
-    public DishDTO getByIdWithFullInformation(int dishId) {
-        return mapper.map(dishRepository.getByIdWithFullInformation(dishId), DishDTO.class);
+    public boolean isDishExists(DishDTO dish) {
+        try {
+            return dishRepository.getDishByName(dish.getName()) != null;
+        }
+        catch (NoResultException e){
+            return false;
+        }
     }
 
 }

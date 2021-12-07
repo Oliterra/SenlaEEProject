@@ -3,12 +3,12 @@ package edu.senla.service;
 import edu.senla.dao.daointerface.ClientRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
-import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.ClientServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -21,8 +21,9 @@ public class ClientService implements ClientServiceInterface{
     private final ModelMapper mapper;
 
     @Override
-    public void createClient(ClientDTO newClientDTO) {
-        clientRepository.create(mapper.map(newClientDTO, Client.class));
+    public ClientDTO createClient(ClientDTO newClientDTO) {
+        Client newClient = clientRepository.create(mapper.map(newClientDTO, Client.class));
+        return mapper.map(newClient, ClientDTO.class);
     }
 
     @Override
@@ -32,11 +33,14 @@ public class ClientService implements ClientServiceInterface{
     }
 
     @Override
-    public void updateClient(int id, ClientDTO updatedClientDTO) {
-        Client updatedClient = mapper.map(updatedClientDTO, Client.class);
+    public ClientDTO updateClient(int id, ClientDTO clientDTO) {
+        Client updatedClient = mapper.map(clientDTO, Client.class);
         Client clientToUpdate = mapper.map(readClient(id), Client.class);
+
         Client clientWithNewParameters = updateClientsOptions(clientToUpdate, updatedClient);
-        clientRepository.update(clientWithNewParameters);
+        Client client = clientRepository.update(clientWithNewParameters);
+
+        return mapper.map(client, ClientDTO.class);
     }
 
     private Client updateClientsOptions(Client client, Client updatedClient)
@@ -55,18 +59,19 @@ public class ClientService implements ClientServiceInterface{
     }
 
     @Override
-    public int getClientIdByEmail(String clientEmail){
-        return clientRepository.getIdByEmail(clientEmail);
+    public ClientDTO getByIdWithOrders(int clientId) {
+        return mapper.map(clientRepository.getByIdWithOrders(clientId), ClientDTO.class);
     }
 
     @Override
-    public String getByIdWithOrders(int clientId) {
-        return clientRepository.getByIdWithOrders(clientId).toString();
-    }
-
-    @Override
-    public String getByIdWithOrdersJPQL(int clientId) {
-        return clientRepository.getByIdWithOrdersJPQL(clientId).toString();
+    public boolean isClientExists(ClientDTO client) {
+        try {
+            return clientRepository.getClientByEmail(client.getEmail()) != null;
+        }
+        catch (NoResultException e){
+            return false;
+        }
     }
 
 }
+

@@ -16,7 +16,8 @@ import java.util.List;
 public class TypeOfContainer implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "number_of_calories")
     private int numberOfCalories;
 
     private String name;

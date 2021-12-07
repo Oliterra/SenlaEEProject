@@ -1,19 +1,17 @@
 package edu.senla.controller.controllerinterface;
 
-import edu.senla.dto.DishDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface DishControllerInterface {
 
-    public int createDish(String newDishJson);
+    public ResponseEntity<Void> createDish(@RequestBody String dishJson);
 
-    public String readDish(int id);
+    public ResponseEntity<String> getDish(@PathVariable("id") int id);
 
-    public void updateDish(int id, String updatedDishJson);
+    public ResponseEntity<Void> updateDish(@PathVariable int id, @RequestBody String updatedDishJson);
 
-    public void deleteDish(int id);
-
-    public int getDishIdByName(String dishName);
-
-    public String getByIdWithFullInformation(int dishId);
+    public ResponseEntity<Void> deleteDish(@PathVariable("id") int id);
 
 }
