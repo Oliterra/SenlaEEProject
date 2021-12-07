@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 @Transactional
@@ -20,8 +21,9 @@ public class TypeOfContainerService implements TypeOfContainerServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public void createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
-        typeOfContainerRepository.create(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
+    public TypeOfContainerDTO createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
+        TypeOfContainer newTypeOfContainer = typeOfContainerRepository.create(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
+        return mapper.map(newTypeOfContainer, TypeOfContainerDTO.class);
     }
 
     @Override
@@ -31,11 +33,14 @@ public class TypeOfContainerService implements TypeOfContainerServiceInterface {
     }
 
     @Override
-    public void updateTypeOfContainer(int id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
+    public TypeOfContainerDTO updateTypeOfContainer(int id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
         TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTO, TypeOfContainer.class);
         TypeOfContainer typeOfContainerToUpdate = mapper.map(readTypeOfContainer(id), TypeOfContainer.class);
+
         TypeOfContainer typeOfContainerWithNewParameters = updateTypeOfContainerOptions(typeOfContainerToUpdate, updatedTypeOfContainer);
-        typeOfContainerRepository.update(typeOfContainerWithNewParameters);
+        TypeOfContainer typeOfContainer = typeOfContainerRepository.update(typeOfContainerWithNewParameters);
+
+        return mapper.map(typeOfContainer, TypeOfContainerDTO.class);
     }
 
     @Override
@@ -49,6 +54,16 @@ public class TypeOfContainerService implements TypeOfContainerServiceInterface {
         typeOfContainer.setPrice(updatedTypeOfContainer.getPrice());
         typeOfContainer.setName(updatedTypeOfContainer.getName());
         return typeOfContainer;
+    }
+
+    @Override
+    public boolean isTypeOfContainerExists(TypeOfContainerDTO typeOfContainer) {
+        try {
+            return typeOfContainerRepository.getTypeOfContainerByCaloricContent(typeOfContainer.getNumberOfCalories()) != null;
+        }
+        catch (NoResultException e){
+            return false;
+        }
     }
 
 }

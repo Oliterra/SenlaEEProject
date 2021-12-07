@@ -1,7 +1,7 @@
 package edu.senla;
 
-/*
-@ComponentScan
+/*@ComponentScan
+
 public class Application {
 
     @SneakyThrows
@@ -9,7 +9,6 @@ public class Application {
 
     }
 
-}
-*/
+}*/
 
 

@@ -60,9 +60,8 @@ public class ClientController implements ClientControllerInterface {
     public ResponseEntity<Void> updateClient(@PathVariable int id, @RequestBody String updatedClientJson) {
         LOG.info("Updating client: ");
 
-        ClientDTO currentClient;
         try {
-            currentClient = clientService.readClient(id);
+            ClientDTO currentClient = clientService.readClient(id);
         } catch (IllegalArgumentException exception) {
             LOG.info("Client with id {} not found", id);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -77,9 +76,8 @@ public class ClientController implements ClientControllerInterface {
     public ResponseEntity<Void> deleteClient(@PathVariable("id") int id) {
         LOG.info("Deleting client with id: {}", id);
 
-        ClientDTO clientDTO;
         try {
-            clientDTO = clientService.readClient(id);
+            ClientDTO clientDTO = clientService.readClient(id);
         } catch (IllegalArgumentException exception) {
             LOG.info("Unable to delete. Client with id {} not found", id);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);

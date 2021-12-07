@@ -1,9 +1,13 @@
 package edu.senla.service;
 
+import edu.senla.dao.daointerface.ClientRepositoryInterface;
+import edu.senla.dao.daointerface.CourierRepositoryInterface;
 import edu.senla.dao.daointerface.OrderRepositoryInterface;
 import edu.senla.dto.OrderDTO;
+import edu.senla.entity.Courier;
 import edu.senla.entity.Order;
 import edu.senla.service.serviceinterface.OrderServiceInterface;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,29 +17,23 @@ import java.util.List;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class OrderService implements OrderServiceInterface {
 
-    private OrderRepositoryInterface orderRepository;
+    private final OrderRepositoryInterface orderRepository;
 
-    //@Autowired
-    //private ClientRepository clientRepository;
+    private final ClientRepositoryInterface clientRepository;
 
-    /*@Autowired
-    private CourierRepository courierRepository;*/
+    private final CourierRepositoryInterface courierRepository;
 
-    private ModelMapper mapper;
-
-    /*@Override
-    public int createOrder(int clientId, OrderDTO newOrderDTO) {
-        Order newOrder = mapper.map(newOrderDTO, Order.class);
-        newOrder.setClient(clientRepository.read(clientId));
-        Order order = orderRepository.create(newOrder);
-        return order.getId();
-    }*/
+    private final ModelMapper mapper;
 
     @Override
-    public int createOrder(int clientId, OrderDTO newOrderDTO) {
-        return 0;
+    public OrderDTO createOrder(int clientId, OrderDTO newOrderDTO) {
+        Order newOrder = mapper.map(newOrderDTO, Order.class);
+        newOrder.setClient(clientRepository.read(clientId));
+        Order createdOrder = orderRepository.create(newOrder);
+        return mapper.map(createdOrder, OrderDTO.class);
     }
 
     @Override
@@ -45,11 +43,14 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public void updateOrder(int id, OrderDTO updatedOrderDTO) {
-        Order updatedOrder = mapper.map(updatedOrderDTO, Order.class);
+    public OrderDTO updateOrder(int id, OrderDTO orderDTO) {
+        Order updatedOrder = mapper.map(orderDTO, Order.class);
         Order orderToUpdate = mapper.map(readOrder(id), Order.class);
+
         Order orderWithNewParameters = updateOrdersOptions(orderToUpdate, updatedOrder);
-        orderRepository.update(orderWithNewParameters);
+        Order order = orderRepository.update(orderWithNewParameters);
+
+        return mapper.map(order, OrderDTO.class);
     }
 
     @Override
@@ -58,15 +59,12 @@ public class OrderService implements OrderServiceInterface {
     }
 
     @Override
-    public void setOrderCourier(OrderDTO order, int courierId) {
-
+    public void setCourierOnOrder(int orderId, int courierId) {
+        Courier courierForOrder = courierRepository.read(courierId);
+        Order orderToSetCourier = orderRepository.read(orderId);
+        orderToSetCourier.setCourier(courierForOrder);
+        orderRepository.update(orderToSetCourier);
     }
-
-    /*@Override
-    public void setOrderCourier(OrderDTO order, int courierId) {
-        Order orderEntity = mapper.map(order, Order.class);
-        orderEntity.setCourier(courierRepository.read(courierId));
-    }*/
 
     @Override
     public List<OrderDTO> getAllClientsOrders(int clientId) {
@@ -87,16 +85,6 @@ public class OrderService implements OrderServiceInterface {
         }
         return ordersDTO;
     }
-
-    @Override
-    public OrderDTO getByIdWithWithTypeOfContainer(int orderId) {
-        return null;
-    }
-
-    /*@Override
-    public OrderDTO getByIdWithWithTypeOfContainer(int orderId) {
-        return mapper.map(orderRepository.getByIdWithWithTypeOfContainer(orderId), OrderDTO.class);
-    }*/
 
     private Order updateOrdersOptions(Order order, Order updatedOrder) {
         order.setDate(updatedOrder.getDate());

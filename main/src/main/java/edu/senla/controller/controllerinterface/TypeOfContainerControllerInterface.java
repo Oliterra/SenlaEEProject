@@ -1,13 +1,17 @@
 package edu.senla.controller.controllerinterface;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
 public interface TypeOfContainerControllerInterface {
 
-    public void createTypeOfContainer(String newTypeOfContainerJson);
+    public ResponseEntity<Void> createTypeOfContainer(@RequestBody String clientJson);
 
-    public String readTypeOfContainer(int id);
+    public ResponseEntity<String> getTypeOfContainer(@PathVariable("id") int id);
 
-    public void updateTypeOfContainer(int id, String updatedTypeOfContainerJson);
+    public ResponseEntity<Void> updateTypeOfContainer(@PathVariable int id, @RequestBody String updatedClientJson);
 
-    public void deleteTypeOfContainer(int id);
+    public ResponseEntity<Void> deleteTypeOfContainer(@PathVariable("id") int id);
 
 }

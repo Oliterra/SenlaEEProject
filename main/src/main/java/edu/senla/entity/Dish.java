@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="dishes")
+@Table(name = "dishes")
 @NamedEntityGraph(
         name = "dish-entity-graph",
         attributeNodes = {@NamedAttributeNode(value = "dishInformation")}

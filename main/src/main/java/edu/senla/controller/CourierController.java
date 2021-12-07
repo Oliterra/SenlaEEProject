@@ -43,8 +43,8 @@ public class CourierController implements CourierControllerInterface {
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getCourier(@PathVariable("id") int id) {
         LOG.info("Getting courier with id: {}", id);
-        CourierDTO courierDTO;
 
+        CourierDTO courierDTO;
         try {
             courierDTO = courierService.readCourier(id);
         } catch (IllegalArgumentException exception) {
@@ -60,9 +60,8 @@ public class CourierController implements CourierControllerInterface {
     public ResponseEntity<Void> updateCourier(@PathVariable int id, @RequestBody String updatedCourierJson) {
         LOG.info("Updating courier: ");
 
-        CourierDTO currentCourier;
         try {
-            currentCourier = courierService.readCourier(id);
+            CourierDTO currentCourier = courierService.readCourier(id);
         } catch (IllegalArgumentException exception) {
             LOG.info("Courier with id {} not found", id);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -77,9 +76,8 @@ public class CourierController implements CourierControllerInterface {
     public ResponseEntity<Void> deleteCourier(@PathVariable("id") int id) {
         LOG.info("Deleting courier with id: {}", id);
 
-        CourierDTO courierDTO;
         try {
-            courierDTO = courierService.readCourier(id);
+            CourierDTO courierDTO = courierService.readCourier(id);
         } catch (IllegalArgumentException exception) {
             LOG.info("Unable to delete. Courier with id {} not found", id);
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
