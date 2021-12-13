@@ -27,22 +27,6 @@ public class ClientController implements ClientControllerInterface {
 
     @Secured({"ROLE_ADMIN"})
     @SneakyThrows
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Void> createClient(@RequestBody String clientJson) {
-        LOG.info("Creating new client: {}", clientJson);
-        ClientDTO clientDTO = jacksonObjectMapper.readValue(clientJson, ClientDTO.class);
-
-        if (clientService.isClientExists(clientDTO)) {
-            LOG.info("Client with email " + clientDTO.getEmail() + " already exists");
-            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        }
-
-        clientService.createClient(clientDTO);
-        return new ResponseEntity<Void>(HttpStatus.CREATED);
-    }
-
-    @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getClient(@PathVariable("id") int id) {
         LOG.info("Getting client with id: {}", id);
