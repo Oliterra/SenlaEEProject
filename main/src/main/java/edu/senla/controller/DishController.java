@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class DishController implements DishControllerInterface {
 
     private final Logger LOG = (Logger) LoggerFactory.getLogger(DishController.class);
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> createDish(String dishJson) {
@@ -41,6 +43,7 @@ public class DishController implements DishControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getDish(int id) {
@@ -57,6 +60,7 @@ public class DishController implements DishControllerInterface {
         return new ResponseEntity<String>(jacksonObjectMapper.writeValueAsString(dishDTO), HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateDish(int id, String updatedDishJson) {
@@ -74,6 +78,7 @@ public class DishController implements DishControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteDish(int id) {
         LOG.info("Deleting dish with id: {}", id);

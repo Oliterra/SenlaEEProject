@@ -170,8 +170,7 @@ class CourierControllerTest {
     @SneakyThrows
     @Test
     void deleteCourierOkStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/couriers")
+        mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
                 .andDo(print())

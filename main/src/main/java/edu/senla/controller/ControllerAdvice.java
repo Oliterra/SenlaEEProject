@@ -2,6 +2,7 @@ package edu.senla.controller;
 
 import edu.senla.dto.ErrorDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +24,14 @@ public class ControllerAdvice {
     public ErrorDTO conflictError(IllegalArgumentException exception, WebRequest request) {
 
         return new ErrorDTO(HttpStatus.CONFLICT, "Conflict between data");
+
+    }
+
+    @ExceptionHandler({AuthenticationException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO unauthorizedError(AuthenticationException exception) {
+
+        return new ErrorDTO(HttpStatus.UNAUTHORIZED, "Unauthorized");
 
     }
 

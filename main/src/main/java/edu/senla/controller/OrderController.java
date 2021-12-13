@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.controllerinterface.OrderControllerInterface;
 import edu.senla.dto.ClientDTO;
-import edu.senla.dto.CourierDTO;
 import edu.senla.dto.OrderDTO;
 import edu.senla.service.serviceinterface.ClientServiceInterface;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
@@ -14,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +34,7 @@ public class OrderController implements OrderControllerInterface {
 
     private final Logger LOG = (Logger) LoggerFactory.getLogger(OrderController.class);
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> createOrder(@RequestBody String orderJson) {
@@ -52,6 +53,7 @@ public class OrderController implements OrderControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getOrder(@PathVariable("id") int id) {
@@ -68,6 +70,7 @@ public class OrderController implements OrderControllerInterface {
         return new ResponseEntity<String>(jacksonObjectMapper.writeValueAsString(orderDTO), HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateOrder(@PathVariable int id, @RequestBody String updatedOrderJson) {
@@ -85,6 +88,7 @@ public class OrderController implements OrderControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") int id) {
         LOG.info("Deleting order with id: {}", id);

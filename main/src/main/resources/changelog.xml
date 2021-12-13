@@ -134,14 +134,14 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="22" author="Nadezhda Tarasova">
+    <changeSet id="21" author="Nadezhda Tarasova">
         <addColumn tableName="dishes">
             <column name="dish_information_id"
                     type="integer"/>
         </addColumn>
     </changeSet>
 
-    <changeSet id="21" author="Nadezhda Tarasova">
+    <changeSet id="22" author="Nadezhda Tarasova">
         <dropForeignKeyConstraint baseTableName="dish_information"
                                   constraintName="dishinformation_id_fkey"/>
     </changeSet>
@@ -153,6 +153,47 @@
                                   onDelete="CASCADE"
                                   referencedColumnNames="id"
                                   referencedTableName="dish_information"/>
+    </changeSet>
+
+    <changeSet id="24" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="username"
+                    type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="25" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="password"
+                    type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="26" author="Nadezhda Tarasova">
+        <createTable tableName="roles">
+            <column name="id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="27" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="role_id"
+                    type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="28" author="Nadezhda Tarasova">
+        <addForeignKeyConstraint  baseColumnNames="role_id"
+                                  baseTableName="clients"
+                                  constraintName="role_id_fkey"
+                                  onDelete="CASCADE"
+                                  referencedColumnNames="id"
+                                  referencedTableName="roles"/>
     </changeSet>
 
 </databaseChangeLog>

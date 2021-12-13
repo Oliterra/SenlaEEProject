@@ -1,8 +1,6 @@
 package edu.senla.entity;
 
 import lombok.*;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,14 +17,8 @@ import java.util.List;
 )
 public class Client implements Serializable {
 
-    public Client(int id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "first_name")
@@ -41,9 +33,20 @@ public class Client implements Serializable {
 
     private String address;
 
+    private String username;
+
+    private String password;
+
+    @Transient
+    private String passwordConfirm;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "client")
     private List<Order> orders;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
 }

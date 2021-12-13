@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class CourierController implements CourierControllerInterface {
 
     private final Logger LOG = (Logger) LoggerFactory.getLogger(CourierController.class);
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> createCourier(@RequestBody String courierJson) {
@@ -39,6 +41,7 @@ public class CourierController implements CourierControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getCourier(@PathVariable("id") int id) {
@@ -55,6 +58,7 @@ public class CourierController implements CourierControllerInterface {
         return new ResponseEntity<String>(jacksonObjectMapper.writeValueAsString(courierDTO), HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> updateCourier(@PathVariable int id, @RequestBody String updatedCourierJson) {
@@ -72,6 +76,7 @@ public class CourierController implements CourierControllerInterface {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteCourier(@PathVariable("id") int id) {
         LOG.info("Deleting courier with id: {}", id);

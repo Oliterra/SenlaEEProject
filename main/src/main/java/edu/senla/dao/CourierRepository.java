@@ -21,7 +21,7 @@ public class CourierRepository extends AbstractDAO<Courier, Integer> implements 
     }
 
     @Override
-    public Courier getCourierByPhone(String courierPhone) {
+    public Courier getCourierByPhone(String courierPhone) throws NoResultException{
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Courier> courierCriteriaQuery = criteriaBuilder.createQuery(Courier.class);
         final Root<Courier> courierRoot = courierCriteriaQuery.from(Courier.class);
