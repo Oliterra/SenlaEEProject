@@ -2,8 +2,8 @@ package edu.senla.dao;
 
 import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.DishInformation;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class,
         DishInformation.class, DishInformationRepository.class})
-class DishInformationRepositoryTest {
+public class DishInformationRepositoryTest {
 
     @Autowired
     private DishInformationRepository dishInformationRepository;
@@ -32,7 +32,7 @@ class DishInformationRepositoryTest {
     private String dishInformationDescription;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         dishInformationId = 1;
         dishInformationDescription = "300 g";
 
@@ -45,30 +45,30 @@ class DishInformationRepositoryTest {
     }
 
     @Test
-    void createDishInformation() {
+    public void createDishInformation() {
         assertEquals(dishInformationId, createdDishInformation.getId());
         assertEquals(dishInformationDescription, createdDishInformation.getDescription());
     }
 
     @Test
-    void createNullDishInformation() {
+    public void createNullDishInformation() {
         assertThrows(IllegalArgumentException.class, () -> dishInformationRepository.create(invalidDishInformation));
     }
 
     @Test
-    void readDishInformation() {
+    public void readDishInformation() {
         DishInformation readDishInformation = dishInformationRepository.read(createdDishInformation.getId());
         assertEquals(dishInformationId, readDishInformation.getId());
         assertEquals(dishInformationDescription, readDishInformation.getDescription());
     }
 
     @Test
-    void readNullDishInformation() {
+    public void readNullDishInformation() {
         assertThrows(NullPointerException.class, () -> dishInformationRepository.read(invalidDishInformation.getId()));
     }
 
     @Test
-    void updateDishInformation() {
+    public void updateDishInformation() {
         DishInformation dishInformationToUpdate = dishInformationRepository.read(createdDishInformation.getId());
 
         String newDescription = "Another description";
@@ -80,19 +80,19 @@ class DishInformationRepositoryTest {
     }
 
     @Test
-    void updateNullDishInformation() {
+    public void updateNullDishInformation() {
         assertThrows(IllegalArgumentException.class, () -> dishInformationRepository.update(invalidDishInformation));
     }
 
     @Test
-    void deleteDishInformation() {
+    public void deleteDishInformation() {
         dishInformationRepository.delete(createdDishInformation.getId());
         DishInformation deletedDishInformation = dishInformationRepository.read(createdDishInformation.getId());
         assertNull(deletedDishInformation);
     }
 
     @Test
-    void deleteNullDishInformation() {
+    public void deleteNullDishInformation() {
         assertThrows(NullPointerException.class, () -> dishInformationRepository.delete(invalidDishInformation.getId()));
     }
 

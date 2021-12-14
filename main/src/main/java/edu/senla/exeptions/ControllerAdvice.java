@@ -1,4 +1,4 @@
-package edu.senla.controller;
+package edu.senla.exeptions;
 
 import edu.senla.dto.ErrorDTO;
 import org.springframework.http.HttpStatus;

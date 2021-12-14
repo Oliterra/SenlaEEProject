@@ -2,7 +2,6 @@ package edu.senla.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -16,7 +15,6 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @PropertySource(value = "classpath:liquibase.properties", encoding="UTF-8")
-@ComponentScan
 public class DatabaseConfig {
 
     @Value("${driver}")

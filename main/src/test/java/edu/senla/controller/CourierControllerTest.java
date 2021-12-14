@@ -2,12 +2,14 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.config.DatabaseConfig;
+import edu.senla.config.SecurityConfig;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dto.CourierDTO;
+import edu.senla.service.ClientService;
 import edu.senla.service.CourierService;
 import lombok.SneakyThrows;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @Transactional
-@ContextConfiguration(classes = {DatabaseConfig.class, CourierController.class, CourierService.class, CourierRepository.class})
-class CourierControllerTest {
+@ContextConfiguration(classes = {DatabaseConfig.class, SecurityConfig.class, CourierController.class, CourierService.class, ClientService.class, CourierRepository.class})
+public class CourierControllerTest {
 
     @Autowired
     private CourierController courierController;
@@ -73,7 +75,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void createCourierCreatedStatus() {
+    public void createCourierCreatedStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
@@ -83,7 +85,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void createCourierConflictStatus() {
+    public void createCourierConflictStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
@@ -98,7 +100,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void createCourierBadRequestStatus() {
+    public void createCourierBadRequestStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(""))
@@ -108,7 +110,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void readCourierOkStatus() {
+    public void readCourierOkStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
@@ -122,7 +124,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void readCourierNotFoundStatus() {
+    public void readCourierNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 get("/couriers/{id}", 2))
                 .andDo(print())
@@ -131,7 +133,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void updateCourierOkStatus() {
+    public void updateCourierOkStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
@@ -147,7 +149,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void updateCourierNotFoundStatus() {
+    public void updateCourierNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/couriers/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +160,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void updateCourierBadRequestStatus() {
+    public void updateCourierBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/couriers/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,7 +171,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteCourierOkStatus() {
+    public void deleteCourierOkStatus() {
         mockMvc.perform(post("/couriers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courierJson))
@@ -183,7 +185,7 @@ class CourierControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteCourierNotFoundStatus() {
+    public void deleteCourierNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/couriers/{id}", 2))
                 .andDo(print())

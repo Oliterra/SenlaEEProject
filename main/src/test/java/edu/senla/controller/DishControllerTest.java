@@ -6,8 +6,8 @@ import edu.senla.dao.DishRepository;
 import edu.senla.dto.DishDTO;
 import edu.senla.service.DishService;
 import lombok.SneakyThrows;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class, DishController.class, DishService.class, DishRepository.class})
-class DishControllerTest {
+public class DishControllerTest {
 
     @Autowired
     private DishController dishController;
@@ -69,7 +69,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishCreatedStatus() {
+    public void createDishCreatedStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -80,7 +80,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishConflictStatus() {
+    public void createDishConflictStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishBadRequestStatus() {
+    public void createDishBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +108,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void readDishOkStatus() {
+    public void readDishOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +123,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void readDishNotFoundStatus() {
+    public void readDishNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 get("/dishes/{id}", 2))
                 .andDo(print())
@@ -132,7 +132,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishOkStatus() {
+    public void updateDishOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +149,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishNotFoundStatus() {
+    public void updateDishNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/dishes/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -160,7 +160,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishBadRequestStatus() {
+    public void updateDishBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/dishes/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +171,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteDishOkStatus() {
+    public void deleteDishOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -186,7 +186,7 @@ class DishControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteDishNotFoundStatus() {
+    public void deleteDishNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/dishes/{id}", 2))
                 .andDo(print())

@@ -9,8 +9,8 @@ import edu.senla.dto.DishInformationDTO;
 import edu.senla.service.DishInformationService;
 import edu.senla.service.DishService;
 import lombok.SneakyThrows;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {DatabaseConfig.class, DishInformationController.class, DishInformationService.class, DishInformationRepository.class,
         DishController.class, DishService.class, DishRepository.class
 })
-class DishInformationControllerTest {
+public class DishInformationControllerTest {
 
     @Autowired
     private DishInformationController dishInformationController;
@@ -87,7 +87,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishInformationCreatedStatus() {
+    public void createDishInformationCreatedStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +105,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishInformationNotFoundStatus() {
+    public void createDishInformationNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishesInformation")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void createDishInformationBadRequestStatus() {
+    public void createDishInformationBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 post("/dishesInformation")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +127,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void readDishInformationOkStatus() {
+    public void readDishInformationOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -150,7 +150,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void readDishInformationNotFoundStatus() {
+    public void readDishInformationNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 get("/dishesInformation/{id}", 2))
                 .andDo(print())
@@ -159,7 +159,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishInformationOkStatus() {
+    public void updateDishInformationOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -184,7 +184,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishInformationNotFoundStatus() {
+    public void updateDishInformationNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/dishesInformation/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -195,7 +195,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void updateDishInformationBadRequestStatus() {
+    public void updateDishInformationBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/dishesInformation/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +206,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteDishInformationOkStatus() {
+    public void deleteDishInformationOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/dishes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ class DishInformationControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteDishInformationNotFoundStatus() {
+    public void deleteDishInformationNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/dishesInformation/{id}", 2))
                 .andDo(print())

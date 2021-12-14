@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClientServiceTest {
+public class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
@@ -53,27 +53,13 @@ class ClientServiceTest {
     }
 
     @Test
-    void createClient() {
-        when(clientRepository.create(any(Client.class))).thenReturn(client);
-
-        ClientDTO clientParamsDTO = new ClientDTO(clientId, clientFirstName, clientLastName);
-        ClientDTO createdClientDTO = clientService.createClient(clientParamsDTO);
-
-        verify(clientRepository, times(1)).create(any());
-
-        Assert.assertEquals(clientId, createdClientDTO.getId());
-        Assert.assertEquals(clientFirstName, createdClientDTO.getFirstName());
-        Assert.assertEquals(clientLastName, createdClientDTO.getLastName());
-    }
-
-    @Test
-    void createNullClient() {
+    public void createNullClient() {
         ClientDTO invalidClientDTO = null;
         Assert.assertThrows(IllegalArgumentException.class, () -> clientService.createClient(invalidClientDTO));
     }
 
     @Test
-    void readClient() {
+    public void readClient() {
         when(clientRepository.read(any(Integer.class))).thenReturn(client);
 
         ClientDTO readClientDTO = clientService.readClient(clientId);
@@ -86,12 +72,12 @@ class ClientServiceTest {
     }
 
     @Test
-    void readNullClient() {
+    public void readNullClient() {
         Assert.assertThrows(IllegalArgumentException.class, () -> clientService.readClient(0));
     }
 
     @Test
-    void updateClient() {
+    public void updateClient() {
         String newFirstName = "Another first name";
         String newLastName = "Another last name";
 
@@ -114,7 +100,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void updateNullClient() {
+    public void updateNullClient() {
         String newFirstName = "Another first name";
         String newLastName = "Another last name";
         ClientDTO updatedClientParamsDTO = new ClientDTO(clientId, newFirstName, newLastName);
@@ -124,26 +110,26 @@ class ClientServiceTest {
     }
 
     @Test
-    void updateClientWithNullParams() {
+    public void updateClientWithNullParams() {
         ClientDTO invalidUpdatedClientParamsDTO = null;
 
         Assert.assertThrows(IllegalArgumentException.class, () -> clientService.updateClient(clientId, invalidUpdatedClientParamsDTO));
     }
 
     @Test
-    void deleteClient() {
+    public void deleteClient() {
         clientRepository.delete(clientId);
         verify(clientRepository, times(1)).delete(any());
     }
 
     @Test
-    void deleteNullClient() {
+    public void deleteNullClient() {
         ClientDTO invalidClientDTO = null;
         Assert.assertThrows(NullPointerException.class, () -> clientService.deleteClient(invalidClientDTO.getId()));
     }
 
     @Test
-    void getClientByIdWithOrders() {
+    public void getClientByIdWithOrders() {
         List<Order> ordersList = new ArrayList<>();
         Order order = new Order();
         order.setId(1);
@@ -164,12 +150,12 @@ class ClientServiceTest {
     }
 
     @Test
-    void getNullClientByIdWithOrders() {
+    public void getNullClientByIdWithOrders() {
         Assert.assertThrows(IllegalArgumentException.class, () -> clientService.getByIdWithOrders(client.getId()));
     }
 
     @Test
-    void getClientByIdWithNullOrders() {
+    public void getClientByIdWithNullOrders() {
         List<Order> ordersList = null;
         client.setOrders(ordersList);
 
@@ -186,7 +172,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void isExistentClientExists() {
+    public void isExistentClientExists() {
         String clientsEmail = "test@test.com";
         client.setEmail(clientsEmail);
         when(clientRepository.getClientByEmail(any(String.class))).thenReturn(client);
@@ -202,7 +188,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void isNonExistentClientExists() {
+    public void isNonExistentClientExists() {
         String clientsEmail = "test@test.com";
 
         when(clientRepository.getClientByEmail(any(String.class))).thenThrow(new NoResultException());
@@ -219,7 +205,7 @@ class ClientServiceTest {
     }
 
     @Test
-    void isNullClientExists() {
+    public void isNullClientExists() {
         ClientDTO invalidClientWithEmailDTO = null;
 
         Assert.assertThrows(NullPointerException.class, () -> clientService.isClientExists(invalidClientWithEmailDTO));

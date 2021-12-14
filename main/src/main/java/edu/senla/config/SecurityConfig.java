@@ -1,5 +1,7 @@
 package edu.senla.config;
 
+import edu.senla.exeptions.AccessHandler;
+import edu.senla.exeptions.AuthenticationHandler;
 import edu.senla.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtFilter jwtFilter;
 
     @Bean
+    public AuthenticationHandler authenticationHandler(){
+        return new AuthenticationHandler();
+    }
+
+    @Bean
+    public AccessHandler accessHandler(){
+        return new AccessHandler();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
@@ -32,7 +44,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationHandler())
+                .accessDeniedHandler(accessHandler());
     }
 
 }
