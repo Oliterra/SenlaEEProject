@@ -4,8 +4,8 @@ import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.Client;
 import edu.senla.entity.Courier;
 import edu.senla.entity.Order;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
         Order.class, OrderRepository.class,
         Client.class, ClientRepository.class,
         Courier.class, CourierRepository.class})
-class OrderRepositoryTest {
+public class OrderRepositoryTest {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -49,7 +49,7 @@ class OrderRepositoryTest {
     private LocalDate orderDate;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         orderId = 1;
         orderPaymentType = "TestPaymentType";
         orderStatus = "New";
@@ -84,19 +84,19 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void createOrder() {
+    public void createOrder() {
         assertEquals(orderId, createdOrder.getId());
         assertEquals(orderPaymentType, createdOrder.getPaymentType());
         assertEquals(orderStatus, createdOrder.getStatus());
     }
 
     @Test
-    void createNullOrder() {
+    public void createNullOrder() {
         assertThrows(IllegalArgumentException.class, () -> orderRepository.create(invalidOrder));
     }
 
     @Test
-    void readOrder() {
+    public void readOrder() {
         Order readOrder = orderRepository.read(createdOrder.getId());
         assertEquals(orderId, readOrder.getId());
         assertEquals(orderPaymentType, readOrder.getPaymentType());
@@ -104,12 +104,12 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void readNullOrder() {
+    public void readNullOrder() {
         assertThrows(NullPointerException.class, () -> orderRepository.read(invalidOrder.getId()));
     }
 
     @Test
-    void updateOrder() {
+    public void updateOrder() {
         Order orderToUpdate = orderRepository.read(createdOrder.getId());
 
         String newPaymentType = "AnotherPaymentType";
@@ -124,24 +124,24 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void updateNullOrder() {
+    public void updateNullOrder() {
         assertThrows(IllegalArgumentException.class, () -> orderRepository.update(invalidOrder));
     }
 
     @Test
-    void deleteOrder() {
+    public void deleteOrder() {
         orderRepository.delete(createdOrder.getId());
         Order deletedOrder = orderRepository.read(createdOrder.getId());
         assertNull(deletedOrder);
     }
 
     @Test
-    void deleteNullOrder() {
+    public void deleteNullOrder() {
         assertThrows(NullPointerException.class, () -> orderRepository.delete(invalidOrder.getId()));
     }
 
     @Test
-    void getAllClientsOrders() {
+    public void getAllClientsOrders() {
         List<Order> ordersForChecking = new ArrayList<>();
         ordersForChecking.add(createdOrder);
 
@@ -151,13 +151,13 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void getNullClientsOrders() {
+    public void getNullClientsOrders() {
         Client invalidClient = null;
         assertThrows(NullPointerException.class, () -> orderRepository.getAllClientsOrders(invalidClient.getId()));
     }
 
     @Test
-    void getAllCouriersOrders() {
+    public void getAllCouriersOrders() {
         List<Order> ordersForChecking = new ArrayList<>();
         ordersForChecking.add(createdOrder);
 
@@ -167,7 +167,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void getNullCouriersOrders() {
+    public void getNullCouriersOrders() {
         Courier invalidCourier = null;
         assertThrows(NullPointerException.class, () -> orderRepository.getAllCouriersOrders(invalidCourier.getId()));
     }

@@ -3,8 +3,8 @@ package edu.senla.dao;
 import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class,
         Dish.class, DishRepository.class})
-class DishRepositoryTest {
+public class DishRepositoryTest {
 
     @Autowired
     private DishRepository dishRepository;
@@ -37,7 +36,7 @@ class DishRepositoryTest {
     private DishInformation dishInformation;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         dishId = 1;
         dishType = "TestDishType";
         dishName = "TestDishName";
@@ -58,19 +57,19 @@ class DishRepositoryTest {
     }
 
     @Test
-    void createDish() {
+    public void createDish() {
         assertEquals(dishId, createdDish.getId());
         assertEquals(dishType, createdDish.getDishType());
         assertEquals(dishName, createdDish.getName());
     }
 
     @Test
-    void createNullDish() {
+    public void createNullDish() {
         assertThrows(IllegalArgumentException.class, () -> dishRepository.create(invalidDish));
     }
 
     @Test
-    void readDish() {
+    public void readDish() {
         Dish readDish = dishRepository.read(createdDish.getId());
         assertEquals(dishId, readDish.getId());
         assertEquals(dishType, readDish.getDishType());
@@ -78,12 +77,12 @@ class DishRepositoryTest {
     }
 
     @Test
-    void readNullDish() {
+    public void readNullDish() {
         assertThrows(NullPointerException.class, () -> dishRepository.read(invalidDish.getId()));
     }
 
     @Test
-    void updateDish() {
+    public void updateDish() {
         Dish dishToUpdate = dishRepository.read(createdDish.getId());
 
         String newType = "AnotherType";
@@ -98,41 +97,41 @@ class DishRepositoryTest {
     }
 
     @Test
-    void updateNullDish() {
+    public void updateNullDish() {
         assertThrows(IllegalArgumentException.class, () -> dishRepository.update(invalidDish));
     }
 
     @Test
-    void deleteDish() {
+    public void deleteDish() {
         dishRepository.delete(createdDish.getId());
         Dish deletedDish = dishRepository.read(createdDish.getId());
         assertNull(deletedDish);
     }
 
     @Test
-    void deleteNullDish() {
+    public void deleteNullDish() {
         assertThrows(NullPointerException.class, () -> dishRepository.delete(invalidDish.getId()));
     }
 
     @Test
-    void getDishByName() {
+    public void getDishByName() {
         Dish receivedDish = dishRepository.getDishByName(dishName);
         assertEquals(createdDish, receivedDish);
     }
 
     @Test
-    void getNullDishByName() {
+    public void getNullDishByName() {
         assertThrows(NullPointerException.class, () -> dishRepository.getDishByName(invalidDish.getName()));
     }
 
     @Test
-    void getByIdWithFullInformation() {
+    public void getByIdWithFullInformation() {
         Dish dishWithFullInfo = dishRepository.getByIdWithFullInformation(createdDish.getId());
         assertEquals(dishInformation, dishWithFullInfo.getDishInformation());
     }
 
     @Test
-    void getNullDishByIdWithFullInformation() {
+    public void getNullDishByIdWithFullInformation() {
         assertThrows(NullPointerException.class, () -> dishRepository.getByIdWithFullInformation(invalidDish.getId()));
     }
 

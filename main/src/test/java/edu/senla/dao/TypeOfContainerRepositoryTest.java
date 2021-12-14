@@ -2,8 +2,8 @@ package edu.senla.dao;
 
 import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.TypeOfContainer;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class,
         TypeOfContainer.class, TypeOfContainerRepository.class})
-class TypeOfContainerRepositoryTest {
+public class TypeOfContainerRepositoryTest {
 
     @Autowired
     private TypeOfContainerRepository typeOfContainerRepository;
@@ -33,7 +33,7 @@ class TypeOfContainerRepositoryTest {
     private int typeOfContainerPrice;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         typeOfContainerCaloricContent = 1000;
         typeOfContainerName = "TestName";
         typeOfContainerPrice = 20;
@@ -48,19 +48,19 @@ class TypeOfContainerRepositoryTest {
     }
 
     @Test
-    void createTypeOfContainer() {
+    public void createTypeOfContainer() {
         assertEquals(typeOfContainerCaloricContent, createdTypeOfContainer.getNumberOfCalories());
         assertEquals(typeOfContainerName, createdTypeOfContainer.getName());
         assertEquals(typeOfContainerPrice, createdTypeOfContainer.getPrice());
     }
 
     @Test
-    void createNullTypeOfContainer() {
+    public void createNullTypeOfContainer() {
         assertThrows(IllegalArgumentException.class, () -> typeOfContainerRepository.create(invalidTypeOfContainer));
     }
 
     @Test
-    void readTypeOfContainer() {
+    public void readTypeOfContainer() {
         TypeOfContainer readTypeOfContainer = typeOfContainerRepository.read(createdTypeOfContainer.getNumberOfCalories());
         assertEquals(typeOfContainerCaloricContent, readTypeOfContainer.getNumberOfCalories());
         assertEquals(typeOfContainerName, readTypeOfContainer.getName());
@@ -68,12 +68,12 @@ class TypeOfContainerRepositoryTest {
     }
 
     @Test
-    void readNullTypeOfContainer() {
+    public void readNullTypeOfContainer() {
         assertThrows(NullPointerException.class, () -> typeOfContainerRepository.read(invalidTypeOfContainer.getNumberOfCalories()));
     }
 
     @Test
-    void updateTypeOfContainer() {
+    public void updateTypeOfContainer() {
         TypeOfContainer typeOfContainerToUpdate = typeOfContainerRepository.read(createdTypeOfContainer.getNumberOfCalories());
 
         String newName = "Another name";
@@ -88,19 +88,19 @@ class TypeOfContainerRepositoryTest {
     }
 
     @Test
-    void updateNullTypeOfContainer() {
+    public void updateNullTypeOfContainer() {
         assertThrows(IllegalArgumentException.class, () -> typeOfContainerRepository.update(invalidTypeOfContainer));
     }
 
     @Test
-    void deleteTypeOfContainer() {
+    public void deleteTypeOfContainer() {
         typeOfContainerRepository.delete(createdTypeOfContainer.getNumberOfCalories());
         TypeOfContainer deletedTypeOfContainer = typeOfContainerRepository.read(createdTypeOfContainer.getNumberOfCalories());
         assertNull(deletedTypeOfContainer);
     }
 
     @Test
-    void deleteNullTypeOfContainer() {
+    public void deleteNullTypeOfContainer() {
         assertThrows(NullPointerException.class, () -> typeOfContainerRepository.delete(invalidTypeOfContainer.getNumberOfCalories()));
     }
 

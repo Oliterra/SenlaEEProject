@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class, TypeOfContainerController.class, TypeOfContainerService.class, TypeOfContainerRepository.class})
-class TypeOfContainerControllerTest {
+public class TypeOfContainerControllerTest {
 
     @Autowired
     private TypeOfContainerController typeOfContainerController;
@@ -70,7 +70,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void createTypeOfContainerCreatedStatus() {
+    public void createTypeOfContainerCreatedStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void createTypeOfContainerConflictStatus() {
+    public void createTypeOfContainerConflictStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +98,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void createTypeOfContainerBadRequestStatus() {
+    public void createTypeOfContainerBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void readTypeOfContainerOkStatus() {
+    public void readTypeOfContainerOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +124,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void readTypeOfContainerNotFoundStatus() {
+    public void readTypeOfContainerNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 get("/typesOfContainer/{id}", 2000))
                 .andDo(print())
@@ -133,7 +133,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void updateTypeOfContainerOkStatus() {
+    public void updateTypeOfContainerOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -150,7 +150,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void updateTypeOfContainerNotFoundStatus() {
+    public void updateTypeOfContainerNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/typesOfContainer/{id}", 2000)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -161,7 +161,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void updateTypeOfContainerBadRequestStatus() {
+    public void updateTypeOfContainerBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/typesOfContainer/{id}", 1000)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -172,7 +172,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteTypeOfContainerOkStatus() {
+    public void deleteTypeOfContainerOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -187,7 +187,7 @@ class TypeOfContainerControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteTypeOfContainerNotFoundStatus() {
+    public void deleteTypeOfContainerNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/typesOfContainer/{id}", 2000))
                 .andDo(print())

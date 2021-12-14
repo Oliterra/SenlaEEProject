@@ -18,7 +18,7 @@ import java.util.List;
 public class Dish implements Serializable{
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "dish_type")

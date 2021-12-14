@@ -5,6 +5,7 @@ import edu.senla.entity.TypeOfContainer;
 import edu.senla.entity.TypeOfContainer_;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -17,7 +18,7 @@ public class TypeOfContainerRepository extends AbstractDAO<TypeOfContainer, Inte
     }
 
     @Override
-    public TypeOfContainer getTypeOfContainerByCaloricContent(int typeOfContainerCaloricContent) {
+    public TypeOfContainer getTypeOfContainerByCaloricContent(int typeOfContainerCaloricContent) throws NoResultException {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<TypeOfContainer> typeOfContainerCriteriaQuery = criteriaBuilder.createQuery(TypeOfContainer.class);
         final Root<TypeOfContainer> typeOfContainerRoot = typeOfContainerCriteriaQuery.from(TypeOfContainer.class);

@@ -6,38 +6,6 @@
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
         logicalFilePath="homework-2">
 
-    <!--<changeSet id="1" author="Nadezhda Tarasova">
-        <dropTable tableName="clients" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="2" author="Nadezhda Tarasova">
-        <dropTable tableName="couriers" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="3" author="Nadezhda Tarasova">
-        <dropTable tableName="dishes" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="4" author="Nadezhda Tarasova">
-        <dropTable tableName="types_of_container" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="5" author="Nadezhda Tarasova">
-        <dropTable tableName="orders_types_of_container" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="6" author="Nadezhda Tarasova">
-        <dropTable tableName="orders" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="7" author="Nadezhda Tarasova">
-        <dropTable tableName="types_of_container_types_of_dish" cascadeConstraints="true"/>
-    </changeSet>
-
-    <changeSet id="8" author="Nadezhda Tarasova">
-        <dropTable tableName="dish_information" cascadeConstraints="true"/>
-    </changeSet>-->
-
     <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
         <sqlFile encoding="utf8" path="db.changelog/01.create-clients-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
@@ -134,14 +102,14 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="22" author="Nadezhda Tarasova">
+    <changeSet id="21" author="Nadezhda Tarasova">
         <addColumn tableName="dishes">
             <column name="dish_information_id"
                     type="integer"/>
         </addColumn>
     </changeSet>
 
-    <changeSet id="21" author="Nadezhda Tarasova">
+    <changeSet id="22" author="Nadezhda Tarasova">
         <dropForeignKeyConstraint baseTableName="dish_information"
                                   constraintName="dishinformation_id_fkey"/>
     </changeSet>
@@ -153,6 +121,68 @@
                                   onDelete="CASCADE"
                                   referencedColumnNames="id"
                                   referencedTableName="dish_information"/>
+    </changeSet>
+
+    <changeSet id="24" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="username"
+                    type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="25" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="password"
+                    type="varchar(100)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="26" author="Nadezhda Tarasova">
+        <createTable tableName="roles">
+            <column name="id" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="27" author="Nadezhda Tarasova">
+        <addColumn tableName="clients">
+            <column name="role_id"
+                    type="integer"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="28" author="Nadezhda Tarasova">
+        <addForeignKeyConstraint  baseColumnNames="role_id"
+                                  baseTableName="clients"
+                                  constraintName="role_id_fkey"
+                                  onDelete="CASCADE"
+                                  referencedColumnNames="id"
+                                  referencedTableName="roles"/>
+    </changeSet>
+
+    <changeSet id="29" author="Nadezhda Tarasova">
+        <insert tableName="roles">
+            <column  name="id"  value="1"/>
+            <column  name="name"  value="ROLE_USER"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="30" author="Nadezhda Tarasova">
+        <insert tableName="roles">
+            <column  name="id"  value="2"/>
+            <column  name="name"  value="ROLE_USER-GUEST"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="31" author="Nadezhda Tarasova">
+        <insert tableName="roles">
+            <column  name="id"  value="3"/>
+            <column  name="name"  value="ROLE_ADMIN"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

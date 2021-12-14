@@ -11,8 +11,8 @@ import edu.senla.service.ClientService;
 import edu.senla.service.CourierService;
 import edu.senla.service.OrderService;
 import lombok.SneakyThrows;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         ClientController.class, ClientService.class, ClientRepository.class,
         CourierController.class, CourierService.class, CourierRepository.class
 })
-class OrderControllerTest {
+public class OrderControllerTest {
 
     @Autowired
     private OrderController orderController;
@@ -92,7 +92,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void createOrderCreatedStatus() {
+    public void createOrderCreatedStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void createOrderNotFoundStatus() {
+    public void createOrderNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void createOrderBadRequestStatus() {
+    public void createOrderBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +132,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void readOrderOkStatus() {
+    public void readOrderOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void readOrderNotFoundStatus() {
+    public void readOrderNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 get("/orders/{id}", 2))
                 .andDo(print())
@@ -164,7 +164,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void updateOrderOkStatus() {
+    public void updateOrderOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +189,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void updateOrderNotFoundStatus() {
+    public void updateOrderNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/orders/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +200,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void updateOrderBadRequestStatus() {
+    public void updateOrderBadRequestStatus() {
         mockMvc.perform(MockMvcRequestBuilders.
                 put("/orders/{id}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -211,7 +211,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteOrderOkStatus() {
+    public void deleteOrderOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/clients")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -234,7 +234,7 @@ class OrderControllerTest {
 
     @SneakyThrows
     @Test
-    void deleteClientNotFoundStatus() {
+    public void deleteClientNotFoundStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/orders/{id}", 2))
                 .andDo(print())

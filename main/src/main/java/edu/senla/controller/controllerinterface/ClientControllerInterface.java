@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ClientControllerInterface {
 
-    public ResponseEntity<Void> createClient(@RequestBody String clientJson);
-
     public ResponseEntity<String> getClient(@PathVariable("id") int id);
 
     public ResponseEntity<Void> updateClient(@PathVariable int id, @RequestBody String updatedClientJson);

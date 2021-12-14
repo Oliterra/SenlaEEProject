@@ -3,8 +3,8 @@ package edu.senla.dao;
 import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.Courier;
 import edu.senla.entity.Order;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ContextConfiguration(classes = {DatabaseConfig.class,
         Courier.class, CourierRepository.class})
-class CourierRepositoryTest {
+public class CourierRepositoryTest {
 
     @Autowired
     private CourierRepository courierRepository;
@@ -38,7 +38,7 @@ class CourierRepositoryTest {
     private List<Order> couriersOrders;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         courierId = 1;
         courierFirstName = "TestFirstName";
         courierLastName = "TestLastName";
@@ -61,19 +61,19 @@ class CourierRepositoryTest {
     }
 
     @Test
-    void createCourier() {
+    public void createCourier() {
         assertEquals(courierId, createdCourier.getId());
         assertEquals(courierFirstName, createdCourier.getFirstName());
         assertEquals(courierLastName, createdCourier.getLastName());
     }
 
     @Test
-    void createNullCourier() {
+    public void createNullCourier() {
         assertThrows(IllegalArgumentException.class, () -> courierRepository.create(invalidCourier));
     }
 
     @Test
-    void readCourier() {
+    public void readCourier() {
         Courier readCourier = courierRepository.read(createdCourier.getId());
         assertEquals(courierId, readCourier.getId());
         assertEquals(courierFirstName, readCourier.getFirstName());
@@ -81,12 +81,12 @@ class CourierRepositoryTest {
     }
 
     @Test
-    void readNullCourier() {
+    public void readNullCourier() {
         assertThrows(NullPointerException.class, () -> courierRepository.read(invalidCourier.getId()));
     }
 
     @Test
-    void updateCourier() {
+    public void updateCourier() {
         Courier courierToUpdate = courierRepository.read(createdCourier.getId());
 
         String newFirstName = "Another first name";
@@ -101,41 +101,41 @@ class CourierRepositoryTest {
     }
 
     @Test
-    void updateNullCourier() {
+    public void updateNullCourier() {
         assertThrows(IllegalArgumentException.class, () -> courierRepository.update(invalidCourier));
     }
 
     @Test
-    void deleteCourier() {
+    public void deleteCourier() {
         courierRepository.delete(createdCourier.getId());
         Courier deletedCourier = courierRepository.read(createdCourier.getId());
         assertNull(deletedCourier);
     }
 
     @Test
-    void deleteNullCourier() {
+    public void deleteNullCourier() {
         assertThrows(NullPointerException.class, () -> courierRepository.delete(invalidCourier.getId()));
     }
 
     @Test
-    void getCourierByPhone() {
+    public void getCourierByPhone() {
         Courier receivedCourier = courierRepository.getCourierByPhone(courierPhone);
         assertEquals(createdCourier, receivedCourier);
     }
 
     @Test
-    void getNullCourierByPhone() {
+    public void getNullCourierByPhone() {
         assertThrows(NullPointerException.class, () -> courierRepository.getCourierByPhone(invalidCourier.getPhone()));
     }
 
     @Test
-    void getByIdWithOrders() {
+    public void getByIdWithOrders() {
         Courier courierWithOrders = courierRepository.getByIdWithOrders(createdCourier.getId());
         assertEquals(couriersOrders, courierWithOrders.getOrders());
     }
 
     @Test
-    void getNullCourierByIdWithOrders() {
+    public void getNullCourierByIdWithOrders() {
         assertThrows(NullPointerException.class, () -> courierRepository.getByIdWithOrders(invalidCourier.getId()));
     }
 

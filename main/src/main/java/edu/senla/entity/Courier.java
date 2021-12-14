@@ -18,7 +18,7 @@ import java.util.List;
 public class Courier implements Serializable {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column(name = "first_name")

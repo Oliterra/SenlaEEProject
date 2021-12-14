@@ -30,6 +30,10 @@ public class ClientDTO {
 
     private String address;
 
+    private String username;
+
+    private String password;
+
     private List<Order> orders;
 
 }
