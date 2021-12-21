@@ -1,23 +1,34 @@
 package edu.senla.service;
 
+import edu.senla.dao.daointerface.ClientRepositoryInterface;
 import edu.senla.entity.Client;
 import edu.senla.security.ClientUserDetails;
-import edu.senla.service.serviceinterface.ClientServiceInterface;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
+
 @Service
+@RequiredArgsConstructor
 public class ClientUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private ClientServiceInterface clientService;
+    private final ClientRepositoryInterface clientRepository;
 
     @Override
     public ClientUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Client client = clientService.getByUsername(username);
+        Client client = getClientByUsername(username);
         return ClientUserDetails.fromClientEntityToClientUserDetails(client);
+    }
+
+    public Client getClientByUsername(String username) {
+        try {
+            return clientRepository.getClientByUsername(username);
+        }
+        catch (NoResultException e){
+            return null;
+        }
     }
 
 }

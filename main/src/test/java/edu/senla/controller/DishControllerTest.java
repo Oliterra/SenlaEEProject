@@ -1,10 +1,7 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.config.DatabaseConfig;
-import edu.senla.dao.DishRepository;
 import edu.senla.dto.DishDTO;
-import edu.senla.service.DishService;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -30,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @Transactional
-@ContextConfiguration(classes = {DatabaseConfig.class, DishController.class, DishService.class, DishRepository.class})
+//@ContextConfiguration(classes = {DatabaseConfig.class, DishController.class, DishService.class, DishRepository.class})
 public class DishControllerTest {
 
     @Autowired

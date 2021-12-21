@@ -1,13 +1,11 @@
 package edu.senla.dao;
 
-import edu.senla.config.DatabaseConfig;
 import edu.senla.entity.DishInformation;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -18,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@ContextConfiguration(classes = {DatabaseConfig.class,
-        DishInformation.class, DishInformationRepository.class})
+/*@ContextConfiguration(classes = {DatabaseConfig.class,
+        DishInformation.class, DishInformationRepository.class})*/
 public class DishInformationRepositoryTest {
 
     @Autowired

@@ -1,10 +1,7 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.config.DatabaseConfig;
-import edu.senla.config.SecurityConfig;
 import edu.senla.dao.ClientRepository;
-import edu.senla.dao.RoleRepository;
 import edu.senla.dto.ClientDTO;
 import edu.senla.service.ClientService;
 import lombok.SneakyThrows;
@@ -13,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,16 +22,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@Transactional
-@ContextConfiguration(classes = {DatabaseConfig.class, SecurityConfig.class, ClientController.class, ClientService.class, ClientRepository.class, RoleRepository.class})
+@SpringBootTest
+@ContextConfiguration(classes = {ClientController.class, ClientService.class, ClientRepository.class})
 public class ClientControllerTest {
 
     @Autowired
@@ -43,9 +39,11 @@ public class ClientControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
     private ObjectMapper mapper;
 
-    private MockMvc mockMvc;
 
     private ClientDTO client;
     private ClientDTO updatedClient;
@@ -83,7 +81,6 @@ public class ClientControllerTest {
 
     @SneakyThrows
     @Test
-    //@WithMockUser(username = "user1", password = "pwd", roles = "ROLE_ADMIN")
     public void readClientOkStatus() {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/clients")

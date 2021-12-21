@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/containerFoodDB
+    username: nadezhda
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate.ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgresPlusDialect
+    show-sql: true
+  liquibase:
+    change-log: classpath:changelog-master.xml
+    enabled: true
+
+jwt:
+  sessionTime: 3600
+  secret: secret
+
+
+

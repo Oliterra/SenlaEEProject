@@ -1,12 +1,7 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.config.DatabaseConfig;
-import edu.senla.config.SecurityConfig;
-import edu.senla.dao.CourierRepository;
 import edu.senla.dto.CourierDTO;
-import edu.senla.service.ClientService;
-import edu.senla.service.CourierService;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @Transactional
-@ContextConfiguration(classes = {DatabaseConfig.class, SecurityConfig.class, CourierController.class, CourierService.class, ClientService.class, CourierRepository.class})
+//@ContextConfiguration(classes = {DatabaseConfig.class, SecurityConfig.class, CourierController.class, CourierService.class, ClientService.class, CourierRepository.class})
 public class CourierControllerTest {
 
     @Autowired
