@@ -83,16 +83,8 @@ public class ClientService implements ClientServiceInterface {
         }
     }
 
-    public Client getByUsername(String username) {
-        try {
-            return clientRepository.getClientByUsername(username);
-        }
-        catch (NoResultException e){
-            return null;
-        }
-    }
-
-    public ClientDTO getByUsernameAndPassword(String username, String password) {
+    @Override
+    public ClientDTO getClientByUsernameAndPassword(String username, String password) {
         try {
             Client client = clientRepository.getClientByUsername(username);
             if (passwordEncoder.matches(password, client.getPassword())) {

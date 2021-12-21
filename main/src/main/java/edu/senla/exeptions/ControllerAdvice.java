@@ -1,14 +1,6 @@
 package edu.senla.exeptions;
 
-import edu.senla.dto.ErrorDTO;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-
-@RestControllerAdvice
+/*@RestControllerAdvice
 public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
@@ -35,5 +27,5 @@ public class ControllerAdvice {
 
     }
 
-}
+}*/
 

@@ -34,7 +34,7 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.POST)
     public AuthResponseDTO authenticate(@RequestBody String authRequestJson) {
         AuthRequestDTO authRequestDTO = jacksonObjectMapper.readValue(authRequestJson, AuthRequestDTO.class);
-        ClientDTO clientDTO = clientService.getByUsernameAndPassword(authRequestDTO.getUsername(), authRequestDTO.getPassword());
+        ClientDTO clientDTO = clientService.getClientByUsernameAndPassword(authRequestDTO.getUsername(), authRequestDTO.getPassword());
 
         String token = jwtProvider.generateToken(clientDTO.getUsername());
 

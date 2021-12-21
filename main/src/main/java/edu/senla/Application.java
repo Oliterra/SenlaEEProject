@@ -1,21 +1,13 @@
 package edu.senla;
 
-import lombok.SneakyThrows;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.transaction.Transactional;
-
-@Transactional
-@ComponentScan
+@SpringBootApplication
 public class Application {
 
-    @SneakyThrows
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
-
-
-
+        SpringApplication.run(Application.class, args);
     }
 
 }

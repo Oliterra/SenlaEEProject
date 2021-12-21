@@ -1,8 +1,8 @@
 package edu.senla.security;
 
-import ch.qos.logback.classic.Logger;
-import io.jsonwebtoken.*;
-import org.slf4j.LoggerFactory;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +17,10 @@ public class JwtProvider {
     private String jwtSecret;
 
     @Value("${jwt.sessionTime}")
-    private long sessionTime;
-
-    private final Logger LOG = (Logger) LoggerFactory.getLogger(JwtProvider.class);
+    private int jwtSessionTime;
 
     public String generateToken(String username) {
-        Date expDate = Date.from(LocalDateTime.now().plusMinutes(sessionTime).atZone(ZoneId.systemDefault()).toInstant());
+        Date expDate = Date.from(LocalDateTime.now().plusMinutes(jwtSessionTime).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(expDate)
