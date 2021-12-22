@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @Transactional
-/*@ContextConfiguration(classes = {DatabaseConfig.class, DishInformationController.class, DishInformationService.class, DishInformationRepository.class,
+/*@ContextConfiguration(classes = {DatabaseConfig.class, DishInformationController.class, DishInformationService.class, DishInformationRepositoryInterface.class,
         DishController.class, DishService.class, DishRepository.class
 })*/
 public class DishInformationControllerTest {

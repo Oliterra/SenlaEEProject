@@ -1,7 +1,7 @@
 package edu.senla.service;
 
-import edu.senla.dao.ClientRepository;
-import edu.senla.dao.OrderRepository;
+import edu.senla.dao.ClientRepositoryInterface;
+import edu.senla.dao.OrderRepositoryInterface;
 import edu.senla.dto.OrderDTO;
 import edu.senla.entity.Client;
 import edu.senla.entity.Order;
@@ -22,10 +22,10 @@ import static org.mockito.Mockito.*;
 class OrderServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderRepositoryInterface orderRepository;
 
     @Mock
-    private ClientRepository clientRepository;
+    private ClientRepositoryInterface clientRepository;
 
     @Spy
     private ModelMapper mapper;
@@ -58,13 +58,13 @@ class OrderServiceTest {
 
     @Test
     void createOrder() {
-        when(orderRepository.create(any(Order.class))).thenReturn(order);
-        when(clientRepository.read(any(Integer.class))).thenReturn(client);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(clientRepository.getById(any(Long.class))).thenReturn(client);
 
         OrderDTO orderParamsDTO = new OrderDTO(orderId, orderStatus, orderPaymentType);
         OrderDTO createdOrderDTO = orderService.createOrder(1, orderParamsDTO);
 
-        verify(orderRepository, times(1)).create(any());
+        verify(orderRepository, times(1)).save(any());
 
         Assert.assertEquals(orderId, createdOrderDTO.getId());
         Assert.assertEquals(orderStatus, createdOrderDTO.getStatus());
@@ -79,11 +79,11 @@ class OrderServiceTest {
 
     @Test
     void readOrder() {
-        when(orderRepository.read(any(Integer.class))).thenReturn(order);
+        when(orderRepository.getById(any(Long.class))).thenReturn(order);
 
         OrderDTO readOrderDTO = orderService.readOrder(orderId);
 
-        verify(orderRepository, times(1)).read(any());
+        verify(orderRepository, times(1)).getById(any());
 
         Assert.assertEquals(orderId, readOrderDTO.getId());
         Assert.assertEquals(orderStatus, readOrderDTO.getStatus());
@@ -105,13 +105,13 @@ class OrderServiceTest {
         updatedOrder.setPaymentType(newPaymentTYpe);
         updatedOrder.setStatus(newStatus);
 
-        when(orderRepository.update(any(Order.class))).thenReturn(updatedOrder);
-        when(orderRepository.read(any(Integer.class))).thenReturn(order);
+        when(orderRepository.save(any(Order.class))).thenReturn(updatedOrder);
+        when(orderRepository.getById(any(Long.class))).thenReturn(order);
 
         OrderDTO updatedOrderParamsDTO = new OrderDTO(orderId, newPaymentTYpe, newStatus);
         OrderDTO updatedOrderDTO = orderService.updateOrder(orderId, updatedOrderParamsDTO);
 
-        verify(orderRepository, times(1)).update(any());
+        verify(orderRepository, times(1)).save(any());
 
         Assert.assertEquals(orderId, updatedOrderDTO.getId());
         Assert.assertEquals(newStatus, updatedOrderDTO.getStatus());

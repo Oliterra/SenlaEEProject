@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.ClientRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
 import edu.senla.entity.Order;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class ClientServiceTest {
 
     @Mock
-    private ClientRepository clientRepository;
+    private ClientRepositoryInterface clientRepository;
 
     @Spy
     private ModelMapper mapper;
@@ -60,11 +60,11 @@ public class ClientServiceTest {
 
     @Test
     public void readClient() {
-        when(clientRepository.read(any(Integer.class))).thenReturn(client);
+        when(clientRepository.getById(any(Long.class))).thenReturn(client);
 
         ClientDTO readClientDTO = clientService.readClient(clientId);
 
-        verify(clientRepository, times(1)).read(any());
+        verify(clientRepository, times(1)).getById(any());
 
         Assert.assertEquals(clientId, readClientDTO.getId());
         Assert.assertEquals(clientFirstName, readClientDTO.getFirstName());
@@ -86,13 +86,13 @@ public class ClientServiceTest {
         updatedClient.setFirstName(newFirstName);
         updatedClient.setLastName(newLastName);
 
-        when(clientRepository.update(any(Client.class))).thenReturn(updatedClient);
-        when(clientRepository.read(any(Integer.class))).thenReturn(client);
+        when(clientRepository.save(any(Client.class))).thenReturn(updatedClient);
+        when(clientRepository.getById(any(Long.class))).thenReturn(client);
 
         ClientDTO updatedClientParamsDTO = new ClientDTO(clientId, newFirstName, newLastName);
         ClientDTO updatedClientDTO = clientService.updateClient(clientId, updatedClientParamsDTO);
 
-        verify(clientRepository, times(1)).update(any());
+        verify(clientRepository, times(1)).save(any());
 
         Assert.assertEquals(clientId, updatedClientDTO.getId());
         Assert.assertEquals(newFirstName, updatedClientDTO.getFirstName());
@@ -118,7 +118,7 @@ public class ClientServiceTest {
 
     @Test
     public void deleteClient() {
-        clientRepository.delete(clientId);
+        clientService.deleteClient(clientId);
         verify(clientRepository, times(1)).delete(any());
     }
 
@@ -137,11 +137,11 @@ public class ClientServiceTest {
         ordersList.add(order);
 
         client.setOrders(ordersList);
-        when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
+        //when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
 
         ClientDTO clientWithOrdersDTO = clientService.getByIdWithOrders(clientId);
 
-        verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
+        //verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
 
         Assert.assertEquals(clientId, clientWithOrdersDTO.getId());
         Assert.assertEquals(clientFirstName, clientWithOrdersDTO.getFirstName());
@@ -159,11 +159,11 @@ public class ClientServiceTest {
         List<Order> ordersList = null;
         client.setOrders(ordersList);
 
-        when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
+        //when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
 
         ClientDTO clientWithOrdersDTO = clientService.getByIdWithOrders(clientId);
 
-        verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
+        //verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
 
         Assert.assertEquals(clientId, clientWithOrdersDTO.getId());
         Assert.assertEquals(clientFirstName, clientWithOrdersDTO.getFirstName());

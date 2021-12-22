@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.CourierRepositoryInterface;
+import edu.senla.dao.CourierRepositoryInterface;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 import edu.senla.service.serviceinterface.CourierServiceInterface;
@@ -22,23 +22,22 @@ public class CourierService implements CourierServiceInterface{
 
     @Override
     public CourierDTO createCourier(CourierDTO newCourierDTO) {
-        Courier newCourier = courierRepository.create(mapper.map(newCourierDTO, Courier.class));
+        Courier newCourier = courierRepository.save(mapper.map(newCourierDTO, Courier.class));
         return mapper.map(newCourier, CourierDTO.class);
     }
 
     @Override
-    public CourierDTO readCourier(int id) {
-        Courier requestedCourier = courierRepository.read(id);
-        return mapper.map(requestedCourier, CourierDTO.class);
+    public CourierDTO readCourier(long id) {
+        return mapper.map(courierRepository.getById(id), CourierDTO.class);
     }
 
     @Override
-    public CourierDTO updateCourier(int id, CourierDTO courierDTO) {
+    public CourierDTO updateCourier(long id, CourierDTO courierDTO) {
         Courier updatedCourier = mapper.map(courierDTO, Courier.class);
-        Courier courierToUpdate = mapper.map(readCourier(id), Courier.class);
+        Courier courierToUpdate = courierRepository.getById(id);
 
         Courier courierWithNewParameters = updateCouriersOptions(courierToUpdate, updatedCourier);
-        Courier courier = courierRepository.update(courierWithNewParameters);
+        Courier courier = courierRepository.save(courierWithNewParameters);
 
         return mapper.map(courier, CourierDTO.class);
     }
@@ -52,13 +51,14 @@ public class CourierService implements CourierServiceInterface{
     }
 
     @Override
-    public void deleteCourier(int id) {
-        courierRepository.delete(id);
+    public void deleteCourier(long id) {
+        courierRepository.deleteById(id);
     }
 
     @Override
-    public CourierDTO getByIdWithOrders(int courierId) {
-        return mapper.map(courierRepository.getByIdWithOrders(courierId), CourierDTO.class);
+    public CourierDTO getByIdWithOrders(long courierId) {
+        //return mapper.map(courierRepository.getByIdWithOrders(courierId), CourierDTO.class);
+        return null;
     }
 
     @Override

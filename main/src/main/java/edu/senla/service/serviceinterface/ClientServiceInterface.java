@@ -6,13 +6,13 @@ public interface ClientServiceInterface {
 
     public ClientDTO createClient(ClientDTO newClientDTO);
 
-    public ClientDTO readClient(int id);
+    public ClientDTO readClient(long id);
 
-    public ClientDTO updateClient(int id, ClientDTO updatedClientDTO);
+    public ClientDTO updateClient(long id, ClientDTO updatedClientDTO);
 
-    public void deleteClient(int id);
+    public void deleteClient(long id);
 
-    public ClientDTO getByIdWithOrders(int clientId);
+    public ClientDTO getByIdWithOrders(long clientId);
 
     public boolean isClientExists(ClientDTO client);
 

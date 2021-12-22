@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.TypeOfContainerRepositoryInterface;
+import edu.senla.dao.TypeOfContainerRepositoryInterface;
 import edu.senla.dto.TypeOfContainerDTO;
 import edu.senla.entity.TypeOfContainer;
 import edu.senla.service.serviceinterface.TypeOfContainerServiceInterface;
@@ -22,30 +22,30 @@ public class TypeOfContainerService implements TypeOfContainerServiceInterface {
 
     @Override
     public TypeOfContainerDTO createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
-        TypeOfContainer newTypeOfContainer = typeOfContainerRepository.create(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
+        TypeOfContainer newTypeOfContainer = typeOfContainerRepository.save(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
         return mapper.map(newTypeOfContainer, TypeOfContainerDTO.class);
     }
 
     @Override
-    public TypeOfContainerDTO readTypeOfContainer(int id) {
-        TypeOfContainer requestedTypeOfContainer = typeOfContainerRepository.read(id);
+    public TypeOfContainerDTO readTypeOfContainer(long id) {
+        TypeOfContainer requestedTypeOfContainer = typeOfContainerRepository.getById(id);
         return mapper.map(requestedTypeOfContainer, TypeOfContainerDTO.class);
     }
 
     @Override
-    public TypeOfContainerDTO updateTypeOfContainer(int id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
+    public TypeOfContainerDTO updateTypeOfContainer(long id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
         TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTO, TypeOfContainer.class);
-        TypeOfContainer typeOfContainerToUpdate = mapper.map(readTypeOfContainer(id), TypeOfContainer.class);
+        TypeOfContainer typeOfContainerToUpdate = typeOfContainerRepository.getById(id);
 
         TypeOfContainer typeOfContainerWithNewParameters = updateTypeOfContainerOptions(typeOfContainerToUpdate, updatedTypeOfContainer);
-        TypeOfContainer typeOfContainer = typeOfContainerRepository.update(typeOfContainerWithNewParameters);
+        TypeOfContainer typeOfContainer = typeOfContainerRepository.save(typeOfContainerWithNewParameters);
 
         return mapper.map(typeOfContainer, TypeOfContainerDTO.class);
     }
 
     @Override
-    public void deleteTypeOfContainer(int id) {
-        typeOfContainerRepository.delete(id);
+    public void deleteTypeOfContainer(long id) {
+        typeOfContainerRepository.deleteById(id);
     }
 
     private TypeOfContainer updateTypeOfContainerOptions(TypeOfContainer typeOfContainer, TypeOfContainer updatedTypeOfContainer)
