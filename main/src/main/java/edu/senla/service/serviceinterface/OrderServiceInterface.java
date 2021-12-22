@@ -6,18 +6,18 @@ import java.util.List;
 
 public interface OrderServiceInterface {
 
-    public OrderDTO createOrder(int clientId, OrderDTO newOrderDTO);
+    public OrderDTO createOrder(long clientId, OrderDTO newOrderDTO);
 
-    public OrderDTO readOrder(int id);
+    public OrderDTO readOrder(long id);
 
-    public OrderDTO updateOrder(int id, OrderDTO updatedOrderDTO);
+    public OrderDTO updateOrder(long id, OrderDTO updatedOrderDTO);
 
-    public void deleteOrder(int id);
+    public void deleteOrder(long id);
 
-    public void setCourierOnOrder(int orderId, int courierId);
+    public void setCourierOnOrder(long orderId, long courierId);
 
-    public List<OrderDTO> getAllClientsOrders(int clientId);
+    public List<OrderDTO> getAllClientsOrders(long clientId);
 
-    public List<OrderDTO> getAllCouriersOrders(int courierId);
+    public List<OrderDTO> getAllCouriersOrders(long courierId);
 
 }

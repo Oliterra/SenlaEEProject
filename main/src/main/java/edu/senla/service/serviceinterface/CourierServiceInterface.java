@@ -6,13 +6,13 @@ public interface CourierServiceInterface {
 
     public CourierDTO createCourier(CourierDTO newCourierDTO);
 
-    public CourierDTO readCourier(int id);
+    public CourierDTO readCourier(long id);
 
-    public CourierDTO updateCourier(int id, CourierDTO updatedCourierDTO);
+    public CourierDTO updateCourier(long id, CourierDTO updatedCourierDTO);
 
-    public void deleteCourier(int id);
+    public void deleteCourier(long id);
 
-    public CourierDTO getByIdWithOrders(int courierId);
+    public CourierDTO getByIdWithOrders(long courierId);
 
     public boolean isCourierExists(CourierDTO courier);
 

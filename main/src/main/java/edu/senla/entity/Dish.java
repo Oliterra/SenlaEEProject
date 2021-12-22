@@ -19,7 +19,7 @@ public class Dish implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private long id;
 
     @Column(name = "dish_type")
     private String dishType;

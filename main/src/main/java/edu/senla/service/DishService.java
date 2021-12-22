@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.DishRepositoryInterface;
+import edu.senla.dao.DishRepositoryInterface;
 import edu.senla.dto.DishDTO;
 import edu.senla.entity.Dish;
 import edu.senla.service.serviceinterface.DishServiceInterface;
@@ -22,23 +22,22 @@ public class DishService implements DishServiceInterface {
 
     @Override
     public DishDTO createDish(DishDTO newDishDTO) {
-        Dish newDish = dishRepository.create(mapper.map(newDishDTO, Dish.class));
+        Dish newDish = dishRepository.save(mapper.map(newDishDTO, Dish.class));
         return mapper.map(newDish, DishDTO.class);
     }
 
     @Override
-    public DishDTO readDish(int id) {
-        Dish requestedDish = dishRepository.read(id);
-        return mapper.map(requestedDish, DishDTO.class);
+    public DishDTO readDish(long id) {
+        return mapper.map(dishRepository.getById(id), DishDTO.class);
     }
 
     @Override
-    public DishDTO updateDish(int id, DishDTO updatedDishDTO) {
+    public DishDTO updateDish(long id, DishDTO updatedDishDTO) {
         Dish updatedDish = mapper.map(updatedDishDTO, Dish.class);
-        Dish dishToUpdate = mapper.map(readDish(id), Dish.class);
+        Dish dishToUpdate = dishRepository.getById(id);
 
         Dish dishWithNewParameters = updateDishesOptions(dishToUpdate, updatedDish);
-        Dish dish = dishRepository.update(dishWithNewParameters);
+        Dish dish = dishRepository.save(dishWithNewParameters);
 
         return mapper.map(dish, DishDTO.class);
     }
@@ -51,13 +50,14 @@ public class DishService implements DishServiceInterface {
     }
 
     @Override
-    public void deleteDish(int id) {
-        dishRepository.delete(id);
+    public void deleteDish(long id) {
+        dishRepository.deleteById(id);
     }
 
     @Override
-    public DishDTO getByIdWithFullInformation(int dishId) {
-        return mapper.map(dishRepository.getByIdWithFullInformation(dishId), DishDTO.class);
+    public DishDTO getByIdWithFullInformation(long dishId) {
+        //return mapper.map(dishRepository.getByIdWithFullInformation(dishId), DishDTO.class);
+        return null;
     }
 
     @Override

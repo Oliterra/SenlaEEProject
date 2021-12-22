@@ -1,7 +1,7 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.ClientRepositoryInterface;
-import edu.senla.dao.daointerface.RoleRepositoryInterface;
+import edu.senla.dao.ClientRepositoryInterface;
+import edu.senla.dao.RoleRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.entity.Client;
 import edu.senla.entity.Role;
@@ -29,7 +29,7 @@ public class ClientService implements ClientServiceInterface {
 
     @Override
     public ClientDTO createClient(ClientDTO newClientDTO) {
-        Client newClient = clientRepository.create(mapper.map(newClientDTO, Client.class));
+        Client newClient = clientRepository.save(mapper.map(newClientDTO, Client.class));
         Role clientRole = roleRepository.getRoleByName("ROLE_USER");
         newClient.setRole(clientRole);
         newClient.setPassword(passwordEncoder.encode(newClient.getPassword()));
@@ -37,18 +37,17 @@ public class ClientService implements ClientServiceInterface {
     }
 
     @Override
-    public ClientDTO readClient(int id) {
-        Client requestedСlient = clientRepository.read(id);
-        return mapper.map(requestedСlient, ClientDTO.class);
+    public ClientDTO readClient(long id) {
+        return mapper.map(clientRepository.getById(id), ClientDTO.class);
     }
 
     @Override
-    public ClientDTO updateClient(int id, ClientDTO clientDTO) {
+    public ClientDTO updateClient(long id, ClientDTO clientDTO) {
         Client updatedClient = mapper.map(clientDTO, Client.class);
-        Client clientToUpdate = mapper.map(readClient(id), Client.class);
+        Client clientToUpdate = clientRepository.getById(id);
 
         Client clientWithNewParameters = updateClientsOptions(clientToUpdate, updatedClient);
-        Client client = clientRepository.update(clientWithNewParameters);
+        Client client = clientRepository.save(clientWithNewParameters);
 
         return mapper.map(client, ClientDTO.class);
     }
@@ -64,13 +63,14 @@ public class ClientService implements ClientServiceInterface {
     }
 
     @Override
-    public void deleteClient(int id) {
-        clientRepository.delete(id);
+    public void deleteClient(long id) {
+        clientRepository.deleteById(id);
     }
 
     @Override
-    public ClientDTO getByIdWithOrders(int clientId) {
-        return mapper.map(clientRepository.getByIdWithOrders(clientId), ClientDTO.class);
+    public ClientDTO getByIdWithOrders(long clientId) {
+        //return mapper.map(clientRepository.getByIdWithOrders(clientId), ClientDTO.class);
+        return null;
     }
 
     @Override

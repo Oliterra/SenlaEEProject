@@ -19,7 +19,7 @@ public class Courier implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private long id;
 
     @Column(name = "first_name")
     private String firstName;

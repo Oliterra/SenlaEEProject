@@ -1,7 +1,7 @@
 package edu.senla.service;
 
-import edu.senla.dao.DishInformationRepository;
-import edu.senla.dao.DishRepository;
+import edu.senla.dao.DishInformationRepositoryInterface;
+import edu.senla.dao.DishRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 class DishInformationServiceTest {
 
     @Mock
-    private DishInformationRepository dishInformationRepository;
+    private DishInformationRepositoryInterface dishInformationRepositoryInterface;
 
     @Mock
-    private DishRepository dishRepository;
+    private DishRepositoryInterface dishRepository;
 
     @Spy
     private ModelMapper mapper;
@@ -59,13 +59,13 @@ class DishInformationServiceTest {
 
     @Test
     void createDishInformation() {
-        when(dishInformationRepository.create(any(DishInformation.class))).thenReturn(dishInformation);
-        when(dishRepository.read(any(Integer.class))).thenReturn(dish);
+        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(dishInformation);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
 
         DishInformationDTO dishInformationParamsDTO = new DishInformationDTO(dishInformationId, dishInformationDescription, dishInformationCaloricContent);
         DishInformationDTO createdDishInformationDTO = dishInformationService.createDishInformation(1, dishInformationParamsDTO);
 
-        verify(dishInformationRepository, times(1)).create(any());
+        verify(dishInformationRepositoryInterface, times(1)).save(any());
 
         Assert.assertEquals(dishInformationId, createdDishInformationDTO.getId());
         Assert.assertEquals(dishInformationCaloricContent, createdDishInformationDTO.getCaloricContent());
@@ -80,8 +80,8 @@ class DishInformationServiceTest {
 
     @Test
     void createDishInformationForNullDish() {
-        when(dishInformationRepository.create(any(DishInformation.class))).thenReturn(dishInformation);
-        when(dishRepository.read(any(Integer.class))).thenReturn(null);
+        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(dishInformation);
+        when(dishRepository.getById(any(Long.class))).thenReturn(null);
 
         DishInformationDTO dishInformationParamsDTO = new DishInformationDTO(dishInformationId, dishInformationDescription, dishInformationCaloricContent);
         Assert.assertThrows(NullPointerException.class, () -> dishInformationService.createDishInformation(1, dishInformationParamsDTO));
@@ -89,11 +89,11 @@ class DishInformationServiceTest {
 
     @Test
     void readDishInformation() {
-        when(dishInformationRepository.read(any(Integer.class))).thenReturn(dishInformation);
+        when(dishInformationRepositoryInterface.getById(any(Long.class))).thenReturn(dishInformation);
 
         DishInformationDTO readDishInformationDTO = dishInformationService.readDishInformation(dishInformationId);
 
-        verify(dishInformationRepository, times(1)).read(any());
+        verify(dishInformationRepositoryInterface, times(1)).getById(any());
 
         Assert.assertEquals(dishInformationId, readDishInformationDTO.getId());
         Assert.assertEquals(dishInformationCaloricContent, readDishInformationDTO.getCaloricContent());
@@ -115,13 +115,13 @@ class DishInformationServiceTest {
         updatedDishInformation.setCaloricContent(newCaloricContent);
         updatedDishInformation.setDescription(newDescription);
 
-        when(dishInformationRepository.update(any(DishInformation.class))).thenReturn(updatedDishInformation);
-        when(dishInformationRepository.read(any(Integer.class))).thenReturn(dishInformation);
+        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(updatedDishInformation);
+        when(dishInformationRepositoryInterface.getById(any(Long.class))).thenReturn(dishInformation);
 
         DishInformationDTO updatedDishInformationParamsDTO = new DishInformationDTO(dishInformationId, newDescription, newCaloricContent);
         DishInformationDTO updatedDishInformationDTO = dishInformationService.updateDishInformation(dishInformationId, updatedDishInformationParamsDTO);
 
-        verify(dishInformationRepository, times(1)).update(any());
+        verify(dishInformationRepositoryInterface, times(1)).save(any());
 
         Assert.assertEquals(dishInformationId, updatedDishInformationDTO.getId());
         Assert.assertEquals(newCaloricContent, updatedDishInformationDTO.getCaloricContent());
@@ -148,7 +148,7 @@ class DishInformationServiceTest {
     @Test
     void deleteDishInformation() {
         dishInformationService.deleteDishInformation(dishInformationId);
-        verify(dishInformationRepository, times(1)).delete(any());
+        verify(dishInformationRepositoryInterface, times(1)).delete(any());
     }
 
     @Test

@@ -6,13 +6,13 @@ public interface DishServiceInterface {
 
     public DishDTO createDish(DishDTO newDishDTO);
 
-    public DishDTO readDish(int id);
+    public DishDTO readDish(long id);
 
-    public DishDTO updateDish(int id, DishDTO updatedDishDTO);
+    public DishDTO updateDish(long id, DishDTO updatedDishDTO);
 
-    public void deleteDish(int id);
+    public void deleteDish(long id);
 
-    public DishDTO getByIdWithFullInformation(int dishId);
+    public DishDTO getByIdWithFullInformation(long dishId);
 
     public boolean isDishExists(DishDTO dish);
 

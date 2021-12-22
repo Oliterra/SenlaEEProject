@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.TypeOfContainerRepository;
+import edu.senla.dao.TypeOfContainerRepositoryInterface;
 import edu.senla.dto.TypeOfContainerDTO;
 import edu.senla.entity.TypeOfContainer;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class TypeOfContainerServiceTest {
 
     @Mock
-    private TypeOfContainerRepository typeOfContainerRepository;
+    private TypeOfContainerRepositoryInterface typeOfContainerRepository;
 
     @Spy
     private ModelMapper mapper;
@@ -51,12 +51,12 @@ class TypeOfContainerServiceTest {
 
     @Test
     void createTypeOfContainer() {
-        when(typeOfContainerRepository.create(any(TypeOfContainer.class))).thenReturn(typeOfContainer);
+        when(typeOfContainerRepository.save(any(TypeOfContainer.class))).thenReturn(typeOfContainer);
 
         TypeOfContainerDTO typeOfContainerParamsDTO = new TypeOfContainerDTO(typeOfContainerNumberOfCalories, typeOfContainerName, typeOfContainerPrice);
         TypeOfContainerDTO createdTypeOfContainerDTO = typeOfContainerService.createTypeOfContainer(typeOfContainerParamsDTO);
 
-        verify(typeOfContainerRepository, times(1)).create(any());
+        verify(typeOfContainerRepository, times(1)).save(any());
 
         Assert.assertEquals(typeOfContainerNumberOfCalories, createdTypeOfContainerDTO.getNumberOfCalories());
         Assert.assertEquals(typeOfContainerName, createdTypeOfContainerDTO.getName());
@@ -71,11 +71,11 @@ class TypeOfContainerServiceTest {
 
     @Test
     void readTypeOfContainer() {
-        when(typeOfContainerRepository.read(any(Integer.class))).thenReturn(typeOfContainer);
+        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(typeOfContainer);
 
         TypeOfContainerDTO readTypeOfContainerDTO = typeOfContainerService.readTypeOfContainer(typeOfContainerNumberOfCalories);
 
-        verify(typeOfContainerRepository, times(1)).read(any());
+        verify(typeOfContainerRepository, times(1)).getById(any());
 
         Assert.assertEquals(typeOfContainerNumberOfCalories, readTypeOfContainerDTO.getNumberOfCalories());
         Assert.assertEquals(typeOfContainerName, readTypeOfContainerDTO.getName());
@@ -97,13 +97,13 @@ class TypeOfContainerServiceTest {
         updatedTypeOfContainer.setName(newName);
         updatedTypeOfContainer.setPrice(newPrice);
 
-        when(typeOfContainerRepository.update(any(TypeOfContainer.class))).thenReturn(updatedTypeOfContainer);
-        when(typeOfContainerRepository.read(any(Integer.class))).thenReturn(updatedTypeOfContainer);
+        when(typeOfContainerRepository.save(any(TypeOfContainer.class))).thenReturn(updatedTypeOfContainer);
+        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(updatedTypeOfContainer);
 
         TypeOfContainerDTO updatedTypeOfContainerParamsDTO = new TypeOfContainerDTO(typeOfContainerNumberOfCalories, newName, newPrice);
         TypeOfContainerDTO updatedCTypeOfContainerDTO = typeOfContainerService.updateTypeOfContainer(typeOfContainerNumberOfCalories, updatedTypeOfContainerParamsDTO);
 
-        verify(typeOfContainerRepository, times(1)).update(any());
+        verify(typeOfContainerRepository, times(1)).save(any());
 
         Assert.assertEquals(typeOfContainerNumberOfCalories, updatedCTypeOfContainerDTO.getNumberOfCalories());
         Assert.assertEquals(newName, updatedCTypeOfContainerDTO.getName());

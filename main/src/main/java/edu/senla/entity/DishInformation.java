@@ -17,7 +17,7 @@ public class DishInformation implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy="dishInformation")
     @PrimaryKeyJoinColumn

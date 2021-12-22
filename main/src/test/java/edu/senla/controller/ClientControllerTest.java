@@ -1,7 +1,7 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.ClientRepositoryInterface;
 import edu.senla.dto.ClientDTO;
 import edu.senla.service.ClientService;
 import lombok.SneakyThrows;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest
-@ContextConfiguration(classes = {ClientController.class, ClientService.class, ClientRepository.class})
+@ContextConfiguration(classes = {ClientController.class, ClientService.class, ClientRepositoryInterface.class})
 public class ClientControllerTest {
 
     @Autowired

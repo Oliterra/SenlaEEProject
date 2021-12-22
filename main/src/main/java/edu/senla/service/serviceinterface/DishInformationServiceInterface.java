@@ -4,12 +4,12 @@ import edu.senla.dto.DishInformationDTO;
 
 public interface DishInformationServiceInterface {
 
-    public DishInformationDTO createDishInformation(int dishId, DishInformationDTO newDishInformationDTO);
+    public DishInformationDTO createDishInformation(long dishId, DishInformationDTO newDishInformationDTO);
 
-    public DishInformationDTO readDishInformation(int id);
+    public DishInformationDTO readDishInformation(long id);
 
-    public DishInformationDTO updateDishInformation(int id, DishInformationDTO updatedDishInformationDTO);
+    public DishInformationDTO updateDishInformation(long id, DishInformationDTO updatedDishInformationDTO);
 
-    public void deleteDishInformation(int id);
+    public void deleteDishInformation(long id);
 
 }

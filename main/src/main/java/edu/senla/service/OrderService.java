@@ -1,8 +1,8 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.ClientRepositoryInterface;
-import edu.senla.dao.daointerface.CourierRepositoryInterface;
-import edu.senla.dao.daointerface.OrderRepositoryInterface;
+import edu.senla.dao.ClientRepositoryInterface;
+import edu.senla.dao.CourierRepositoryInterface;
+import edu.senla.dao.OrderRepositoryInterface;
 import edu.senla.dto.OrderDTO;
 import edu.senla.entity.Courier;
 import edu.senla.entity.Order;
@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -29,61 +28,62 @@ public class OrderService implements OrderServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public OrderDTO createOrder(int clientId, OrderDTO newOrderDTO) {
+    public OrderDTO createOrder(long clientId, OrderDTO newOrderDTO) {
         Order newOrder = mapper.map(newOrderDTO, Order.class);
-        newOrder.setClient(clientRepository.read(clientId));
-        Order createdOrder = orderRepository.create(newOrder);
+        newOrder.setClient(clientRepository.getById(clientId));
+        Order createdOrder = orderRepository.save(newOrder);
         return mapper.map(createdOrder, OrderDTO.class);
     }
 
     @Override
-    public OrderDTO readOrder(int id) {
-        Order requestedOrder = orderRepository.read(id);
-        return mapper.map(requestedOrder, OrderDTO.class);
+    public OrderDTO readOrder(long id) {
+        return mapper.map(orderRepository.getById(id), OrderDTO.class);
     }
 
     @Override
-    public OrderDTO updateOrder(int id, OrderDTO orderDTO) {
+    public OrderDTO updateOrder(long id, OrderDTO orderDTO) {
         Order updatedOrder = mapper.map(orderDTO, Order.class);
-        Order orderToUpdate = mapper.map(readOrder(id), Order.class);
+        Order orderToUpdate = orderRepository.getById(id);
 
         Order orderWithNewParameters = updateOrdersOptions(orderToUpdate, updatedOrder);
-        Order order = orderRepository.update(orderWithNewParameters);
+        Order order = orderRepository.save(orderWithNewParameters);
 
         return mapper.map(order, OrderDTO.class);
     }
 
     @Override
-    public void deleteOrder(int id) {
-        orderRepository.delete(id);
+    public void deleteOrder(long id) {
+        orderRepository.deleteById(id);
     }
 
     @Override
-    public void setCourierOnOrder(int orderId, int courierId) {
-        Courier courierForOrder = courierRepository.read(courierId);
-        Order orderToSetCourier = orderRepository.read(orderId);
+    public void setCourierOnOrder(long orderId, long courierId) {
+        Courier courierForOrder = courierRepository.getById(courierId);
+        Order orderToSetCourier = orderRepository.getById(orderId);
         orderToSetCourier.setCourier(courierForOrder);
-        orderRepository.update(orderToSetCourier);
+        orderRepository.save(orderToSetCourier);
     }
 
     @Override
-    public List<OrderDTO> getAllClientsOrders(int clientId) {
-        List<Order> orders = orderRepository.getAllClientsOrders(clientId);
+    public List<OrderDTO> getAllClientsOrders(long clientId) {
+        /*List<Order> orders = orderRepository.getAllClientsOrders(clientId);
         List<OrderDTO> ordersDTO = new ArrayList<>();
         for (Order order: orders) {
             ordersDTO.add(mapper.map(order, OrderDTO.class));
         }
-        return ordersDTO;
+        return ordersDTO;*/
+        return null;
     }
 
     @Override
-    public List<OrderDTO> getAllCouriersOrders(int courierId) {
-        List<Order> orders = orderRepository.getAllCouriersOrders(courierId);
+    public List<OrderDTO> getAllCouriersOrders(long courierId) {
+        /*List<Order> orders = orderRepository.getAllCouriersOrders(courierId);
         List<OrderDTO> ordersDTO = new ArrayList<>();
         for (Order order: orders) {
             ordersDTO.add(mapper.map(order, OrderDTO.class));
         }
-        return ordersDTO;
+        return ordersDTO;*/
+        return null;
     }
 
     private Order updateOrdersOptions(Order order, Order updatedOrder) {

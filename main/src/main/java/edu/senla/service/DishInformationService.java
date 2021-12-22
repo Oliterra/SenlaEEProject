@@ -1,7 +1,7 @@
 package edu.senla.service;
 
-import edu.senla.dao.daointerface.DishInformationRepositoryInterface;
-import edu.senla.dao.daointerface.DishRepositoryInterface;
+import edu.senla.dao.DishInformationRepositoryInterface;
+import edu.senla.dao.DishRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
@@ -24,35 +24,34 @@ public class DishInformationService implements DishInformationServiceInterface {
     private final ModelMapper mapper;
 
     @Override
-    public DishInformationDTO createDishInformation(int dishId, DishInformationDTO newDishInformationDTO) {
+    public DishInformationDTO createDishInformation(long dishId, DishInformationDTO newDishInformationDTO) {
         DishInformation newDishInformation = mapper.map(newDishInformationDTO, DishInformation.class);
-        Dish dish = dishRepository.read(dishId);
+        Dish dish = dishRepository.getById(dishId);
         newDishInformation.setDish(dish);
-        DishInformation createdInformation = dishInformationRepository.create(newDishInformation);
+        DishInformation createdInformation = dishInformationRepository.save(newDishInformation);
         dish.setDishInformation(createdInformation);
         return mapper.map(createdInformation, DishInformationDTO.class);
     }
 
     @Override
-    public DishInformationDTO readDishInformation(int id) {
-        DishInformation requestedDishInformation = dishInformationRepository.read(id);
-        return mapper.map(requestedDishInformation, DishInformationDTO.class);
+    public DishInformationDTO readDishInformation(long id) {
+        return mapper.map(dishInformationRepository.getById(id), DishInformationDTO.class);
     }
 
     @Override
-    public DishInformationDTO updateDishInformation(int id, DishInformationDTO updatedDishInformationDTO) {
+    public DishInformationDTO updateDishInformation(long id, DishInformationDTO updatedDishInformationDTO) {
         DishInformation updatedDishInformation = mapper.map(updatedDishInformationDTO, DishInformation.class);
-        DishInformation dishInformationToUpdate = mapper.map(readDishInformation(id), DishInformation.class);
+        DishInformation dishInformationToUpdate = dishInformationRepository.getById(id);
 
         DishInformation dishInformationWithNewParameters = updateDishInformationOptions(dishInformationToUpdate, updatedDishInformation);
-        DishInformation dishInformation = dishInformationRepository.update(dishInformationWithNewParameters);
+        DishInformation dishInformation = dishInformationRepository.save(dishInformationWithNewParameters);
 
         return mapper.map(dishInformation, DishInformationDTO.class);
     }
 
     @Override
-    public void deleteDishInformation(int id) {
-        dishInformationRepository.delete(id);
+    public void deleteDishInformation(long id) {
+        dishInformationRepository.deleteById(id);
     }
 
     private DishInformation updateDishInformationOptions(DishInformation dishInformation, DishInformation updatedDishInformation)

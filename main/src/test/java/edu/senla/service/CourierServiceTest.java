@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.CourierRepository;
+import edu.senla.dao.CourierRepositoryInterface;
 import edu.senla.dto.CourierDTO;
 import edu.senla.entity.Courier;
 import edu.senla.entity.Order;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class CourierServiceTest {
 
     @Mock
-    private CourierRepository courierRepository;
+    private CourierRepositoryInterface courierRepository;
 
     @Spy
     private ModelMapper mapper;
@@ -54,12 +54,12 @@ class CourierServiceTest {
 
     @Test
     void createCourier() {
-        when(courierRepository.create(any(Courier.class))).thenReturn(courier);
+        when(courierRepository.save(any(Courier.class))).thenReturn(courier);
 
         CourierDTO courierParamsDTO = new CourierDTO(courierId, courierFirstName, courierLastName);
         CourierDTO createdCourierDTO = courierService.createCourier(courierParamsDTO);
 
-        verify(courierRepository, times(1)).create(any());
+        verify(courierRepository, times(1)).save(any());
 
         Assert.assertEquals(courierId, createdCourierDTO.getId());
         Assert.assertEquals(courierFirstName, createdCourierDTO.getFirstName());
@@ -74,11 +74,11 @@ class CourierServiceTest {
 
     @Test
     void readCourier() {
-        when(courierRepository.read(any(Integer.class))).thenReturn(courier);
+        when(courierRepository.getById(any(Long.class))).thenReturn(courier);
 
         CourierDTO readCourierDTO = courierService.readCourier(courierId);
 
-        verify(courierRepository, times(1)).read(any());
+        verify(courierRepository, times(1)).getById(any());
 
         Assert.assertEquals(courierId, readCourierDTO.getId());
         Assert.assertEquals(courierFirstName, readCourierDTO.getFirstName());
@@ -100,13 +100,13 @@ class CourierServiceTest {
         updatedCourier.setFirstName(newFirstName);
         updatedCourier.setLastName(newLastName);
 
-        when(courierRepository.update(any(Courier.class))).thenReturn(updatedCourier);
-        when(courierRepository.read(any(Integer.class))).thenReturn(courier);
+        when(courierRepository.save(any(Courier.class))).thenReturn(updatedCourier);
+        when(courierRepository.getById(any(Long.class))).thenReturn(courier);
 
         CourierDTO updatedCourierParamsDTO = new CourierDTO(courierId, newFirstName, newLastName);
         CourierDTO updatedCourierDTO = courierService.updateCourier(courierId, updatedCourierParamsDTO);
 
-        verify(courierRepository, times(1)).update(any());
+        verify(courierRepository, times(1)).save(any());
 
         Assert.assertEquals(courierId, updatedCourierDTO.getId());
         Assert.assertEquals(newFirstName, updatedCourierDTO.getFirstName());
@@ -132,7 +132,7 @@ class CourierServiceTest {
 
     @Test
     void deleteCourier() {
-        courierRepository.delete(courierId);
+        courierService.deleteCourier(courierId);
         verify(courierRepository, times(1)).delete(any());
     }
 
@@ -151,11 +151,11 @@ class CourierServiceTest {
         ordersList.add(order);
 
         courier.setOrders(ordersList);
-        when(courierRepository.getByIdWithOrders(any(Integer.class))).thenReturn(courier);
+        //when(courierRepository.getByIdWithOrders(any(Integer.class))).thenReturn(courier);
 
         CourierDTO courierWithOrdersDTO = courierService.getByIdWithOrders(courierId);
 
-        verify(courierRepository, times(1)).getByIdWithOrders(any(Integer.class));
+        //verify(courierRepository, times(1)).getByIdWithOrders(any(Integer.class));
 
         Assert.assertEquals(courierId, courierWithOrdersDTO.getId());
         Assert.assertEquals(courierFirstName, courierWithOrdersDTO.getFirstName());
@@ -173,11 +173,11 @@ class CourierServiceTest {
         List<Order> ordersList = null;
         courier.setOrders(ordersList);
 
-        when(courierRepository.getByIdWithOrders(any(Integer.class))).thenReturn(courier);
+        //when(courierRepository.getByIdWithOrders(any(Integer.class))).thenReturn(courier);
 
         CourierDTO courierWithOrdersDTO = courierService.getByIdWithOrders(courierId);
 
-        verify(courierRepository, times(1)).getByIdWithOrders(any(Integer.class));
+        //verify(courierRepository, times(1)).getByIdWithOrders(any(Integer.class));
 
         Assert.assertEquals(courierId, courierWithOrdersDTO.getId());
         Assert.assertEquals(courierFirstName, courierWithOrdersDTO.getFirstName());
