@@ -1,17 +1,29 @@
 package edu.senla.service.serviceinterface;
 
 import edu.senla.dto.TypeOfContainerDTO;
+import edu.senla.dto.TypeOfContainerForUpdateDTO;
+import edu.senla.entity.TypeOfContainer;
+
+import java.util.List;
 
 public interface TypeOfContainerServiceInterface {
 
-    public TypeOfContainerDTO createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO);
+    List<TypeOfContainerDTO> getAllTypesOfContainer();
 
-    public TypeOfContainerDTO readTypeOfContainer(long id);
+    void createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO);
 
-    public TypeOfContainerDTO updateTypeOfContainer(long id, TypeOfContainerDTO updatedTypeOfContainerDTO);
+    TypeOfContainerDTO getTypeOfContainer(long id);
 
-    public void deleteTypeOfContainer(long id);
+    void updateTypeOfContainer(long id, TypeOfContainerForUpdateDTO updatedTypeOfContainerDTO);
 
-    public boolean isTypeOfContainerExists(TypeOfContainerDTO typeOfContainer);
+    void deleteTypeOfContainer(long id);
+
+    boolean isTypeOfContainerExists(String name);
+
+    boolean isTypeOfContainerExists(long caloricContent);
+
+    boolean isTypeOfContainerExists(String name, long caloricContent);
+
+    TypeOfContainer getTypeOfContainerByName(String name);
 
 }

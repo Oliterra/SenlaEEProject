@@ -4,7 +4,7 @@ CREATE TABLE orders (
     courier_id INTEGER NOT NULL,
     date DATE NOT NULL,
     time TIME NOT NULL,
-    payment_type VARCHAR(20) NOT NULL DEFAULT 'By cash',
+    payment_type VARCHAR(50) NOT NULL DEFAULT 'By cash',
     status VARCHAR(20) NOT NULL DEFAULT 'New',
     CONSTRAINT orders_pkey PRIMARY KEY (id),
     CONSTRAINT orders_clientid_fkey FOREIGN KEY (client_id) REFERENCES clients(id),

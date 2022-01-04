@@ -1,23 +1,34 @@
 package edu.senla.service.serviceinterface;
 
+import edu.senla.dto.OrderClosingResponseDTO;
 import edu.senla.dto.OrderDTO;
+import edu.senla.dto.OrderForUpdateDTO;
+import edu.senla.dto.OrderStatusInfoDTO;
 
 import java.util.List;
 
 public interface OrderServiceInterface {
 
-    public OrderDTO createOrder(long clientId, OrderDTO newOrderDTO);
+    List<OrderDTO> getAllOrders();
 
-    public OrderDTO readOrder(long id);
+    OrderDTO getOrder(long id);
 
-    public OrderDTO updateOrder(long id, OrderDTO updatedOrderDTO);
+    void updateOrder(long id, OrderForUpdateDTO updatedOrderDTO);
 
-    public void deleteOrder(long id);
+    void deleteOrder(long id);
 
-    public void setCourierOnOrder(long orderId, long courierId);
+    OrderStatusInfoDTO getOrderStatusInfo(long courierId);
 
-    public List<OrderDTO> getAllClientsOrders(long clientId);
+    boolean isOrderIsInProcess(long id);
 
-    public List<OrderDTO> getAllCouriersOrders(long courierId);
+    boolean isOrderConfirmedByClient(long id);
+
+    OrderClosingResponseDTO closeOrderForCourier(long courierId);
+
+    void closeOrderForClient(long id);
+
+    boolean isOrderBelongToClient(long id, long clientId);
+
+    boolean isOrderExists(long id);
 
 }

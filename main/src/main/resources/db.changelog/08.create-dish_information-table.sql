@@ -1,5 +1,5 @@
 CREATE TABLE dish_information (
-    id INTEGER NOT NULL UNIQUE,
+    id SERIAL,
     description VARCHAR(1000) NOT NULL,
     proteins DECIMAL NOT NULL,
     fats DECIMAL NOT NULL,

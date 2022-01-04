@@ -6,12 +6,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface TypeOfContainerControllerInterface {
 
-    public ResponseEntity<Void> createTypeOfContainer(@RequestBody String clientJson);
+    public ResponseEntity<String> getAllTypesOfContainer();
 
-    public ResponseEntity<String> getTypeOfContainer(@PathVariable("id") int id);
+    public ResponseEntity<Void> createTypeOfContainer(@RequestBody String typeOfContainerJson);
 
-    public ResponseEntity<Void> updateTypeOfContainer(@PathVariable int id, @RequestBody String updatedClientJson);
+    public ResponseEntity<String> getTypeOfContainer(@PathVariable("id") long id);
 
-    public ResponseEntity<Void> deleteTypeOfContainer(@PathVariable("id") int id);
+    public ResponseEntity<Void> updateTypeOfContainer(@PathVariable long id, @RequestBody String updatedTypeOfContainerJson);
+
+    public ResponseEntity<Void> deleteTypeOfContainer(@PathVariable("id") long id);
 
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class TypeOfContainerDTO {
 
-    private int numberOfCalories;
+    private long numberOfCalories;
 
     private String name;
 

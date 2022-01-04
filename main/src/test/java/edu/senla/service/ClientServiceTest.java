@@ -1,215 +1,119 @@
 package edu.senla.service;
 
 import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dto.ClientDTO;
+import edu.senla.dao.RoleRepositoryInterface;
+import edu.senla.dto.ClientFullInfoDTO;
 import edu.senla.entity.Client;
-import edu.senla.entity.Order;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-
-import javax.persistence.NoResultException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
 
     @Mock
     private ClientRepositoryInterface clientRepository;
+    @Mock
+    private RoleRepositoryInterface roleRepository;
 
     @Spy
     private ModelMapper mapper;
+    @Spy
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private ClientService clientService;
 
     private Client client;
+    private ClientFullInfoDTO clientFullInfoDTO;
 
     private int clientId;
     private String clientFirstName;
     private String clientLastName;
+    private String clientEmail;
+
+    private String clientPassword;
+    private String clientPasswordConfirmation;
 
     @BeforeEach
     void setup() {
         clientId = 1;
         clientFirstName = "TestFirstName";
         clientLastName = "TestLastName";
+        clientEmail = "testEmail@test.com";
 
         client = new Client();
+        clientFullInfoDTO = new ClientFullInfoDTO();
 
         client.setId(clientId);
         client.setFirstName(clientFirstName);
         client.setLastName(clientLastName);
+        client.setEmail(clientEmail);
+    }
+
+    /*@Test
+    void createClient() {
+        when(clientRepository.save(any(Client.class))).thenReturn(client);
+        clientService.createClient(clientFullInfoDTO);
+        verify(clientRepository, times(1)).save(any(Client.class));
+    }*/
+
+    /*@Test
+    void isExistentClientExists() {
+        when(clientRepository.getByEmail(any(String.class))).thenReturn(client);
+        boolean isClientExists = clientService.isClientExists(clientEmail);
+        verify(clientRepository, times(1)).getByEmail(any(String.class));
+        assertTrue(isClientExists);
     }
 
     @Test
-    public void createNullClient() {
-        ClientDTO invalidClientDTO = null;
-        Assert.assertThrows(IllegalArgumentException.class, () -> clientService.createClient(invalidClientDTO));
+    void isNonExistentClientExists() {
+        when(clientRepository.getByEmail(any(String.class))).thenReturn(null);
+        boolean isClientExists = clientService.isClientExists(clientEmail);
+        verify(clientRepository, times(1)).getByEmail(any(String.class));
+        assertFalse(isClientExists);
+    }*/
+
+   /* @Test
+    void isEqualPasswordsConfirmed() {
+        RegistrationRequestDTO registrationRequestDTO = new RegistrationRequestDTO();
+        registrationRequestDTO.setPassword("testPassword");
+        registrationRequestDTO.setPasswordConfirm("testPassword");
+        boolean isPasswordConfirmed = clientService.isPasswordConfirmed(registrationRequestDTO);
+        assertTrue(isPasswordConfirmed);
     }
 
     @Test
-    public void readClient() {
-        when(clientRepository.getById(any(Long.class))).thenReturn(client);
+    void isUnequalPasswordsConfirmed() {
+        RegistrationRequestDTO registrationRequestDTO = new RegistrationRequestDTO();
+        registrationRequestDTO.setPassword("testPassword");
+        registrationRequestDTO.setPasswordConfirm("anotherTestPassword");
+        boolean isPasswordConfirmed = clientService.isPasswordConfirmed(registrationRequestDTO);
+        assertFalse(isPasswordConfirmed);
+    }*/
 
-        ClientDTO readClientDTO = clientService.readClient(clientId);
-
-        verify(clientRepository, times(1)).getById(any());
-
-        Assert.assertEquals(clientId, readClientDTO.getId());
-        Assert.assertEquals(clientFirstName, readClientDTO.getFirstName());
-        Assert.assertEquals(clientLastName, readClientDTO.getLastName());
-    }
-
-    @Test
-    public void readNullClient() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> clientService.readClient(0));
-    }
-
-    @Test
-    public void updateClient() {
-        String newFirstName = "Another first name";
-        String newLastName = "Another last name";
-
-        Client updatedClient = new Client();
-        updatedClient.setId(clientId);
-        updatedClient.setFirstName(newFirstName);
-        updatedClient.setLastName(newLastName);
-
-        when(clientRepository.save(any(Client.class))).thenReturn(updatedClient);
-        when(clientRepository.getById(any(Long.class))).thenReturn(client);
-
-        ClientDTO updatedClientParamsDTO = new ClientDTO(clientId, newFirstName, newLastName);
-        ClientDTO updatedClientDTO = clientService.updateClient(clientId, updatedClientParamsDTO);
-
-        verify(clientRepository, times(1)).save(any());
-
-        Assert.assertEquals(clientId, updatedClientDTO.getId());
-        Assert.assertEquals(newFirstName, updatedClientDTO.getFirstName());
-        Assert.assertEquals(newLastName, updatedClientDTO.getLastName());
-    }
-
-    @Test
-    public void updateNullClient() {
-        String newFirstName = "Another first name";
-        String newLastName = "Another last name";
-        ClientDTO updatedClientParamsDTO = new ClientDTO(clientId, newFirstName, newLastName);
-
-        ClientDTO invalidClientDTO = null;
-        Assert.assertThrows(NullPointerException.class, () -> clientService.updateClient(invalidClientDTO.getId(), updatedClientParamsDTO));
-    }
-
-    @Test
-    public void updateClientWithNullParams() {
-        ClientDTO invalidUpdatedClientParamsDTO = null;
-
-        Assert.assertThrows(IllegalArgumentException.class, () -> clientService.updateClient(clientId, invalidUpdatedClientParamsDTO));
-    }
-
-    @Test
-    public void deleteClient() {
-        clientService.deleteClient(clientId);
-        verify(clientRepository, times(1)).delete(any());
-    }
-
-    @Test
-    public void deleteNullClient() {
-        ClientDTO invalidClientDTO = null;
-        Assert.assertThrows(NullPointerException.class, () -> clientService.deleteClient(invalidClientDTO.getId()));
-    }
-
-    @Test
-    public void getClientByIdWithOrders() {
-        List<Order> ordersList = new ArrayList<>();
-        Order order = new Order();
-        order.setId(1);
-        order.setStatus("new");
-        ordersList.add(order);
-
-        client.setOrders(ordersList);
-        //when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
-
-        ClientDTO clientWithOrdersDTO = clientService.getByIdWithOrders(clientId);
-
-        //verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
-
-        Assert.assertEquals(clientId, clientWithOrdersDTO.getId());
-        Assert.assertEquals(clientFirstName, clientWithOrdersDTO.getFirstName());
-        Assert.assertEquals(clientLastName, clientWithOrdersDTO.getLastName());
-        Assert.assertEquals(ordersList, clientWithOrdersDTO.getOrders());
-    }
-
-    @Test
-    public void getNullClientByIdWithOrders() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> clientService.getByIdWithOrders(client.getId()));
-    }
-
-    @Test
-    public void getClientByIdWithNullOrders() {
-        List<Order> ordersList = null;
-        client.setOrders(ordersList);
-
-        //when(clientRepository.getByIdWithOrders(any(Integer.class))).thenReturn(client);
-
-        ClientDTO clientWithOrdersDTO = clientService.getByIdWithOrders(clientId);
-
-        //verify(clientRepository, times(1)).getByIdWithOrders(any(Integer.class));
-
-        Assert.assertEquals(clientId, clientWithOrdersDTO.getId());
-        Assert.assertEquals(clientFirstName, clientWithOrdersDTO.getFirstName());
-        Assert.assertEquals(clientLastName, clientWithOrdersDTO.getLastName());
-        Assert.assertNull(clientWithOrdersDTO.getOrders());
-    }
-
-    @Test
-    public void isExistentClientExists() {
-        String clientsEmail = "test@test.com";
-        client.setEmail(clientsEmail);
-        when(clientRepository.getClientByEmail(any(String.class))).thenReturn(client);
-
-        ClientDTO clientWithEmailDTO = new ClientDTO();
-        clientWithEmailDTO.setEmail(clientsEmail);
-
-        boolean clientExists = clientService.isClientExists(clientWithEmailDTO);
-
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
-
-        Assert.assertTrue(clientExists);
-    }
-
-    @Test
-    public void isNonExistentClientExists() {
-        String clientsEmail = "test@test.com";
-
-        when(clientRepository.getClientByEmail(any(String.class))).thenThrow(new NoResultException());
-
-        ClientDTO clientWithEmailDTO = new ClientDTO();
-        clientWithEmailDTO.setEmail(clientsEmail);
-
-        boolean clientExists = clientService.isClientExists(clientWithEmailDTO);
-
-        verify(clientRepository, times(1)).getClientByEmail(any(String.class));
-
-        Assert.assertThrows(NoResultException.class, () -> clientRepository.getClientByEmail(clientsEmail));
-        Assert.assertFalse(clientExists);
-    }
-
-    @Test
-    public void isNullClientExists() {
-        ClientDTO invalidClientWithEmailDTO = null;
-
-        Assert.assertThrows(NullPointerException.class, () -> clientService.isClientExists(invalidClientWithEmailDTO));
-    }
+    /*@Test
+    void generateFullClientInformation() {
+        ClientRegistrationInfoDTO clientRegistrationInfoDTO = new ClientRegistrationInfoDTO();
+        clientRegistrationInfoDTO.setFirstName("TestName");
+        RegistrationRequestDTO registrationRequestDTO = new RegistrationRequestDTO();
+        registrationRequestDTO.setUsername("TestUsername");
+        registrationRequestDTO.setPassword("testPassword");
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        when(roleRepository.getByName(any(String.class))).thenReturn(role);
+        clientFullInfoDTO = clientService.generateFullClientInformation(clientRegistrationInfoDTO, registrationRequestDTO);
+        verify(roleRepository, times(1)).getByName(any(String.class));
+        assertEquals(clientRegistrationInfoDTO.getFirstName(), clientFullInfoDTO.getFirstName());
+        assertEquals(registrationRequestDTO.getUsername(), registrationRequestDTO.getUsername());
+        assertEquals(role, clientFullInfoDTO.getRole());
+        assertNotEquals(registrationRequestDTO.getPassword(), clientFullInfoDTO.getPassword());
+    }*/
 
 }
 

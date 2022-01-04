@@ -1,6 +1,7 @@
 package edu.senla.security;
 
 import edu.senla.entity.Client;
+import edu.senla.entity.Courier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,14 @@ public class ClientUserDetails implements UserDetails {
         clientUserDetails.password = client.getPassword();
         clientUserDetails.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(client.getRole().getName()));
         return clientUserDetails;
+    }
+
+    public static ClientUserDetails fromCourierEntityToCourierUserDetails(Courier courier) {
+        ClientUserDetails courierUserDetails = new ClientUserDetails();
+        courierUserDetails.username = courier.getPhone();
+        courierUserDetails.password = courier.getPassword();
+        courierUserDetails.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_COURIER"));
+        return courierUserDetails;
     }
 
     @Override

@@ -2,68 +2,76 @@ package edu.senla.service;
 
 import edu.senla.dao.TypeOfContainerRepositoryInterface;
 import edu.senla.dto.TypeOfContainerDTO;
+import edu.senla.dto.TypeOfContainerForUpdateDTO;
 import edu.senla.entity.TypeOfContainer;
 import edu.senla.service.serviceinterface.TypeOfContainerServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
-@Service
 @RequiredArgsConstructor
+@Service
 public class TypeOfContainerService implements TypeOfContainerServiceInterface {
 
     private final TypeOfContainerRepositoryInterface typeOfContainerRepository;
 
     private final ModelMapper mapper;
 
-    @Override
-    public TypeOfContainerDTO createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
-        TypeOfContainer newTypeOfContainer = typeOfContainerRepository.save(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
-        return mapper.map(newTypeOfContainer, TypeOfContainerDTO.class);
+    public List<TypeOfContainerDTO> getAllTypesOfContainer() {
+        Page<TypeOfContainer> typeOfContainers = typeOfContainerRepository.findAll(PageRequest.of(0, 10, Sort.by("numberOfCalories").descending()));
+        return typeOfContainers.stream().map(t -> mapper.map(t, TypeOfContainerDTO.class)).toList();
     }
 
-    @Override
-    public TypeOfContainerDTO readTypeOfContainer(long id) {
-        TypeOfContainer requestedTypeOfContainer = typeOfContainerRepository.getById(id);
-        return mapper.map(requestedTypeOfContainer, TypeOfContainerDTO.class);
+    public void createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
+        typeOfContainerRepository.save(mapper.map(newTypeOfContainerDTO, TypeOfContainer.class));
     }
 
-    @Override
-    public TypeOfContainerDTO updateTypeOfContainer(long id, TypeOfContainerDTO updatedTypeOfContainerDTO) {
-        TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTO, TypeOfContainer.class);
+    public TypeOfContainerDTO getTypeOfContainer(long id) {
+        try {
+            return mapper.map(typeOfContainerRepository.getById(id), TypeOfContainerDTO.class);
+        } catch (RuntimeException exception) {
+            return null;
+        }
+    }
+
+    public void updateTypeOfContainer(long id, TypeOfContainerForUpdateDTO updatedTypeOfContainerDTODTO) {
+        TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTODTO, TypeOfContainer.class);
         TypeOfContainer typeOfContainerToUpdate = typeOfContainerRepository.getById(id);
-
         TypeOfContainer typeOfContainerWithNewParameters = updateTypeOfContainerOptions(typeOfContainerToUpdate, updatedTypeOfContainer);
-        TypeOfContainer typeOfContainer = typeOfContainerRepository.save(typeOfContainerWithNewParameters);
-
-        return mapper.map(typeOfContainer, TypeOfContainerDTO.class);
+        typeOfContainerRepository.save(typeOfContainerWithNewParameters);
     }
 
-    @Override
     public void deleteTypeOfContainer(long id) {
         typeOfContainerRepository.deleteById(id);
     }
 
-    private TypeOfContainer updateTypeOfContainerOptions(TypeOfContainer typeOfContainer, TypeOfContainer updatedTypeOfContainer)
-    {
-        typeOfContainer.setNumberOfCalories(updatedTypeOfContainer.getNumberOfCalories());
+    public boolean isTypeOfContainerExists(String name) {
+        return typeOfContainerRepository.getByName(name) != null;
+    }
+
+    public boolean isTypeOfContainerExists(long caloricContent) {
+        return typeOfContainerRepository.existsById(caloricContent);
+    }
+
+    public boolean isTypeOfContainerExists(String name, long caloricContent) {
+        return isTypeOfContainerExists(name) && isTypeOfContainerExists(caloricContent);
+    }
+
+    public TypeOfContainer getTypeOfContainerByName(String name) {
+        return typeOfContainerRepository.getByName(name);
+    }
+
+    private TypeOfContainer updateTypeOfContainerOptions(TypeOfContainer typeOfContainer, TypeOfContainer updatedTypeOfContainer) {
         typeOfContainer.setPrice(updatedTypeOfContainer.getPrice());
         typeOfContainer.setName(updatedTypeOfContainer.getName());
         return typeOfContainer;
-    }
-
-    @Override
-    public boolean isTypeOfContainerExists(TypeOfContainerDTO typeOfContainer) {
-        try {
-            return typeOfContainerRepository.getTypeOfContainerByCaloricContent(typeOfContainer.getNumberOfCalories()) != null;
-        }
-        catch (NoResultException e){
-            return false;
-        }
     }
 
 }

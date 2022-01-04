@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.LocalDate;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataJpaTest
 public class DishRepositoryTest {
@@ -34,7 +32,6 @@ public class DishRepositoryTest {
         dishInformation = new DishInformation();
         dishInformation.setId(1);
         dishInformation.setDescription("300 g");
-        dishInformation.setCookingDate(LocalDate.MAX);
 
         Dish dish = new Dish();
 

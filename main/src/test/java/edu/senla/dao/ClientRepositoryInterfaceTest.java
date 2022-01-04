@@ -1,9 +1,9 @@
 package edu.senla.dao;
 
-
 import edu.senla.entity.Client;
 import edu.senla.entity.Order;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataJpaTest
@@ -34,7 +37,7 @@ public class ClientRepositoryInterfaceTest {
     private String clientAdderess;
     private List<Order> clientsOrders;
 
-    @Before
+    @BeforeEach
     public void setup() {
         clientFirstName = "TestFirstName";
         clientLastName = "TestLastName";
@@ -58,6 +61,29 @@ public class ClientRepositoryInterfaceTest {
 
         createdClient = clientRepository.save(client);
     }
+
+    @Test
+    void getClientByEmail() {
+        Client receivedСlient = clientRepository.getByEmail(clientEmail);
+        assertEquals(createdClient, receivedСlient);
+    }
+
+    @Test
+    void getClientByNonExistentEmail() {
+        Client receivedСlient = clientRepository.getByEmail("invalidEmail@test.com");
+        assertNull(receivedСlient);
+    }
+
+    @Test
+    void getClientByNullEmail() {
+        Client receivedСlient = clientRepository.getByEmail(null);
+        assertNull(receivedСlient);
+    }
+
+    /*@Test
+    void getClientByUsername() {
+
+    }*/
 
 }
 

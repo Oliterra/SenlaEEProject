@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,14 +15,10 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "orders")
-@NamedEntityGraph(
-        name = "order-entity-graph",
-        attributeNodes = {@NamedAttributeNode(value = "typesOfContainer")}
-)
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,12 +31,14 @@ public class Order implements Serializable {
 
     private LocalDate date;
 
+    private LocalTime time;
+
     @Column(name = "payment_type")
     private String paymentType;
 
     private String status;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderTypeOfContainer> typesOfContainer;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Container> containers;
 
 }

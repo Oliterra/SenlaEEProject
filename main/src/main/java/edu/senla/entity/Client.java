@@ -11,10 +11,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="clients")
-@NamedEntityGraph(
-        name = "client-entity-graph",
-        attributeNodes = {@NamedAttributeNode(value = "orders")}
-)
 public class Client implements Serializable {
 
     @Id
@@ -36,9 +32,6 @@ public class Client implements Serializable {
     private String username;
 
     private String password;
-
-    @Transient
-    private String passwordConfirm;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface OrderControllerInterface {
 
-    public ResponseEntity<Void> createOrder(@RequestBody String orderJson);
+    public ResponseEntity<String> getAllOrders();
 
-    public ResponseEntity<String> getOrder(@PathVariable("id") int id);
+    public ResponseEntity<String> getOrder(@PathVariable("id") long id);
 
-    public ResponseEntity<Void> updateOrder(@PathVariable int id, @RequestBody String updatedOrderJson);
+    public ResponseEntity<Void> updateOrder(@PathVariable long id, @RequestBody String updatedOrderJson);
 
-    public ResponseEntity<Void> deleteOrder(@PathVariable("id") int id);
+    public ResponseEntity<Void> deleteOrder(@PathVariable("id") long id);
 
 }

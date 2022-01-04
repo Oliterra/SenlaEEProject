@@ -10,9 +10,10 @@ import java.io.IOException;
 
 public class AccessHandler implements AccessDeniedHandler {
 
-    @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access is denied. You must be authorized on the system to access the requested URL.");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(403);
+        response.getWriter().write("Access is denied");
     }
 
 }

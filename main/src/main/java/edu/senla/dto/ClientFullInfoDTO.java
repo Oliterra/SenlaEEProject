@@ -1,6 +1,7 @@
 package edu.senla.dto;
 
 import edu.senla.entity.Order;
+import edu.senla.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,15 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClientDTO {
-
-    public ClientDTO(int id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    private int id;
+public class ClientFullInfoDTO {
 
     private String firstName;
 
@@ -35,5 +28,7 @@ public class ClientDTO {
     private String password;
 
     private List<Order> orders;
+
+    private Role role;
 
 }

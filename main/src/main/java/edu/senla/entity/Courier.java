@@ -11,14 +11,10 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "couriers")
-@NamedEntityGraph(
-        name = "courier-entity-graph",
-        attributeNodes = {@NamedAttributeNode(value = "orders")}
-)
 public class Courier implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "first_name")
@@ -28,6 +24,10 @@ public class Courier implements Serializable {
     private String lastName;
 
     private String phone;
+
+    private String password;
+
+    private String status;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

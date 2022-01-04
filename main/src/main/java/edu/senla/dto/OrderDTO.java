@@ -5,26 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderDTO {
 
-    public OrderDTO(int id, String paymentType, String status) {
-        this.id = id;
-        this.paymentType = paymentType;
-        this.status = status;
-    }
-
-    private int id;
-
     private int clientId;
+
+    private int courierId;
+
+    private LocalDate date;
+
+    private LocalTime time;
 
     private String paymentType;
 
     private String status;
-
-    private LocalDate date;
 
 }

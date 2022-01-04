@@ -1,0 +1,2 @@
+CREATE INDEX containers_number_of_calories_index
+ON containers(number_of_calories);

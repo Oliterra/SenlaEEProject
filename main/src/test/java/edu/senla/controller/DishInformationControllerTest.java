@@ -4,25 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.dto.DishDTO;
 import edu.senla.dto.DishInformationDTO;
 import lombok.SneakyThrows;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,17 +51,13 @@ public class DishInformationControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
         dish = new DishDTO();
-        dish.setId(1);
         dish.setDishType("Meat");
         dish.setName("Meat");
 
         dishInformation = new DishInformationDTO();
-        dishInformation.setId(1);
         dishInformation.setDishId(1);
         dishInformation.setCaloricContent(333);
         dishInformation.setDescription("400 g");
-        dishInformation.setCookingDate(LocalDate.now());
-        dishInformation.setExpirationType(LocalDate.now());
 
         updatedDishInformation = new DishInformationDTO();
         updatedDishInformation.setCaloricContent(444);
@@ -77,157 +66,6 @@ public class DishInformationControllerTest {
         dishInformationJson = mapper.writeValueAsString(dishInformation);
         updatedDishInformationJson = mapper.writeValueAsString(updatedDishInformation);
         dishJson = mapper.writeValueAsString(dish);
-    }
-
-    @SneakyThrows
-    @Test
-    public void createDishInformationCreatedStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishInformationJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-    }
-
-    @SneakyThrows
-    @Test
-    public void createDishInformationNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishInformationJson))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @SneakyThrows
-    @Test
-    public void createDishInformationBadRequestStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(""))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
-    public void readDishInformationOkStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishInformationJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders.
-                get("/dishesInformation/{id}", 1))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @SneakyThrows
-    @Test
-    public void readDishInformationNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                get("/dishesInformation/{id}", 2))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @SneakyThrows
-    @Test
-    public void updateDishInformationOkStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishInformationJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/dishesInformation/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(updatedDishInformationJson))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @SneakyThrows
-    @Test
-    public void updateDishInformationNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/dishesInformation/{id}", 2)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(updatedDishInformationJson))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @SneakyThrows
-    @Test
-    public void updateDishInformationBadRequestStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/dishesInformation/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(""))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
-    public void deleteDishInformationOkStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/dishesInformation")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(dishInformationJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/dishesInformation/{id}", 1))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @SneakyThrows
-    @Test
-    public void deleteDishInformationNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/dishesInformation/{id}", 2))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
 }

@@ -4,93 +4,107 @@ import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.controllerinterface.DishControllerInterface;
 import edu.senla.dto.DishDTO;
+import edu.senla.exeptions.BadRequest;
+import edu.senla.exeptions.ConflictBetweenData;
+import edu.senla.exeptions.NoContent;
+import edu.senla.exeptions.NotFound;
 import edu.senla.service.serviceinterface.DishServiceInterface;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/dishes")
 public class DishController implements DishControllerInterface {
 
-    @Autowired
-    private DishServiceInterface dishService;
+    private final DishServiceInterface dishService;
 
-    @Autowired
-    private ObjectMapper jacksonObjectMapper;
+    private final ObjectMapper mapper;
 
     private final Logger LOG = (Logger) LoggerFactory.getLogger(DishController.class);
+
+    @SneakyThrows
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> getAllDishes() {
+        LOG.info("Getting all dishes");
+        List<DishDTO> dishDTOs = dishService.getAllDishes();
+        if (dishDTOs == null || dishDTOs.isEmpty()){
+            LOG.info("No dishes  found");
+            throw new NoContent();
+        }
+        String dishJson = mapper.writeValueAsString(dishDTOs);
+        return new ResponseEntity<String>(dishJson, HttpStatus.OK);
+    }
 
     @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Void> createDish(String dishJson) {
+    public ResponseEntity<Void> createDish(@RequestBody String dishJson) {
         LOG.info("Creating new dish: {}", dishJson);
-        DishDTO dishDTO = jacksonObjectMapper.readValue(dishJson, DishDTO.class);
-
-        if (dishService.isDishExists(dishDTO)) {
-            LOG.info("Dish with name " + dishDTO.getName() + " already exists");
-            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+        DishDTO dishDTO = mapper.readValue(dishJson, DishDTO.class);
+        if (dishService.isDishExists(dishDTO.getName())) {
+            LOG.info("Dish with name {} already exists", dishDTO.getName());
+            throw new ConflictBetweenData();
         }
-
+        if (!dishService.isDishTypeCorrect(dishDTO.getDishType())) {
+            LOG.info("Dish type {} invalid", dishDTO.getDishType());
+            throw new BadRequest();
+        }
         dishService.createDish(dishDTO);
+        LOG.info("Dish with name {} successfully created", dishDTO.getName());
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> getDish(int id) {
+    public ResponseEntity<String> getDish(@PathVariable("id") long id) {
         LOG.info("Getting dish with id: {}", id);
-
-        DishDTO dishDTO;
-        try {
-            dishDTO = dishService.readDish(id);
-        } catch (IllegalArgumentException exception) {
-            LOG.info("Dish with id {} not found", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!dishService.isDishExists(id)) {
+            LOG.info("There is no dish with id {}", id);
+            throw new NotFound();
         }
-
-        return new ResponseEntity<String>(jacksonObjectMapper.writeValueAsString(dishDTO), HttpStatus.OK);
+        DishDTO dishDTO = dishService.getDish(id);
+        String dishJson = mapper.writeValueAsString(dishDTO);
+        return new ResponseEntity<String>(dishJson, HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN"})
     @SneakyThrows
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> updateDish(int id, String updatedDishJson) {
-        LOG.info("Updating dish: ");
-
-        try {
-            DishDTO currentDish = dishService.readDish(id);
-        } catch (IllegalArgumentException exception) {
-            LOG.info("Dish with id {} not found", id);
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> updateDish(@PathVariable("id") long id, @RequestBody String updatedDishJson) {
+        LOG.info("Updating dish with id {} with new data {}: ", id, updatedDishJson);
+        DishDTO updatedDishDTO = mapper.readValue(updatedDishJson, DishDTO.class);
+        if (!dishService.isDishExists(id)) {
+            LOG.info("There is no dish with id {}", id);
+            throw new NotFound();
         }
-        DishDTO updatedDish = jacksonObjectMapper.readValue(updatedDishJson, DishDTO.class);
-
-        dishService.updateDish(id, updatedDish);
+        if (!dishService.isDishTypeCorrect(updatedDishDTO.getDishType())) {
+            LOG.info("Dish type {} invalid", updatedDishDTO.getDishType());
+            throw new BadRequest();
+        }
+        dishService.updateDish(id, updatedDishDTO);
+        LOG.info("Dish with id {} successfully updated", id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @Secured({"ROLE_ADMIN"})
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteDish(int id) {
+    public ResponseEntity<Void> deleteDish(@PathVariable("id") long id) {
         LOG.info("Deleting dish with id: {}", id);
-
-        try {
-            DishDTO dishDTO = dishService.readDish(id);
-        } catch (IllegalArgumentException exception) {
-            LOG.info("Unable to delete. Dish with id {} not found", id);
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        if (!dishService.isDishExists(id)) {
+            LOG.info("There is no dish with id {}", id);
+            throw new NotFound();
         }
-
         dishService.deleteDish(id);
+        LOG.info("Dish with id {} successfully deleted", id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
