@@ -2,6 +2,7 @@ package edu.senla.service.serviceinterface;
 
 import edu.senla.dto.*;
 import edu.senla.entity.Container;
+import edu.senla.entity.Order;
 
 import java.util.List;
 
@@ -9,16 +10,12 @@ public interface ContainerServiceInterface {
 
     List<ContainerComponentsDTO> filterContainers(List<ContainerComponentsDTO> containers);
 
-    OrderTotalCostDTO makeOrder(long clientId, ShoppingCartDTO shoppingCartDTO);
+    double calculateTotalOrderCost(List<Container> containers);
 
-    boolean isPaymentTypeCorrect(String paymentType);
+    ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO);
 
     ContainerComponentsNamesDTO mapFromContainerEntityToContainerComponentsNamesDTO(Container container);
 
-    double calculateTotalOrderCost(List<Container> containers);
-
-    boolean isContainerComponentsCorrect(ContainerComponentsDTO containerComponentsDTO);
-
-    ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO);
+    public Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order);
 
 }

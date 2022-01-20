@@ -19,7 +19,6 @@ public interface ClientRepositoryInterface extends JpaRepository<Client, Long>{
     @Query("SELECT client FROM Client client LEFT JOIN FETCH client.role WHERE client.username =?1")
     public Client getByUsername(String username);
 
-    //@Query("SELECT client FROM Client client WHERE client.role =?1")
     public List<Client> getAllByRole (Role role, Pageable pageable);
 
 }

@@ -36,118 +36,144 @@
 
     <changeSet id="9" author="Nadezhda Tarasova">
         <dropTable tableName="roles" cascadeConstraints="true"/>
+    </changeSet>
+
+    <changeSet id="11" author="Nadezhda Tarasova">
+        <sql>DROP TYPE order_status</sql>
+    </changeSet>
+
+    <changeSet id="12" author="Nadezhda Tarasova">
+        <sql>DROP TYPE courier_status</sql>
+    </changeSet>
+
+    <changeSet id="13" author="Nadezhda Tarasova">
+        <sql>DROP TYPE dish_type</sql>
     </changeSet>-->
 
-     <changeSet id="1" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="1" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/01.create-clients-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="2" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="2" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/02.create-couriers-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="3" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="3" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/03.create-orders-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="4" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="4" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/04.create-types_of_container-table.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="5" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="5" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/05.create-containers-table.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="6" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
+    <changeSet id="6" author="Nadezhda Tarasova">
         <sqlFile encoding="utf8" path="db.changelog/06.create-dishes-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="8" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="db.changelog/08.create-dish_information-table.sql"
+    <changeSet id="7" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/07.create-dish_information-table.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="9" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="db.changelog/09.create-index-for-orders-client_id.sql"
+    <changeSet id="8" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/08.create-index-for-orders-client_id.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="10" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="db.changelog/10.create-index-for-orders-courier_id.sql"
+    <changeSet id="9" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/09.create-index-for-orders-courier_id.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="11" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="db.changelog/11.create-index-for-containers-order_id.sql"
+    <changeSet id="10" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/10.create-index-for-containers-order_id.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="12" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8"
-                 path="db.changelog/12.create-index-for-containers-number_of_calories.sql"
+    <changeSet id="11" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/11.create-index-for-containers-number_of_calories.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
 
-    <changeSet id="15" author="Nadezhda Tarasova email:taras19nadezdin@gmail.com">
-        <sqlFile encoding="utf8" path="db.changelog/15.create-index-for-dish_information-id.sql"
+    <changeSet id="12" author="Nadezhda Tarasova">
+        <sqlFile encoding="utf8" path="db.changelog/12.create-index-for-dish_information-id.sql"
                  relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="13" author="Nadezhda Tarasova">
+        <sql>CREATE TYPE courier_status AS ENUM ('ACTIVE','INACTIVE')</sql>
+    </changeSet>
+
+    <changeSet id="14" author="Nadezhda Tarasova">
+        <addColumn tableName="couriers">
+            <column name="status"
+                    type="courier_status"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="15" author="Nadezhda Tarasova">
+        <dropColumn columnName="status"
+                    tableName="orders">
+        </dropColumn>
     </changeSet>
 
     <changeSet id="16" author="Nadezhda Tarasova">
-        <dropColumn tableName="orders" columnName="time"/>
+        <sql>CREATE TYPE order_status AS ENUM ('NEW','IN_PROCESS','RECEIPT_CONFIRMED', 'COMPLETED_ON_TIME', 'COMPLETED_LATE')</sql>
     </changeSet>
 
     <changeSet id="17" author="Nadezhda Tarasova">
-        <dropNotNullConstraint columnName="courier_id" columnDataType="number" tableName="orders"/>
+        <addColumn tableName="orders">
+            <column name="status"
+                    type="order_status"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="18" author="Nadezhda Tarasova">
-        <dropNotNullConstraint columnName="client_id" columnDataType="number" tableName="orders"/>
+        <dropColumn columnName="payment_type"
+                    tableName="orders">
+        </dropColumn>
     </changeSet>
 
     <changeSet id="19" author="Nadezhda Tarasova">
-        <dropColumn tableName="dish_information" columnName="expiration_date"/>
+        <sql>CREATE TYPE order_payment_type AS ENUM ('BY_CARD_ONLINE','BY_CARD_TO_COURIER','CASH_TO_COURIER', 'BONUS_POINTS')</sql>
     </changeSet>
 
     <changeSet id="20" author="Nadezhda Tarasova">
-        <dropColumn tableName="dish_information" columnName="cooking_date"/>
+        <addColumn tableName="orders">
+            <column name="payment_type"
+                    type="order_payment_type"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="21" author="Nadezhda Tarasova">
-        <addColumn tableName="dishes">
-            <column name="dish_information_id"
-                    type="integer"/>
-        </addColumn>
+        <dropColumn columnName="dish_type"
+                    tableName="dishes">
+        </dropColumn>
     </changeSet>
 
     <changeSet id="22" author="Nadezhda Tarasova">
-        <dropForeignKeyConstraint baseTableName="dish_information"
-                                  constraintName="dishinformation_id_fkey"/>
+        <sql>CREATE TYPE dish_type AS ENUM ('MEAT','GARNISH','SALAD', 'SAUCE')</sql>
     </changeSet>
 
     <changeSet id="23" author="Nadezhda Tarasova">
-        <addForeignKeyConstraint  baseColumnNames="dish_information_id"
-                                  baseTableName="dishes"
-                                  constraintName="dishinformation_id_fkey"
-                                  onDelete="CASCADE"
-                                  referencedColumnNames="id"
-                                  referencedTableName="dish_information"/>
+        <addColumn tableName="dishes">
+            <column name="dish_type"
+                    type="dish_type"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="24" author="Nadezhda Tarasova">
-        <addColumn tableName="clients">
-            <column name="username"
-                    type="varchar(50)"/>
-        </addColumn>
+        <dropNotNullConstraint columnName="courier_id" columnDataType="number" tableName="orders"/>
     </changeSet>
 
     <changeSet id="25" author="Nadezhda Tarasova">
-        <addColumn tableName="clients">
-            <column name="password"
-                    type="varchar(100)"/>
-        </addColumn>
+        <dropNotNullConstraint columnName="address" columnDataType="varchar" tableName="clients"/>
     </changeSet>
 
     <changeSet id="26" author="Nadezhda Tarasova">
@@ -163,12 +189,27 @@
 
     <changeSet id="27" author="Nadezhda Tarasova">
         <addColumn tableName="clients">
+            <column name="username"
+                    type="varchar(50)"/>
+        </addColumn>
+        <addColumn tableName="clients">
+            <column name="password"
+                    type="varchar(100)"/>
+        </addColumn>
+        <addColumn tableName="clients">
             <column name="role_id"
                     type="integer"/>
         </addColumn>
     </changeSet>
 
     <changeSet id="28" author="Nadezhda Tarasova">
+        <addColumn tableName="couriers">
+            <column name="password"
+                    type="varchar(100)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="29" author="Nadezhda Tarasova">
         <addForeignKeyConstraint  baseColumnNames="role_id"
                                   baseTableName="clients"
                                   constraintName="role_id_fkey"
@@ -177,67 +218,22 @@
                                   referencedTableName="roles"/>
     </changeSet>
 
-    <changeSet id="29" author="Nadezhda Tarasova">
+    <changeSet id="30" author="Nadezhda Tarasova">
         <insert tableName="roles">
             <column  name="id"  value="1"/>
             <column  name="name"  value="ROLE_USER"/>
         </insert>
-    </changeSet>
-
-    <changeSet id="30" author="Nadezhda Tarasova">
         <insert tableName="roles">
             <column  name="id"  value="2"/>
-            <column  name="name"  value="ROLE_USER-GUEST"/>
+            <column  name="name"  value="ROLE_COURIER"/>
         </insert>
-    </changeSet>
-
-    <changeSet id="31" author="Nadezhda Tarasova">
         <insert tableName="roles">
             <column  name="id"  value="3"/>
             <column  name="name"  value="ROLE_ADMIN"/>
         </insert>
     </changeSet>
 
-    <changeSet id="32" author="Nadezhda Tarasova">
-        <dropNotNullConstraint columnName="address" columnDataType="varchar" tableName="clients"/>
-    </changeSet>
-
-    <changeSet id="33" author="Nadezhda Tarasova">
-        <dropUniqueConstraint  constraintName="dishes_dish_type_key"
-                               schemaName="public"
-                               tableName="dishes"
-                               uniqueColumns="dish_type"/>
-    </changeSet>
-
-    <changeSet id="34" author="Nadezhda Tarasova">
-        <insert tableName="roles">
-            <column  name="id"  value="4"/>
-            <column  name="name"  value="ROLE_COURIER"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="35" author="Nadezhda Tarasova">
-        <addColumn tableName="couriers">
-            <column name="password"
-                    type="varchar(100)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="36" author="Nadezhda Tarasova">
-        <addColumn tableName="couriers">
-            <column name="status"
-                    type="varchar(50)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="37" author="Nadezhda Tarasova">
-        <addColumn tableName="orders">
-            <column name="time"
-                    type="time"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="38" author="Nadezhda Tarasova">
+    <changeSet id="31" author="Nadezhda Tarasova">
         <insert tableName="types_of_container">
             <column name="number_of_calories"  value="750"/>
             <column name="name"  value="XS"/>

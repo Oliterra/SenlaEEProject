@@ -26,20 +26,14 @@ public interface CourierServiceInterface {
 
     long getCurrentCourierId();
 
-    boolean isCourierExists(String phone);
-
-    boolean isCourierExists(long id);
-
-    boolean isCourierActiveNow(long id);
-
-    String changeCourierStatus(long id);
+    void changeCourierStatus(long id);
 
     List<CourierOrderInfoDTO> getAllOrdersOfCourier(long courierId);
 
-    int assignOrdersToAllActiveCouriers(List<CourierBasicInfoDTO> courierBasicInfoDTOS);
+    void assignOrdersToAllActiveCouriers(List<CourierBasicInfoDTO> courierBasicInfoDTOS);
 
-    long assignNewOrdersToCourier(long id);
+    void assignNewOrdersToCourier(long id);
 
-    CourierPerformanceIndicatorDTO calculateCourierPerformanceIndicator(long id);
+    CourierPerformanceIndicatorDTO getCourierPerformanceIndicator(long id);
 
 }

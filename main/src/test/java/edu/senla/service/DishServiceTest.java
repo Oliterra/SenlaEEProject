@@ -1,14 +1,32 @@
 package edu.senla.service;
 
 import edu.senla.dao.DishRepositoryInterface;
+import edu.senla.dto.DishDTO;
 import edu.senla.entity.Dish;
-import org.junit.jupiter.api.BeforeEach;
+import edu.senla.enums.DishType;
+import edu.senla.exeptions.BadRequest;
+import edu.senla.exeptions.ConflictBetweenData;
+import edu.senla.exeptions.NotFound;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DishServiceTest {
@@ -19,26 +37,230 @@ class DishServiceTest {
     @Spy
     private ModelMapper mapper;
 
+    @Spy
+    private ValidationService validationService;
+
     @InjectMocks
     private DishService dishService;
 
-    private Dish dish;
+    @Test
+    void testGetAllDishes() {
+        List<Dish> dishesList = new ArrayList<>();
+        Dish dish = new Dish();
+        dish.setName("Some name");
+        dishesList.add(dish);
+        Page<Dish> dishes = new PageImpl<>(dishesList);
+        when(dishRepository.findAll(any(Pageable.class))).thenReturn(dishes);
+        List<DishDTO> dishDTOS = dishService.getAllDishes();
+        verify(dishRepository, times(1)).findAll((Pageable) any());
+        assertTrue(dishDTOS.size() == 1);
+        assertEquals(dish.getName(), dishDTOS.get(0).getName());
+    }
 
-    private int dishId;
-    private String dishType;
-    private String dishName;
+    @Test
+    void testGetAllDishesWhenThereAreNoDishes() {
+        List<Dish> dishesList = new ArrayList<>();
+        Page<Dish> dishes = new PageImpl<>(dishesList);
+        when(dishRepository.findAll(any(Pageable.class))).thenReturn(dishes);
+        List<DishDTO> dishDTOS = dishService.getAllDishes();
+        verify(dishRepository, times(1)).findAll((Pageable) any());
+        assertTrue(dishDTOS.isEmpty());
+    }
 
-    @BeforeEach
-    void setup() {
-        dishId = 1;
-        dishType = "TestType";
-        dishName = "TestName";
+    @Test
+    void testCreateAlreadyExistentDish() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("CorrectName");
+        newDishDTO.setDishType("meat");
+        when(dishRepository.getByName(any(String.class))).thenReturn(dish);
+        assertThrows(ConflictBetweenData.class, () ->  dishService.createDish(newDishDTO));
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
 
-        dish = new Dish();
+    @Test
+    void testCreateDishWithIncorrectSymbolsInName() {
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("@!*%");
+        newDishDTO.setDishType("meat");
+        assertThrows(BadRequest.class, () ->  dishService.createDish(newDishDTO));
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
 
-        dish.setId(dishId);
-        dish.setDishType(dishType);
-        dish.setName(dishName);
+    @Test
+    void testCreateDishWithTooShortName() {
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("d");
+        newDishDTO.setDishType("meat");
+        assertThrows(BadRequest.class, () ->  dishService.createDish(newDishDTO));
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateDishWithWrongType() {
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("CorrectName");
+        newDishDTO.setDishType("invalidType");
+        assertThrows(BadRequest.class, () ->  dishService.createDish(newDishDTO));
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testCreateDishOk() {
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("CorrectName");
+        newDishDTO.setDishType("meat");
+        dishService.createDish(newDishDTO);
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testGetNonExistentDish() {
+        assertThrows(NotFound.class, () ->  dishService.getDish(1));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, never()).getById(any());
+    }
+
+    @Test
+    void testGetExistentDish() {
+        Dish dish = new Dish();
+        dish.setName("SomeName");
+        dish.setDishType(DishType.SALAD);
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        DishDTO dishDTO = dishService.getDish(1);
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        assertEquals(dish.getName(), dishDTO.getName());
+        assertEquals(DishType.SALAD.toString().toLowerCase(Locale.ROOT), dishDTO.getDishType());
+    }
+
+    @Test
+    void testUpdateNonExistentDish() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("UpdatedName");
+        newDishDTO.setDishType("meat");
+        assertThrows(NotFound.class, () ->  dishService.updateDish(1, newDishDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, never()).getById(any());
+        verify(dishRepository, never()).getByName(any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateDishWithAlreadyExistentDishName() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("UpdatedName");
+        newDishDTO.setDishType("meat");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        when(dishRepository.getByName(any(String.class))).thenReturn(dish);
+        assertThrows(ConflictBetweenData.class, () ->  dishService.updateDish(1, newDishDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateDishWithNewNameHasIncorrectSymbols() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("@!*%");
+        newDishDTO.setDishType("meat");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        assertThrows(BadRequest.class, () ->  dishService.updateDish(1, newDishDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateDishWithTooShortName() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("d");
+        newDishDTO.setDishType("UpdatedName");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        assertThrows(BadRequest.class, () ->  dishService.updateDish(1, newDishDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateDishWithWrongType() {
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("UpdatedName");
+        newDishDTO.setDishType("invalidType");
+        assertThrows(BadRequest.class, () ->  dishService.createDish(newDishDTO));
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, never()).save(any());
+    }
+
+    @Test
+    void testUpdateDishOk() {
+        Dish dish = new Dish();
+        DishDTO newDishDTO = new DishDTO();
+        newDishDTO.setName("UpdatedName");
+        newDishDTO.setDishType("meat");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        dishService.updateDish(1, newDishDTO);
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        verify(dishRepository, times(1)).getByName(any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(dishRepository, times(1)).save(any());
+    }
+
+    @Test
+    void testDeleteNonExistentDish() {
+        assertThrows(NotFound.class, () ->  dishService.deleteDish(1));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, never()).getById(any());
+    }
+
+    @Test
+    void testDeleteExistentDish() {
+        Dish dish = new Dish();
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
+        dishService.deleteDish(1);
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
     }
 
 }

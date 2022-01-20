@@ -13,7 +13,7 @@ public class AccessHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(403);
-        response.getWriter().write("Access is denied");
+        response.getWriter().write("Access is denied. You do not have the rights to perform this action.");
     }
 
 }

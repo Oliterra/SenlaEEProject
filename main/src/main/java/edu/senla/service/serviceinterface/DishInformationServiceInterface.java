@@ -1,6 +1,7 @@
 package edu.senla.service.serviceinterface;
 
 import edu.senla.dto.DishInformationDTO;
+import edu.senla.dto.DishInformationForUpdateDTO;
 
 import java.util.List;
 
@@ -12,10 +13,8 @@ public interface DishInformationServiceInterface {
 
     DishInformationDTO getDishInformation(long id);
 
-    void updateDishInformation(long id, DishInformationDTO updatedDishInformationDTO);
+    void updateDishInformation(long id, DishInformationForUpdateDTO updatedDishInformationDTO);
 
     void deleteDishInformation(long id);
-
-    boolean isDishInformationExists(long id);
 
 }

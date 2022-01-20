@@ -1,62 +1,285 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dto.CourierFullInfoDTO;
+import edu.senla.dao.CourierRepositoryInterface;
+import edu.senla.dto.CourierMainInfoDTO;
+import edu.senla.entity.Courier;
+import edu.senla.service.CourierService;
+import edu.senla.service.ValidationService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 
-@ExtendWith(SpringExtension.class)
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
 @Transactional
-//@ContextConfiguration(classes = {DatabaseConfig.class, SecurityConfig.class, CourierController.class, CourierService.class, ClientService.class, CourierRepository.class})
 public class CourierControllerTest {
 
     @Autowired
-    private CourierController courierController;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    private CourierController registrationController;
 
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
     private MockMvc mockMvc;
 
-    private CourierFullInfoDTO courier;
-    private CourierFullInfoDTO updatedCourier;
+    @SpyBean
+    private CourierService courierService;
 
-    private String courierJson;
-    private String updatedCourierJson;
+    @SpyBean
+    private ValidationService validationService;
+
+    @SpyBean
+    private CourierRepositoryInterface courierRepository;
+
+    private Courier courierToOperateWith;
 
     @SneakyThrows
     @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+    void creteDishToOperateWith() {
+        courierToOperateWith = new Courier();
+        courierToOperateWith.setFirstName("CorrectName");
+        courierToOperateWith.setLastName("CorrectName");
+        courierToOperateWith.setPhone("+375333333333");
+        courierToOperateWith.setPassword("testPassword");
+        courierRepository.save(courierToOperateWith);
+    }
 
-        courier = new CourierFullInfoDTO();
-        courier.setFirstName("TestFirstName");
-        courier.setLastName("TestLastName");
-        courier.setPhone("+37533739373");
+    @SneakyThrows
+    @Test
+    void testGetAllCouriersUnauthorizedStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/couriers"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+        verify(courierService, never()).getAllCouriers();
+    }
 
-        updatedCourier = new CourierFullInfoDTO();
-        updatedCourier.setFirstName("AnotherTestName");
-        updatedCourier.setLastName("AnotherTestName");
-        updatedCourier.setPhone("+375444444444");
+    @SneakyThrows
+    @WithMockUser(roles={"USER"})
+    @Test
+    void testGetAllCouriersForbiddenStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/couriers"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        verify(courierService, never()).getAllCouriers();
+    }
 
-        courierJson = mapper.writeValueAsString(courier);
-        updatedCourierJson = mapper.writeValueAsString(updatedCourier);
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testGetAllCouriersOkStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/couriers"))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(courierService, times(1)).getAllCouriers();
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testGetNonExistentCourierNotFoundStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/clients/33333"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+        verify(courierService, never()).getCourier(any(Long.class));
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testGetExistentCourierOkStatus() {
+        long idOfCourierToGet = courierToOperateWith.getId();
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/couriers/{idOfCourierToGet}", idOfCourierToGet))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(courierService, times(1)).getCourier(any(Long.class));
+    }
+
+    @SneakyThrows
+    @Test
+    void testUpdateCourierUnauthorizedStatus() {
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("CorrectName");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+        verify(courierService, never()).updateCourier(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"USER"})
+    @Test
+    void testUpdateCourierForbiddenStatus() {
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("CorrectName");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        verify(courierService, never()).updateCourier(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateCourierWhenJsonIsIncorrectBadRequestStatus() {
+        String incorrectJson = "incorrectJson";
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(incorrectJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(courierService, never()).updateCourier(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateCourierWithIncorrectSymbolsInNameBadRequestStatus() {
+        long idOfCourierToUpdate = courierToOperateWith.getId();
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("$%*&)(");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/{idOfCourierToUpdate}", idOfCourierToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(courierService, times(1)).updateCourier(any(Long.class), any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateCourierWithTooShortNameBadRequestStatus() {
+        long idOfCourierToUpdate = courierToOperateWith.getId();
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("c");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/{idOfCourierToUpdate}", idOfCourierToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(courierService, times(1)).updateCourier(any(Long.class), any());
+        verify(validationService, times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testRUpdateCourierWithInvalidPhoneBadRequestStatus() {
+        long idOfCourierToUpdate = courierToOperateWith.getId();
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("CorrectName");
+        courierMainInfoDTO.setLastName("CorrectName");
+        courierMainInfoDTO.setPhone("wrong");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/{idOfCourierToUpdate}", idOfCourierToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(courierService, times(1)).updateCourier(any(Long.class), any());
+        verify(validationService, times(2)).isNameCorrect(any());
+        verify(validationService, times(2)).isNameLengthValid(any());
+        verify(validationService, times(1)).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateCourierOkStatus() {
+        long idOfCourierToUpdate = courierToOperateWith.getId();
+        CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
+        courierMainInfoDTO.setFirstName("UpdatedName");
+        courierMainInfoDTO.setLastName("UpdatedName");
+        courierMainInfoDTO.setPhone("+375336666666");
+        String courierMainInfoJson = mapper.writeValueAsString(courierMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/couriers/{idOfCourierToUpdate}", idOfCourierToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(courierMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(courierService, times(1)).updateCourier(any(Long.class), any());
+        verify(validationService,times(2)).isNameCorrect(any());
+        verify(validationService, times(2)).isNameLengthValid(any());
+        verify(validationService, times(1)).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testDeleteNonExistentCourierNotFoundStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/couriers/33333"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+        verify(courierService, times(1)).deleteCourier(any(Long.class));
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testDeleteExistentCourierOkStatus() {
+        long idOfClientToDelete = courierToOperateWith.getId();
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/couriers/{idOfClientToDelete}", idOfClientToDelete))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(courierService, times(1)).deleteCourier(any(Long.class));
     }
 
 }

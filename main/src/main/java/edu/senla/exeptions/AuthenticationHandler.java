@@ -13,7 +13,7 @@ public class AuthenticationHandler implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(401);
-        response.getWriter().write("Unauthorized");
+        response.getWriter().write("Unauthorized. Please log in to the system.");
     }
 
 }

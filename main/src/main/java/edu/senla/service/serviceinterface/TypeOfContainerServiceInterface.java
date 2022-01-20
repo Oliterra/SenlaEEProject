@@ -20,10 +20,6 @@ public interface TypeOfContainerServiceInterface {
 
     boolean isTypeOfContainerExists(String name);
 
-    boolean isTypeOfContainerExists(long caloricContent);
-
-    boolean isTypeOfContainerExists(String name, long caloricContent);
-
     TypeOfContainer getTypeOfContainerByName(String name);
 
 }

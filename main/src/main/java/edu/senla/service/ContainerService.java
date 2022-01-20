@@ -1,19 +1,24 @@
 package edu.senla.service;
 
+import ch.qos.logback.classic.Logger;
 import edu.senla.dao.*;
-import edu.senla.dto.*;
-import edu.senla.entity.Client;
+import edu.senla.dto.ContainerComponentsDTO;
+import edu.senla.dto.ContainerComponentsNamesDTO;
+import edu.senla.dto.ContainerComponentsParamsDTO;
 import edu.senla.entity.Container;
 import edu.senla.entity.Order;
+import edu.senla.enums.DishType;
+import edu.senla.exeptions.BadRequest;
+import edu.senla.exeptions.NotFound;
 import edu.senla.service.serviceinterface.ContainerServiceInterface;
+import edu.senla.service.serviceinterface.DishServiceInterface;
 import edu.senla.service.serviceinterface.TypeOfContainerServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,19 +27,17 @@ import java.util.stream.Collectors;
 @Service
 public class ContainerService implements ContainerServiceInterface {
 
+    private final DishServiceInterface dishService;
+
     private final TypeOfContainerServiceInterface typeOfContainerService;
 
-    private final OrderRepositoryInterface orderRepository;
-
-    private final ClientRepositoryInterface clientRepository;
-
     private final DishRepositoryInterface dishRepository;
-
-    private final ContainerRepositoryInterface containerRepository;
 
     private final TypeOfContainerRepositoryInterface typeOfContainerRepository;
 
     private final ModelMapper mapper;
+
+    private final Logger LOG = (Logger) LoggerFactory.getLogger(ClientService.class);
 
     private final double percentageOfMeatByTotalWeight = 0.2;
 
@@ -44,35 +47,21 @@ public class ContainerService implements ContainerServiceInterface {
 
     private final double percentageOfSauceByTotalWeight = 0.1;
 
-    public OrderTotalCostDTO makeOrder(long clientId, ShoppingCartDTO shoppingCartDTO) {
-        Order order = new Order();
-        Client client = clientRepository.getById(clientId);
-        client.setAddress(shoppingCartDTO.getAddress());
-        order.setClient(client);
-        order.setStatus("new");
-        order.setPaymentType(shoppingCartDTO.getPaymentType());
-        order.setDate(LocalDate.now());
-        order.setTime(LocalTime.now());
-        orderRepository.saveAndFlush(order);
-        List<Container> containers = shoppingCartDTO.getContainers().stream()
-                .map(container -> mapFromContainerComponentsDTOToContainerEntity(container, order))
-                .toList();
-        containerRepository.saveAll(containers);
-        OrderTotalCostDTO orderTotalCostDTO = new OrderTotalCostDTO();
-        orderTotalCostDTO.setOrderTotalCost(calculateTotalOrderCost(containers));
-        return orderTotalCostDTO;
-    }
-
     public List<ContainerComponentsDTO> filterContainers(List<ContainerComponentsDTO> containers) {
         return containers.stream().filter(this::isContainerComponentsCorrect).collect(Collectors.toList());
     }
 
-    public boolean isPaymentTypeCorrect(String paymentType) {
-        return paymentType.equals("cash payment") || paymentType.equals("card payment to courier") || paymentType.equals("card payment online");
+    public double calculateTotalOrderCost(List<Container> containers) {
+        return containers.stream()
+                .map(c -> typeOfContainerRepository.getPriceByName(c.getTypeOfContainer().getName())).mapToDouble(Double::doubleValue).sum();
     }
 
-    public boolean isContainerComponentsCorrect(ContainerComponentsDTO containerComponentsDTO) {
-        return typeOfContainerService.isTypeOfContainerExists(containerComponentsDTO.getTypeOfContainer()) && isContainerFilledCorrectly(containerComponentsDTO);
+    public ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO) {
+        if (!isContainerComponentsCorrect(containerComponentsDTO)) throw new NotFound("There is no such type of container or non-existent dish found in container");
+        if (!dishService.isAllDishesHaveDishInformation(containerComponentsDTO)) throw new BadRequest("There is not enough information about the dishes to calculate");
+        ContainerComponentsParamsDTO containerComponentsParamsDTO = calculateWeightAndCaloricContent(containerComponentsDTO);
+        LOG.info("Calculated the weight of the dishes for the container size {} : {}", containerComponentsDTO.getTypeOfContainer(), containerComponentsParamsDTO);
+        return containerComponentsParamsDTO;
     }
 
     public ContainerComponentsNamesDTO mapFromContainerEntityToContainerComponentsNamesDTO(Container container) {
@@ -85,13 +74,18 @@ public class ContainerService implements ContainerServiceInterface {
         return containerComponentsNamesDTO;
     }
 
-    public double calculateTotalOrderCost(List<Container> containers) {
-        return containers.stream()
-                .map(c -> typeOfContainerRepository.getPriceByName(c.getTypeOfContainer().getName()))
-                .collect(Collectors.summingDouble(Double::doubleValue));
+    public Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order) {
+        Container container = mapper.map(containerComponentsDTO, Container.class);
+        container.setTypeOfContainer(typeOfContainerService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
+        container.setOrder(order);
+        return container;
     }
 
-    public ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO) {
+    private boolean isContainerComponentsCorrect(ContainerComponentsDTO containerComponentsDTO) {
+        return typeOfContainerService.isTypeOfContainerExists(containerComponentsDTO.getTypeOfContainer()) && isContainerFilledCorrectly(containerComponentsDTO);
+    }
+
+    private ContainerComponentsParamsDTO calculateWeightAndCaloricContent(ContainerComponentsDTO containerComponentsDTO) {
         ContainerComponentsParamsDTO containerComponentsParamsDTO = new ContainerComponentsParamsDTO();
         int numberOfCalories = (int) typeOfContainerRepository.getByName(containerComponentsDTO.getTypeOfContainer()).getNumberOfCalories();
         containerComponentsParamsDTO.setTotalCaloricContent(Math.round(numberOfCalories));
@@ -106,13 +100,6 @@ public class ContainerService implements ContainerServiceInterface {
         calculateAndSetDishesCaloricContent(meatCaloricContentIn100Grams, garnishCaloricContentIn100Grams,
                 saladCaloricContentIn100Grams, sauceCaloricContentIn100Grams, containerComponentsParamsDTO);
         return containerComponentsParamsDTO;
-    }
-
-    private Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order) {
-        Container container = mapper.map(containerComponentsDTO, Container.class);
-        container.setTypeOfContainer(typeOfContainerService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
-        container.setOrder(order);
-        return container;
     }
 
     private void calculateAndSetDishesWeight(double totalWeight, ContainerComponentsParamsDTO containerComponentsParamsDTO) {
@@ -136,19 +123,19 @@ public class ContainerService implements ContainerServiceInterface {
         containerComponentsParamsDTO.setSauceCaloricContent(Math.round(calculateCaloricContentOfDish(sauceWeight, sauceCaloricContentIn100Grams)));
     }
 
-    private boolean isContainerFilledCorrectly(ContainerComponentsDTO containerComponentsDTO){
+    private boolean isContainerFilledCorrectly(ContainerComponentsDTO containerComponentsDTO) {
         try {
-            boolean isMeatTypeCorrect = dishRepository.getById(containerComponentsDTO.getMeat()).getDishType().equals("meat");
-            boolean isGarnishTypeCorrect = dishRepository.getById(containerComponentsDTO.getGarnish()).getDishType().equals("garnish");
-            boolean isSaladTypeCorrect = dishRepository.getById(containerComponentsDTO.getSalad()).getDishType().equals("salad");
-            boolean isSauceTypeCorrect = dishRepository.getById(containerComponentsDTO.getSauce()).getDishType().equals("sauce");
+            boolean isMeatTypeCorrect = dishRepository.getById(containerComponentsDTO.getMeat()).getDishType().equals(DishType.MEAT);
+            boolean isGarnishTypeCorrect = dishRepository.getById(containerComponentsDTO.getGarnish()).getDishType().equals(DishType.GARNISH);
+            boolean isSaladTypeCorrect = dishRepository.getById(containerComponentsDTO.getSalad()).getDishType().equals(DishType.SALAD);
+            boolean isSauceTypeCorrect = dishRepository.getById(containerComponentsDTO.getSauce()).getDishType().equals(DishType.SAUCE);
             return isMeatTypeCorrect && isGarnishTypeCorrect && isSaladTypeCorrect && isSauceTypeCorrect;
         } catch (RuntimeException exception) {
             return false;
         }
     }
 
-    private double calculateCaloricContentOfDish(double dishWeight, double dishCaloricContentIn100Grams){
+    private double calculateCaloricContentOfDish(double dishWeight, double dishCaloricContentIn100Grams) {
         return 0.01 * dishWeight * dishCaloricContentIn100Grams;
     }
 

@@ -7,8 +7,6 @@ public interface StaffControllerInterface {
 
     public ResponseEntity<String> getCouriersPerformanceIndicator(@PathVariable long id);
 
-    public ResponseEntity<Void> changeAnyStatus(@PathVariable long id);
-
     public ResponseEntity<Void> assignOrdersToAllCouriers();
 
 }

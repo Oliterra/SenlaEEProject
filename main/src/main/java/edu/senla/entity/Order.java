@@ -1,8 +1,13 @@
 package edu.senla.entity;
 
+import edu.senla.enums.OrderPaymentType;
+import edu.senla.enums.OrderStatus;
+import edu.senla.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @Table(name = "orders")
 public class Order implements Serializable {
 
@@ -33,10 +42,14 @@ public class Order implements Serializable {
 
     private LocalTime time;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
-    private String paymentType;
+    @Type( type = "pgsql_enum" )
+    private OrderPaymentType paymentType;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Type( type = "pgsql_enum" )
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Container> containers;

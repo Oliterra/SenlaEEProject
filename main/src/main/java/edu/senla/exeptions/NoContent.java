@@ -6,8 +6,4 @@ public class NoContent extends RuntimeException{
         return "No content";
     }
 
-    public int getStatus() {
-        return 204;
-    }
-
 }

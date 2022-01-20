@@ -1,6 +1,10 @@
 package edu.senla.entity;
 
+import edu.senla.enums.DishType;
+import edu.senla.enums.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +13,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @Entity
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @Table(name = "dishes")
 public class Dish implements Serializable{
 
@@ -16,15 +24,14 @@ public class Dish implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "dish_type")
-    private String dishType;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "dish_type")
+    @Type( type = "pgsql_enum" )
+    private DishType dishType;
 
     private String name;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "dish_information_id")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "dish")
     private DishInformation dishInformation;
 
 }

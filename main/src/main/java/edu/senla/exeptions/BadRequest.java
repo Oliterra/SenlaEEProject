@@ -2,12 +2,10 @@ package edu.senla.exeptions;
 
 public class BadRequest extends RuntimeException{
 
-    public String getMessage() {
-        return "Bad request";
+    public BadRequest(String message) {
+        super(message);
     }
 
-    public int getStatus() {
-        return 400;
-    }
+    public BadRequest() { }
 
 }

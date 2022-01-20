@@ -17,13 +17,7 @@ public interface DishServiceInterface {
 
     void deleteDish(long id);
 
-    boolean isDishExists(Long id);
-
-    boolean isDishExists(String name);
-
     boolean isDishHasDishInformation(long id);
-
-    boolean isDishTypeCorrect(String dishType);
 
     boolean isAllDishesHaveDishInformation(ContainerComponentsDTO containerComponentsDTO);
 

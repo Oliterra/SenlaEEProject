@@ -1,6 +1,10 @@
 package edu.senla.entity;
 
+import edu.senla.enums.CourierStatus;
+import edu.senla.enums.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
+)
 @Table(name = "couriers")
 public class Courier implements Serializable {
 
@@ -27,7 +35,10 @@ public class Courier implements Serializable {
 
     private String password;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "courier_status")
+    @Type( type = "pgsql_enum" )
+    private CourierStatus status;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

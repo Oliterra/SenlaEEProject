@@ -7,6 +7,6 @@ public interface OrdersHistoryControllerInterface {
 
     public ResponseEntity<String> getClientOrdersHistory(@PathVariable long id);
 
-    public ResponseEntity<String> getCouriersOrdersHistory(@PathVariable long id);
+    public ResponseEntity<String> getCourierOrdersHistory(@PathVariable long id);
 
 }
