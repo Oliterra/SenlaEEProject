@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,28 +15,22 @@ import java.time.LocalDate;
 public class DishInformation implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,  mappedBy="dishInformation")
-    @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "dish_id")
     private Dish dish;
 
     private String description;
 
-    private int proteins;
+    private double proteins;
 
-    private int fats;
+    private double fats;
 
-    private int carbohydrates;
+    private double carbohydrates;
 
     @Column(name = "caloric_content")
-    private int caloricContent;
-
-    @Column(name = "cooking_date")
-    private LocalDate cookingDate;
-
-    @Column(name = "expiration_date")
-    private LocalDate expirationDate;
+    private double caloricContent;
 
 }

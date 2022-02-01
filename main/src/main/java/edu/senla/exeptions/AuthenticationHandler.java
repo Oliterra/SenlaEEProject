@@ -10,9 +10,10 @@ import java.io.IOException;
 
 public class AuthenticationHandler implements AuthenticationEntryPoint {
 
-    @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access denied. You must be authenticated on the system to access the requested URL.");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(401);
+        response.getWriter().write("Unauthorized. Please log in to the system.");
     }
 
 }

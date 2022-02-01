@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthenticationHandler();
     }
 
-    @Bean
+   @Bean
     public AccessHandler accessHandler(){
         return new AccessHandler();
     }

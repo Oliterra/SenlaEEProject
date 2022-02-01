@@ -6,12 +6,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface DishControllerInterface {
 
+    public ResponseEntity<String> getAllDishes();
+
     public ResponseEntity<Void> createDish(@RequestBody String dishJson);
 
-    public ResponseEntity<String> getDish(@PathVariable("id") int id);
+    public ResponseEntity<String> getDish(@PathVariable("id") long id);
 
-    public ResponseEntity<Void> updateDish(@PathVariable int id, @RequestBody String updatedDishJson);
+    public ResponseEntity<Void> updateDish(@PathVariable("id") long id, @RequestBody String updatedDishJson);
 
-    public ResponseEntity<Void> deleteDish(@PathVariable("id") int id);
+    public ResponseEntity<Void> deleteDish(@PathVariable("id") long id);
 
 }

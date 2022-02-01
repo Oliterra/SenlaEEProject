@@ -1,22 +1,32 @@
 package edu.senla.service.serviceinterface;
 
-import edu.senla.dto.ClientDTO;
+import edu.senla.dto.*;
+
+import java.util.List;
 
 public interface ClientServiceInterface {
 
-    public ClientDTO createClient(ClientDTO newClientDTO);
+    List<ClientMainInfoDTO> getAllClients();
 
-    public ClientDTO readClient(long id);
+    List<AdminInfoDTO> getAllAdmins();
 
-    public ClientDTO updateClient(long id, ClientDTO updatedClientDTO);
+    List<ClientOrderInfoDTO> getAllOrdersOfClient(long clientId);
 
-    public void deleteClient(long id);
+    void grantAdministratorRights(long id);
 
-    public ClientDTO getByIdWithOrders(long clientId);
+    void revokeAdministratorRights(long id);
 
-    public boolean isClientExists(ClientDTO client);
+    void createClient(RegistrationRequestDTO newClientDTO);
 
-    public ClientDTO getClientByUsernameAndPassword(String username, String password);
+    ClientMainInfoDTO getClient(long id);
+
+    ClientFullInfoDTO getClientByUsernameAndPassword(String username, String password);
+
+    long getCurrentClientId();
+
+    void updateClient(long id, ClientMainInfoDTO updatedClientDTO);
+
+    void deleteClient(long id);
 
 }
 

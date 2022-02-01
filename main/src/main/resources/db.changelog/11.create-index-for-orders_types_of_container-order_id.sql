@@ -1,2 +1,0 @@
-CREATE INDEX orders_types_of_container_order_id_index
-ON orders_types_of_container(order_id);

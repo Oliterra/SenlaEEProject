@@ -1,0 +1,260 @@
+package edu.senla.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.senla.dao.ClientRepositoryInterface;
+import edu.senla.dao.DishRepositoryInterface;
+import edu.senla.dao.RoleRepositoryInterface;
+import edu.senla.dto.ContainerComponentsDTO;
+import edu.senla.dto.ShoppingCartDTO;
+import edu.senla.entity.Client;
+import edu.senla.entity.Dish;
+import edu.senla.enums.DishType;
+import edu.senla.enums.Roles;
+import edu.senla.service.serviceinterface.ClientServiceInterface;
+import edu.senla.service.serviceinterface.OrderServiceInterface;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@Transactional
+public class ShoppingCartControllerTest {
+
+    @Autowired
+    private ShoppingCartController shoppingCartController;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ClientServiceInterface clientService;
+
+    @SpyBean
+    private OrderServiceInterface orderService;
+
+    @SpyBean
+    private ClientRepositoryInterface clientRepository;
+
+    @SpyBean
+    private DishRepositoryInterface dishRepository;
+
+    @SpyBean
+    private RoleRepositoryInterface roleRepository;
+
+    private Client client;
+    private Dish meat;
+    private Dish garnish;
+    private Dish salad;
+    private Dish sauce;
+
+    @SneakyThrows
+    @BeforeEach
+    void creteClientToOperateWith() {
+        client = new Client();
+        client.setFirstName("client");
+        client.setLastName("client");
+        client.setEmail("client");
+        client.setPhone("client");
+        client.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
+        clientRepository.save(client);
+
+        meat = new Dish();
+        meat.setDishType(DishType.MEAT);
+        meat.setName("meat");
+        dishRepository.save(meat);
+
+        garnish = new Dish();
+        garnish.setDishType(DishType.GARNISH);
+        garnish.setName("garnish");
+        dishRepository.save(garnish);
+
+        salad = new Dish();
+        salad.setDishType(DishType.SALAD);
+        salad.setName("salad");
+        dishRepository.save(salad);
+
+        sauce = new Dish();
+        sauce.setDishType(DishType.SAUCE);
+        sauce.setName("sauce");
+        dishRepository.save(sauce);
+    }
+
+    @SneakyThrows
+    @Test
+    void testMakeOrderUnauthorizedStatus() {
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+        verify(clientService, never()).getCurrentClientId();
+        verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertNull(client.getAddress());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles = {"COURIER"})
+    @Test
+    void testMakeOrderForbiddenStatus() {
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        verify(clientService, never()).getCurrentClientId();
+        verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertNull(client.getAddress());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void testMakeOrderWithInvalidPaymentTypeBadRequestStatus() {
+        ContainerComponentsDTO containerComponentsDTO = new ContainerComponentsDTO();
+        containerComponentsDTO.setTypeOfContainer("S");
+        containerComponentsDTO.setMeat(meat.getId());
+        containerComponentsDTO.setGarnish(garnish.getId());
+        containerComponentsDTO.setSalad(salad.getId());
+        containerComponentsDTO.setSauce(sauce.getId());
+        List<ContainerComponentsDTO> containerComponentsDTOS = new ArrayList<>();
+        containerComponentsDTOS.add(containerComponentsDTO);
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        shoppingCartDTO.setContainers(containerComponentsDTOS);
+        shoppingCartDTO.setPaymentType("wrong");
+        shoppingCartDTO.setAddress("some address");
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).getCurrentClientId();
+        verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertNull(client.getAddress());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void testMakeOrderWithInvalidContainerNameBadRequestStatus() {
+        ContainerComponentsDTO containerComponentsDTO = new ContainerComponentsDTO();
+        containerComponentsDTO.setTypeOfContainer("wrong");
+        containerComponentsDTO.setMeat(meat.getId());
+        containerComponentsDTO.setGarnish(garnish.getId());
+        containerComponentsDTO.setSalad(salad.getId());
+        containerComponentsDTO.setSauce(sauce.getId());
+        List<ContainerComponentsDTO> containerComponentsDTOS = new ArrayList<>();
+        containerComponentsDTOS.add(containerComponentsDTO);
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        shoppingCartDTO.setContainers(containerComponentsDTOS);
+        shoppingCartDTO.setPaymentType("by card to courier");
+        shoppingCartDTO.setAddress("some address");
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).getCurrentClientId();
+        verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertNull(client.getAddress());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void testMakeOrderWithInvalidContainerComponentsBadRequestStatus() {
+        ContainerComponentsDTO containerComponentsDTO = new ContainerComponentsDTO();
+        containerComponentsDTO.setTypeOfContainer("S");
+        containerComponentsDTO.setMeat(999999999);
+        containerComponentsDTO.setGarnish(999999999);
+        containerComponentsDTO.setSalad(999999999);
+        containerComponentsDTO.setSauce(999999999);
+        List<ContainerComponentsDTO> containerComponentsDTOS = new ArrayList<>();
+        containerComponentsDTOS.add(containerComponentsDTO);
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        shoppingCartDTO.setContainers(containerComponentsDTOS);
+        shoppingCartDTO.setPaymentType("by card to courier");
+        shoppingCartDTO.setAddress("some address");
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).getCurrentClientId();
+        verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertNull(client.getAddress());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles = {"USER"})
+    @Test
+    void testMakeOrderOkStatus() {
+        ContainerComponentsDTO containerComponentsDTO = new ContainerComponentsDTO();
+        containerComponentsDTO.setTypeOfContainer("S");
+        containerComponentsDTO.setMeat(meat.getId());
+        containerComponentsDTO.setGarnish(garnish.getId());
+        containerComponentsDTO.setSalad(salad.getId());
+        containerComponentsDTO.setSauce(sauce.getId());
+        List<ContainerComponentsDTO> containerComponentsDTOS = new ArrayList<>();
+        containerComponentsDTOS.add(containerComponentsDTO);
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        shoppingCartDTO.setContainers(containerComponentsDTOS);
+        shoppingCartDTO.setPaymentType("by card to courier");
+        shoppingCartDTO.setAddress("some address");
+        String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
+        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/shoppingCart")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(shoppingCartJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(clientService, times(1)).getCurrentClientId();
+        verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
+        assertEquals("some address", client.getAddress());
+    }
+
+}

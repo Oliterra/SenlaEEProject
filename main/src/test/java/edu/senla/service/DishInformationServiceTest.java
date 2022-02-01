@@ -3,10 +3,11 @@ package edu.senla.service;
 import edu.senla.dao.DishInformationRepositoryInterface;
 import edu.senla.dao.DishRepositoryInterface;
 import edu.senla.dto.DishInformationDTO;
+import edu.senla.dto.DishInformationForUpdateDTO;
 import edu.senla.entity.Dish;
 import edu.senla.entity.DishInformation;
-import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
+import edu.senla.exeptions.ConflictBetweenData;
+import edu.senla.exeptions.NotFound;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,7 +25,10 @@ import static org.mockito.Mockito.*;
 class DishInformationServiceTest {
 
     @Mock
-    private DishInformationRepositoryInterface dishInformationRepositoryInterface;
+    private DishService dishService;
+
+    @Mock
+    private DishInformationRepositoryInterface dishInformationRepository;
 
     @Mock
     private DishRepositoryInterface dishRepository;
@@ -34,127 +39,63 @@ class DishInformationServiceTest {
     @InjectMocks
     private DishInformationService dishInformationService;
 
-    private DishInformation dishInformation;
-    private Dish dish;
-
-    private int dishInformationId;
-    private int dishInformationCaloricContent;
-    private String dishInformationDescription;
-
-    @BeforeEach
-    void setup() {
-        dishInformationId = 1;
-        dishInformationCaloricContent = 300;
-        dishInformationDescription = "200 g";
-
-        dishInformation = new DishInformation();
-
-        dishInformation.setId(dishInformationId);
-        dishInformation.setCaloricContent(300);
-        dishInformation.setDescription(dishInformationDescription);
-
-        dish = new Dish();
-        dish.setId(1);
+    @Test
+    void testCreateDishInformationForNotExistentDish() {
+        DishInformationDTO dishInformationDTO = new DishInformationDTO();
+        dishInformationDTO.setDishId(1);
+        dishInformationDTO.setDescription("some description");
+        assertThrows(NotFound.class, () ->  dishInformationService.createDishInformation(dishInformationDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, never()).getById(any());
+        verify(dishRepository, never()).save(any());
     }
 
     @Test
-    void createDishInformation() {
-        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(dishInformation);
-        when(dishRepository.getById(any(Long.class))).thenReturn(dish);
-
-        DishInformationDTO dishInformationParamsDTO = new DishInformationDTO(dishInformationId, dishInformationDescription, dishInformationCaloricContent);
-        DishInformationDTO createdDishInformationDTO = dishInformationService.createDishInformation(1, dishInformationParamsDTO);
-
-        verify(dishInformationRepositoryInterface, times(1)).save(any());
-
-        Assert.assertEquals(dishInformationId, createdDishInformationDTO.getId());
-        Assert.assertEquals(dishInformationCaloricContent, createdDishInformationDTO.getCaloricContent());
-        Assert.assertEquals(dishInformationDescription, createdDishInformationDTO.getDescription());
+    void testCreateDishInformationForDishThatAlreadyHasDishInformation() {
+        DishInformationDTO dishInformationDTO = new DishInformationDTO();
+        dishInformationDTO.setDishId(1);
+        dishInformationDTO.setDescription("some description");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishService.isDishHasDishInformation(any(Long.class))).thenReturn(true);
+        assertThrows(ConflictBetweenData.class, () ->  dishInformationService.createDishInformation(dishInformationDTO));
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, never()).getById(any());
+        verify(dishRepository, never()).save(any());
     }
 
     @Test
-    void createNullDishInformation() {
-        DishInformationDTO invalidDishInformationDTO = null;
-        Assert.assertThrows(IllegalArgumentException.class, () -> dishInformationService.createDishInformation(1, invalidDishInformationDTO));
+    void testCreateDishInformationOk() {
+        DishInformationDTO dishInformationDTO = new DishInformationDTO();
+        dishInformationDTO.setDishId(1);
+        dishInformationDTO.setDescription("some description");
+        when(dishRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishRepository.getById(any(Long.class))).thenReturn(new Dish());
+        dishInformationService.createDishInformation(dishInformationDTO);
+        verify(dishRepository, times(1)).existsById(any());
+        verify(dishRepository, times(1)).getById(any());
+        verify(dishRepository, times(1)).save(any());
     }
 
     @Test
-    void createDishInformationForNullDish() {
-        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(dishInformation);
-        when(dishRepository.getById(any(Long.class))).thenReturn(null);
-
-        DishInformationDTO dishInformationParamsDTO = new DishInformationDTO(dishInformationId, dishInformationDescription, dishInformationCaloricContent);
-        Assert.assertThrows(NullPointerException.class, () -> dishInformationService.createDishInformation(1, dishInformationParamsDTO));
+    void testUpdateNonExistentDishInformation() {
+        DishInformationForUpdateDTO dishInformationForUpdateDTO = new DishInformationForUpdateDTO();
+        dishInformationForUpdateDTO.setDescription("some description");
+        assertThrows(NotFound.class, () -> dishInformationService.updateDishInformation(1, dishInformationForUpdateDTO));
+        verify(dishInformationRepository, times(1)).existsById(any());
+        verify(dishInformationRepository, never()).getById(any());
+        verify(dishInformationRepository, never()).save(any());
     }
 
     @Test
-    void readDishInformation() {
-        when(dishInformationRepositoryInterface.getById(any(Long.class))).thenReturn(dishInformation);
-
-        DishInformationDTO readDishInformationDTO = dishInformationService.readDishInformation(dishInformationId);
-
-        verify(dishInformationRepositoryInterface, times(1)).getById(any());
-
-        Assert.assertEquals(dishInformationId, readDishInformationDTO.getId());
-        Assert.assertEquals(dishInformationCaloricContent, readDishInformationDTO.getCaloricContent());
-        Assert.assertEquals(dishInformationDescription, readDishInformationDTO.getDescription());
-    }
-
-    @Test
-    void readNullDishInformation() {
-        Assert.assertThrows(IllegalArgumentException.class, () -> dishInformationService.readDishInformation(0));
-    }
-
-    @Test
-    void updateDishInformation() {
-        int newCaloricContent = 400;
-        String newDescription = "500 g";
-
-        DishInformation updatedDishInformation = new DishInformation();
-        updatedDishInformation.setId(dishInformationId);
-        updatedDishInformation.setCaloricContent(newCaloricContent);
-        updatedDishInformation.setDescription(newDescription);
-
-        when(dishInformationRepositoryInterface.save(any(DishInformation.class))).thenReturn(updatedDishInformation);
-        when(dishInformationRepositoryInterface.getById(any(Long.class))).thenReturn(dishInformation);
-
-        DishInformationDTO updatedDishInformationParamsDTO = new DishInformationDTO(dishInformationId, newDescription, newCaloricContent);
-        DishInformationDTO updatedDishInformationDTO = dishInformationService.updateDishInformation(dishInformationId, updatedDishInformationParamsDTO);
-
-        verify(dishInformationRepositoryInterface, times(1)).save(any());
-
-        Assert.assertEquals(dishInformationId, updatedDishInformationDTO.getId());
-        Assert.assertEquals(newCaloricContent, updatedDishInformationDTO.getCaloricContent());
-        Assert.assertEquals(newDescription, updatedDishInformationDTO.getDescription());
-    }
-
-    @Test
-    void updateNullDishInformation() {
-        int newCaloricContent = 400;
-        String newDescription = "500 g";
-        DishInformationDTO updatedDishInformationParamsDTO = new DishInformationDTO(dishInformationId, newDescription, newCaloricContent);
-
-        DishInformationDTO invalidDishInformationDTO = null;
-        Assert.assertThrows(NullPointerException.class, () -> dishInformationService.updateDishInformation(invalidDishInformationDTO.getId(), updatedDishInformationParamsDTO));
-    }
-
-    @Test
-    void updateDishInformationWithNullParams() {
-        DishInformationDTO invalidDishInformationDTO = null;
-
-        Assert.assertThrows(IllegalArgumentException.class, () -> dishInformationService.updateDishInformation(dishInformationId, invalidDishInformationDTO));
-    }
-
-    @Test
-    void deleteDishInformation() {
-        dishInformationService.deleteDishInformation(dishInformationId);
-        verify(dishInformationRepositoryInterface, times(1)).delete(any());
-    }
-
-    @Test
-    void deleteNullDishInformation() {
-        DishInformationDTO invalidDishInformationDTO = null;
-        Assert.assertThrows(NullPointerException.class, () -> dishInformationService.deleteDishInformation(invalidDishInformationDTO.getId()));
+    void testUpdateDishInformationOk() {
+        DishInformationForUpdateDTO dishInformationForUpdateDTO = new DishInformationForUpdateDTO();
+        dishInformationForUpdateDTO.setDescription("some description");
+        when(dishInformationRepository.existsById(any(Long.class))).thenReturn(true);
+        when(dishInformationRepository.getById(any(Long.class))).thenReturn(new DishInformation());
+        dishInformationService.updateDishInformation(1, dishInformationForUpdateDTO);
+        verify(dishInformationRepository, times(1)).existsById(any());
+        verify(dishInformationRepository, times(1)).getById(any());
+        verify(dishInformationRepository, times(1)).save(any());
     }
 
 }

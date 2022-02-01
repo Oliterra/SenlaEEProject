@@ -1,23 +1,21 @@
 package edu.senla.service.serviceinterface;
 
-import edu.senla.dto.OrderDTO;
+import edu.senla.dto.*;
 
 import java.util.List;
 
 public interface OrderServiceInterface {
 
-    public OrderDTO createOrder(long clientId, OrderDTO newOrderDTO);
+    List<OrderDTO> getAllOrders();
 
-    public OrderDTO readOrder(long id);
+    OrderTotalCostDTO checkIncomingOrderDataAndCreateIfItIsCorrect(long clientId, ShoppingCartDTO shoppingCartDTO);
 
-    public OrderDTO updateOrder(long id, OrderDTO updatedOrderDTO);
+    OrderDTO getOrder(long id);
 
-    public void deleteOrder(long id);
+    void deleteOrder(long id);
 
-    public void setCourierOnOrder(long orderId, long courierId);
+    OrderClosingResponseDTO closeOrderForCourier(long id);
 
-    public List<OrderDTO> getAllClientsOrders(long clientId);
-
-    public List<OrderDTO> getAllCouriersOrders(long courierId);
+    void closeOrderForClient(long clientId, long orderId);
 
 }

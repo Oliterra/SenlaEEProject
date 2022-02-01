@@ -1,13 +1,13 @@
 package edu.senla.controller;
 
-import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dto.ClientDTO;
+import edu.senla.controller.controllerinterface.RegistrationControllerInterface;
+import edu.senla.dto.CourierRegistrationRequestDTO;
 import edu.senla.dto.RegistrationRequestDTO;
 import edu.senla.service.serviceinterface.ClientServiceInterface;
+import edu.senla.service.serviceinterface.CourierServiceInterface;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,31 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/registration")
-public class RegistrationController {
+@RequiredArgsConstructor
+public class RegistrationController implements RegistrationControllerInterface {
 
-    @Autowired
-    private ClientServiceInterface clientService;
+    private final ClientServiceInterface clientService;
 
-    @Autowired
-    private ObjectMapper jacksonObjectMapper;
+    private final CourierServiceInterface courierService;
 
-    private final Logger LOG = (Logger) LoggerFactory.getLogger(RegistrationController.class);
+    private final ObjectMapper jacksonObjectMapper;
 
     @SneakyThrows
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Void> registerClient(@RequestBody String clientParamsJson, String registrationRequestJson) {
-        ClientDTO clientDTO = jacksonObjectMapper.readValue(clientParamsJson, ClientDTO.class);
-        RegistrationRequestDTO registrationRequestDTO = jacksonObjectMapper.readValue(registrationRequestJson, RegistrationRequestDTO.class);
+    @RequestMapping(value = "/clients", method = RequestMethod.POST)
+    public ResponseEntity<Void> registerClient(@RequestBody String registrationRequestJson) {
+        clientService.createClient(jacksonObjectMapper.readValue(registrationRequestJson, RegistrationRequestDTO.class));
+        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    }
 
-        clientDTO.setPassword(registrationRequestDTO.getPassword());
-        clientDTO.setUsername(registrationRequestDTO.getUsername());
-
-        if (clientService.isClientExists(clientDTO)) {
-            LOG.info("User with email " + clientDTO.getEmail() + " already exists");
-            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        }
-
-        clientService.createClient(clientDTO);
+    @SneakyThrows
+    @RequestMapping(value = "/couriers", method = RequestMethod.POST)
+    public ResponseEntity<Void> registerCourier(@RequestBody String courierRegistrationRequestJson) {
+        courierService.createCourier(jacksonObjectMapper.readValue(courierRegistrationRequestJson, CourierRegistrationRequestDTO.class));
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 

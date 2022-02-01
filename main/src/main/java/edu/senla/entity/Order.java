@@ -1,27 +1,33 @@
 package edu.senla.entity;
 
+import edu.senla.enums.OrderPaymentType;
+import edu.senla.enums.OrderStatus;
+import edu.senla.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "orders")
-@NamedEntityGraph(
-        name = "order-entity-graph",
-        attributeNodes = {@NamedAttributeNode(value = "typesOfContainer")}
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
 )
+@Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,12 +40,18 @@ public class Order implements Serializable {
 
     private LocalDate date;
 
+    private LocalTime time;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
-    private String paymentType;
+    @Type( type = "pgsql_enum" )
+    private OrderPaymentType paymentType;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Type( type = "pgsql_enum" )
+    private OrderStatus status;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderTypeOfContainer> typesOfContainer;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Container> containers;
 
 }

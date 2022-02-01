@@ -1,6 +1,10 @@
 package edu.senla.entity;
 
+import edu.senla.enums.CourierStatus;
+import edu.senla.enums.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "couriers")
-@NamedEntityGraph(
-        name = "courier-entity-graph",
-        attributeNodes = {@NamedAttributeNode(value = "orders")}
+@TypeDef(
+        name = "pgsql_enum",
+        typeClass = PostgreSQLEnumType.class
 )
+@Table(name = "couriers")
 public class Courier implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "first_name")
@@ -28,6 +32,13 @@ public class Courier implements Serializable {
     private String lastName;
 
     private String phone;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "courier_status")
+    @Type( type = "pgsql_enum" )
+    private CourierStatus status;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

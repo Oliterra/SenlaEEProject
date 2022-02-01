@@ -16,7 +16,6 @@ import java.util.List;
 public class TypeOfContainer implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "number_of_calories")
     private long numberOfCalories;
 
@@ -24,14 +23,7 @@ public class TypeOfContainer implements Serializable{
 
     private int price;
 
-    @ManyToMany
-    @JoinTable(name = "types_of_container_types_of_dish",
-            joinColumns = @JoinColumn(name = "number_of_caloriesdish_type"),
-            inverseJoinColumns = @JoinColumn(name = "dish_type")
-    )
-    private List<Dish> dishes;
-
-    @OneToMany(mappedBy = "typeOfContainer")
-    private List<OrderTypeOfContainer> orders;
+    @OneToMany(mappedBy = "typeOfContainer", cascade = CascadeType.ALL)
+    private List<Container> containers;
 
 }

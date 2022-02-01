@@ -1,19 +1,24 @@
 package edu.senla.service.serviceinterface;
 
+import edu.senla.dto.ContainerComponentsDTO;
 import edu.senla.dto.DishDTO;
+
+import java.util.List;
 
 public interface DishServiceInterface {
 
-    public DishDTO createDish(DishDTO newDishDTO);
+    List<DishDTO> getAllDishes();
 
-    public DishDTO readDish(long id);
+    void createDish(DishDTO newDishDTO);
 
-    public DishDTO updateDish(long id, DishDTO updatedDishDTO);
+    DishDTO getDish(long id);
 
-    public void deleteDish(long id);
+    void updateDish(long id, DishDTO updatedDishDTO);
 
-    public DishDTO getByIdWithFullInformation(long dishId);
+    void deleteDish(long id);
 
-    public boolean isDishExists(DishDTO dish);
+    boolean isDishHasDishInformation(long id);
+
+    boolean isAllDishesHaveDishInformation(ContainerComponentsDTO containerComponentsDTO);
 
 }

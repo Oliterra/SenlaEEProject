@@ -2,169 +2,318 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dto.ClientDTO;
+import edu.senla.dto.ClientMainInfoDTO;
+import edu.senla.entity.Client;
 import edu.senla.service.ClientService;
+import edu.senla.service.ValidationService;
 import lombok.SneakyThrows;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transactional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
 @SpringBootTest
-@ContextConfiguration(classes = {ClientController.class, ClientService.class, ClientRepositoryInterface.class})
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@Transactional
 public class ClientControllerTest {
 
     @Autowired
-    private ClientController clientController;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private MockMvc mockMvc;
+    private ClientController registrationController;
 
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private MockMvc mockMvc;
 
-    private ClientDTO client;
-    private ClientDTO updatedClient;
+    @SpyBean
+    private ClientService clientService;
 
-    private String clientJson;
-    private String updatedClientJson;
+    @SpyBean
+    private ValidationService validationService;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    @SpyBean
+    private ClientRepositoryInterface clientRepository;
+
+    private Client clientToOperateWith;
 
     @SneakyThrows
     @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-
-        client = new ClientDTO();
-        client.setId(1);
-        client.setFirstName("TestFirstName");
-        client.setLastName("TestLastName");
-        client.setPhone("+37533739373");
-        client.setEmail("test@test.com");
-        client.setAddress("Test address");
-
-        updatedClient = new ClientDTO();
-        updatedClient.setFirstName("AnotherTestName");
-        updatedClient.setLastName("AnotherTestName");
-        updatedClient.setPhone("+375444444444");
-        updatedClient.setEmail("anotherTest@test.com");
-        updatedClient.setAddress("Another test address");
-
-        clientJson = mapper.writeValueAsString(client);
-        updatedClientJson = mapper.writeValueAsString(updatedClient);
-
-        passwordEncoder = new BCryptPasswordEncoder();
+    void creteClientToOperateWith() {
+        clientToOperateWith = new Client();
+        clientToOperateWith.setFirstName("CorrectName");
+        clientToOperateWith.setLastName("CorrectName");
+        clientToOperateWith.setEmail("test@test.com");
+        clientToOperateWith.setPhone("+375333333333");
+        clientToOperateWith.setUsername("Username");
+        clientToOperateWith.setPassword("testPassword");
+        clientRepository.save(clientToOperateWith);
     }
 
     @SneakyThrows
     @Test
-    public void readClientOkStatus() {
+    void testGetAllClientsUnauthorizedStatus() {
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/clients")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(clientJson))
+                .get("/clients"))
                 .andDo(print())
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders.
-                get("/clients/{id}", 1))
+                .andExpect(status().isUnauthorized());
+        verify(clientService, never()).getAllClients();
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"USER"})
+    @Test
+    void testGetAllClientsForbiddenStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/clients"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        verify(clientService, never()).getAllClients();
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testGetAllClientsOkStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/clients"))
                 .andDo(print())
                 .andExpect(status().isOk());
+        verify(clientService, times(1)).getAllClients();
     }
 
     @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
     @Test
-    public void readClientNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                get("/clients/{id}", 2))
+    void testGetNonExistentClientNotFoundStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/clients/33333"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+        verify(clientService, times(1)).getClient(any(Long.class));
     }
 
-    /*@SneakyThrows
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
     @Test
-    public void updateClientOkStatus() {
+    void testGetExistentClientOkStatus() {
+        long idOfClientToGet = clientToOperateWith.getId();
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/clients")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(clientJson))
-                .andDo(print())
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/clients/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(updatedClientJson))
+                .get("/clients/{idOfClientToGet}", idOfClientToGet))
                 .andDo(print())
                 .andExpect(status().isOk());
+        verify(clientService, times(1)).getClient(any(Long.class));
     }
 
     @SneakyThrows
     @Test
-    public void updateClientNotFoundStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/clients/{id}", 2)
+    void testUpdateClientUnauthorizedStatus() {
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("CorrectName");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(updatedClientJson))
+                .content(clientMainInfoJson))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
+        verify(clientService, never()).updateClient(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
     }
 
     @SneakyThrows
+    @WithMockUser(roles={"COURIER"})
     @Test
-    public void updateClientBadRequestStatus() {
-        mockMvc.perform(MockMvcRequestBuilders.
-                put("/clients/{id}", 1)
+    void testUpdateClientForbiddenStatus() {
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("CorrectName");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(""))
+                .content(clientMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        verify(clientService, never()).updateClient(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateClientWhenJsonIsIncorrectBadRequestStatus() {
+        String incorrectJson = "incorrectJson";
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(incorrectJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+        verify(clientService, never()).updateClient(any(Long.class), any());
+        verify(validationService, never()).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
     }
 
     @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
     @Test
-    public void deleteClientOkStatus() {
+    void testUpdateClientWithIncorrectSymbolsInNameBadRequestStatus() {
+        long idOfClientToUpdate = clientToOperateWith.getId();
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("$%*&)(");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/clients")
+                .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(clientJson))
+                .content(clientMainInfoJson))
                 .andDo(print())
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete("/clients/{id}", 1))
-                .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).updateClient(any(Long.class), any());
+        verify(validationService,  times(1)).isNameCorrect(any());
+        verify(validationService, never()).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
     }
 
     @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
     @Test
-    public void deleteClientNotFoundStatus() {
+    void testUpdateClientWithTooShortNameBadRequestStatus() {
+        long idOfClientToUpdate = clientToOperateWith.getId();
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("c");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/clients/{id}", 2))
+                .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(clientMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).updateClient(any(Long.class), any());
+        verify(validationService,  times(1)).isNameCorrect(any());
+        verify(validationService, times(1)).isNameLengthValid(any());
+        verify(validationService, never()).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateClientWithInvalidEmailBadRequestStatus() {
+        long idOfClientToUpdate = clientToOperateWith.getId();
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("CorrectName");
+        clientMainInfoDTO.setLastName("CorrectName");
+        clientMainInfoDTO.setEmail("wrong");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(clientMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).updateClient(any(Long.class), any());
+        verify(validationService,  times(2)).isNameCorrect(any());
+        verify(validationService, times(2)).isNameLengthValid(any());
+        verify(validationService, times(1)).isEmailCorrect(any());
+        verify(validationService, never()).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateClientWithInvalidPhoneBadRequestStatus() {
+        long idOfClientToUpdate = clientToOperateWith.getId();
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("CorrectName");
+        clientMainInfoDTO.setLastName("CorrectName");
+        clientMainInfoDTO.setEmail("test@test.com");
+        clientMainInfoDTO.setPhone("wrong");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(clientMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).updateClient(any(Long.class), any());
+        verify(validationService,  times(2)).isNameCorrect(any());
+        verify(validationService, times(2)).isNameLengthValid(any());
+        verify(validationService, times(1)).isEmailCorrect(any());
+        verify(validationService,times(1)).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testUpdateClientOkStatus() {
+        long idOfClientToUpdate = clientToOperateWith.getId();
+        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
+        clientMainInfoDTO.setFirstName("UpdatedName");
+        clientMainInfoDTO.setLastName("UpdatedName");
+        clientMainInfoDTO.setEmail("updated@test.com");
+        clientMainInfoDTO.setPhone("+3756666666");
+        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(clientMainInfoJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        verify(clientService, times(1)).updateClient(any(Long.class), any());
+        verify(validationService,times(2)).isNameCorrect(any());
+        verify(validationService, times(2)).isNameLengthValid(any());
+        verify(validationService, times(1)).isEmailCorrect(any());
+        verify(validationService, times(1)).isPhoneCorrect(any());
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testDeleteNonExistentClientNotFoundStatus() {
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/clients/33333"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-    }*/
+        verify(clientService, times(1)).deleteClient(any(Long.class));
+    }
+
+    @SneakyThrows
+    @WithMockUser(roles={"ADMIN"})
+    @Test
+    void testDeleteExistentClientOkStatus() {
+        long idOfClientToDelete = clientToOperateWith.getId();
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/clients/{idOfClientToDelete}", idOfClientToDelete))
+                .andDo(print())
+                .andExpect(status().isOk());
+        verify(clientService, times(1)).deleteClient(any(Long.class));
+    }
 
 }
 
