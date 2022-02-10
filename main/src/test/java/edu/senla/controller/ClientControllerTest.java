@@ -1,11 +1,12 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dto.ClientMainInfoDTO;
-import edu.senla.entity.Client;
-import edu.senla.service.ClientService;
-import edu.senla.service.ValidationService;
+import edu.senla.controller.impl.ClientControllerImpl;
+import edu.senla.dao.ClientRepository;
+import edu.senla.model.dto.ClientMainInfoDTO;
+import edu.senla.model.entity.Client;
+import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClientControllerTest {
 
     @Autowired
-    private ClientController registrationController;
+    private ClientControllerImpl registrationController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -44,13 +45,13 @@ public class ClientControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @SpyBean
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @SpyBean
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     private Client clientToOperateWith;
 
@@ -74,7 +75,7 @@ public class ClientControllerTest {
                 .get("/clients"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
-        verify(clientService, never()).getAllClients();
+        verify(clientService, never()).getAllClients(10);
     }
 
     @SneakyThrows
@@ -85,7 +86,7 @@ public class ClientControllerTest {
                 .get("/clients"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-        verify(clientService, never()).getAllClients();
+        verify(clientService, never()).getAllClients(10);
     }
 
     @SneakyThrows
@@ -96,7 +97,7 @@ public class ClientControllerTest {
                 .get("/clients"))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(clientService, times(1)).getAllClients();
+        verify(clientService, times(1)).getAllClients(10);
     }
 
     @SneakyThrows

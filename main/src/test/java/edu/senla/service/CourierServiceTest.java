@@ -1,19 +1,22 @@
 package edu.senla.service;
 
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dao.ContainerRepositoryInterface;
-import edu.senla.dao.CourierRepositoryInterface;
-import edu.senla.dao.OrderRepositoryInterface;
-import edu.senla.dto.*;
-import edu.senla.entity.Client;
-import edu.senla.entity.Courier;
-import edu.senla.entity.Order;
-import edu.senla.enums.CourierStatus;
-import edu.senla.enums.OrderPaymentType;
-import edu.senla.enums.OrderStatus;
-import edu.senla.exeptions.BadRequest;
-import edu.senla.exeptions.ConflictBetweenData;
-import edu.senla.exeptions.NotFound;
+import edu.senla.dao.ClientRepository;
+import edu.senla.dao.ContainerRepository;
+import edu.senla.dao.CourierRepository;
+import edu.senla.dao.OrderRepository;
+import edu.senla.model.dto.*;
+import edu.senla.model.entity.Client;
+import edu.senla.model.entity.Courier;
+import edu.senla.model.entity.Order;
+import edu.senla.model.enums.CourierStatus;
+import edu.senla.model.enums.OrderPaymentType;
+import edu.senla.model.enums.OrderStatus;
+import edu.senla.exeption.BadRequest;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
+import edu.senla.service.impl.ContainerServiceImpl;
+import edu.senla.service.impl.CourierServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,31 +40,31 @@ import static org.mockito.Mockito.*;
 class CourierServiceTest {
 
     @Mock
-    private CourierRepositoryInterface courierRepository;
+    private CourierRepository courierRepository;
 
     @Mock
-    private OrderRepositoryInterface orderRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     @Mock
-    private ContainerRepositoryInterface containerRepository;
+    private ContainerRepository containerRepository;
 
     @Mock
-    private ContainerService containerService;
+    private ContainerServiceImpl containerService;
 
     @Spy
     private ModelMapper mapper;
 
     @Spy
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @Spy
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private CourierService courierService;
+    private CourierServiceImpl courierService;
 
     @Test
     void testGetAllCouriers() {
@@ -71,7 +74,7 @@ class CourierServiceTest {
         couriersList.add(courier);
         Page<Courier> couriers = new PageImpl<>(couriersList);
         when(courierRepository.findAll(any(Pageable.class))).thenReturn(couriers);
-        List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers();
+        List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers(10);
         verify(courierRepository, times(1)).findAll((Pageable)any());
         assertTrue(courierMainInfoDTOs.size() == 1);
         assertEquals(CourierStatus.ACTIVE.toString(), courierMainInfoDTOs.get(0).getStatus());
@@ -82,7 +85,7 @@ class CourierServiceTest {
         List<Courier> couriersList = new ArrayList<>();
         Page<Courier> couriers = new PageImpl<>(couriersList);
         when(courierRepository.findAll(any(Pageable.class))).thenReturn(couriers);
-        List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers();
+        List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers(10);
         verify(courierRepository, times(1)).findAll((Pageable)any());
         assertTrue(courierMainInfoDTOs.isEmpty());
     }

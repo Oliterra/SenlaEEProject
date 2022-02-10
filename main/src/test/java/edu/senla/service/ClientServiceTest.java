@@ -1,18 +1,19 @@
 package edu.senla.service;
 
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dao.ContainerRepositoryInterface;
-import edu.senla.dao.OrderRepositoryInterface;
-import edu.senla.dao.RoleRepositoryInterface;
-import edu.senla.dto.*;
-import edu.senla.entity.Client;
-import edu.senla.entity.Order;
-import edu.senla.entity.Role;
-import edu.senla.enums.OrderStatus;
-import edu.senla.exeptions.BadRequest;
-import edu.senla.exeptions.ConflictBetweenData;
-import edu.senla.exeptions.NotFound;
-import edu.senla.service.serviceinterface.ContainerServiceInterface;
+import edu.senla.dao.ClientRepository;
+import edu.senla.dao.ContainerRepository;
+import edu.senla.dao.OrderRepository;
+import edu.senla.dao.RoleRepository;
+import edu.senla.model.dto.*;
+import edu.senla.model.entity.Client;
+import edu.senla.model.entity.Order;
+import edu.senla.model.entity.Role;
+import edu.senla.model.enums.OrderStatus;
+import edu.senla.exeption.BadRequest;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
+import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,22 +37,22 @@ import static org.mockito.Mockito.*;
 public class ClientServiceTest {
 
     @Spy
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @Mock
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     @Mock
-    private RoleRepositoryInterface roleRepository;
+    private RoleRepository roleRepository;
 
     @Mock
-    private OrderRepositoryInterface orderRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    private ContainerRepositoryInterface containerRepository;
+    private ContainerRepository containerRepository;
 
     @Mock
-    private ContainerServiceInterface containerService;
+    private ContainerService containerService;
 
     @Spy
     private ModelMapper mapper;
@@ -60,7 +61,7 @@ public class ClientServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @Test
     void testGetAllClients() {
@@ -70,7 +71,7 @@ public class ClientServiceTest {
         clientList.add(client);
         Page<Client> clients = new PageImpl<>(clientList);
         when(clientRepository.findAll(any(Pageable.class))).thenReturn(clients);
-        List<ClientMainInfoDTO> clientMainInfoDTOs = clientService.getAllClients();
+        List<ClientMainInfoDTO> clientMainInfoDTOs = clientService.getAllClients(10);
         verify(clientRepository, times(1)).findAll((Pageable) any());
         assertTrue(clientMainInfoDTOs.size() == 1);
         assertEquals(client.getFirstName(), clientMainInfoDTOs.get(0).getFirstName());
@@ -81,7 +82,7 @@ public class ClientServiceTest {
         List<Client> clientList = new ArrayList<>();
         Page<Client> clients = new PageImpl<>(clientList);
         when(clientRepository.findAll(any(Pageable.class))).thenReturn(clients);
-        List<ClientMainInfoDTO> courierMainInfoDTOs = clientService.getAllClients();
+        List<ClientMainInfoDTO> courierMainInfoDTOs = clientService.getAllClients(10);
         verify(clientRepository, times(1)).findAll((Pageable) any());
         assertTrue(courierMainInfoDTOs.isEmpty());
     }
@@ -97,7 +98,7 @@ public class ClientServiceTest {
         clientList.add(clientAdmin);
         when(roleRepository.getByName(any(String.class))).thenReturn(adminRole);
         when(clientRepository.getAllByRole(any(Role.class), any(Pageable.class))).thenReturn(clientList);
-        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins();
+        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
         verify(roleRepository, times(1)).getByName(any());
         verify(clientRepository, times(1)).getAllByRole(any(), any());
         assertTrue(adminInfoDTOs.size() == 1);
@@ -109,7 +110,7 @@ public class ClientServiceTest {
         when(roleRepository.getByName(any(String.class))).thenReturn(new Role());
         List<Client> clientList = new ArrayList<>();
         when(clientRepository.getAllByRole(any(Role.class), any(Pageable.class))).thenReturn(clientList);
-        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins();
+        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
         verify(clientRepository, times(1)).getAllByRole(any(), any());
         assertTrue(adminInfoDTOs.isEmpty());
     }

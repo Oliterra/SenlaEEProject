@@ -1,6 +1,6 @@
 package edu.senla.security;
 
-import edu.senla.service.ClientUserDetailsService;
+import edu.senla.service.impl.ClientUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,7 @@ public class JwtFilter extends GenericFilterBean {
     private JwtProvider jwtProvider;
 
     @Autowired
-    private ClientUserDetailsService clientUserDetailsService;
+    private ClientUserDetailsServiceImpl clientUserDetailsService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -46,5 +46,4 @@ public class JwtFilter extends GenericFilterBean {
         }
         return null;
     }
-
 }

@@ -1,11 +1,12 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.CourierRepositoryInterface;
-import edu.senla.dto.CourierMainInfoDTO;
-import edu.senla.entity.Courier;
-import edu.senla.service.CourierService;
-import edu.senla.service.ValidationService;
+import edu.senla.controller.impl.CourierControllerImpl;
+import edu.senla.dao.CourierRepository;
+import edu.senla.model.dto.CourierMainInfoDTO;
+import edu.senla.model.entity.Courier;
+import edu.senla.service.impl.CourierServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CourierControllerTest {
 
     @Autowired
-    private CourierController registrationController;
+    private CourierControllerImpl registrationController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -44,13 +45,13 @@ public class CourierControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private CourierService courierService;
+    private CourierServiceImpl courierService;
 
     @SpyBean
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @SpyBean
-    private CourierRepositoryInterface courierRepository;
+    private CourierRepository courierRepository;
 
     private Courier courierToOperateWith;
 
@@ -72,7 +73,7 @@ public class CourierControllerTest {
                 .get("/couriers"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
-        verify(courierService, never()).getAllCouriers();
+        verify(courierService, never()).getAllCouriers(10);
     }
 
     @SneakyThrows
@@ -83,7 +84,7 @@ public class CourierControllerTest {
                 .get("/couriers"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-        verify(courierService, never()).getAllCouriers();
+        verify(courierService, never()).getAllCouriers(10);
     }
 
     @SneakyThrows
@@ -94,7 +95,7 @@ public class CourierControllerTest {
                 .get("/couriers"))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(courierService, times(1)).getAllCouriers();
+        verify(courierService, times(1)).getAllCouriers(10);
     }
 
     @SneakyThrows

@@ -1,13 +1,15 @@
 package edu.senla.service;
 
-import edu.senla.dao.DishInformationRepositoryInterface;
-import edu.senla.dao.DishRepositoryInterface;
-import edu.senla.dto.DishInformationDTO;
-import edu.senla.dto.DishInformationForUpdateDTO;
-import edu.senla.entity.Dish;
-import edu.senla.entity.DishInformation;
-import edu.senla.exeptions.ConflictBetweenData;
-import edu.senla.exeptions.NotFound;
+import edu.senla.dao.DishInformationRepository;
+import edu.senla.dao.DishRepository;
+import edu.senla.model.dto.DishInformationDTO;
+import edu.senla.model.dto.DishInformationForUpdateDTO;
+import edu.senla.model.entity.Dish;
+import edu.senla.model.entity.DishInformation;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
+import edu.senla.service.impl.DishInformationServiceImpl;
+import edu.senla.service.impl.DishServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,19 +27,19 @@ import static org.mockito.Mockito.*;
 class DishInformationServiceTest {
 
     @Mock
-    private DishService dishService;
+    private DishServiceImpl dishService;
 
     @Mock
-    private DishInformationRepositoryInterface dishInformationRepository;
+    private DishInformationRepository dishInformationRepository;
 
     @Mock
-    private DishRepositoryInterface dishRepository;
+    private DishRepository dishRepository;
 
     @Spy
     private ModelMapper mapper;
 
     @InjectMocks
-    private DishInformationService dishInformationService;
+    private DishInformationServiceImpl dishInformationService;
 
     @Test
     void testCreateDishInformationForNotExistentDish() {

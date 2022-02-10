@@ -1,12 +1,14 @@
 package edu.senla.service;
 
-import edu.senla.dao.TypeOfContainerRepositoryInterface;
-import edu.senla.dto.TypeOfContainerDTO;
-import edu.senla.dto.TypeOfContainerForUpdateDTO;
-import edu.senla.entity.TypeOfContainer;
-import edu.senla.exeptions.BadRequest;
-import edu.senla.exeptions.ConflictBetweenData;
-import edu.senla.exeptions.NotFound;
+import edu.senla.dao.TypeOfContainerRepository;
+import edu.senla.model.dto.TypeOfContainerDTO;
+import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
+import edu.senla.model.entity.TypeOfContainer;
+import edu.senla.exeption.BadRequest;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
+import edu.senla.service.impl.TypeOfContainerServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,16 +25,16 @@ import static org.mockito.Mockito.*;
 class TypeOfContainerServiceTest {
 
     @Mock
-    private TypeOfContainerRepositoryInterface typeOfContainerRepository;
+    private TypeOfContainerRepository typeOfContainerRepository;
 
     @Spy
     private ModelMapper mapper;
 
     @Spy
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @InjectMocks
-    private TypeOfContainerService typeOfContainerService;
+    private TypeOfContainerServiceImpl typeOfContainerService;
 
     @Test
     void testCreteTypeOfContainerWithAlreadyExistentName() {

@@ -1,17 +1,18 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dao.DishRepositoryInterface;
-import edu.senla.dao.RoleRepositoryInterface;
-import edu.senla.dto.ContainerComponentsDTO;
-import edu.senla.dto.ShoppingCartDTO;
-import edu.senla.entity.Client;
-import edu.senla.entity.Dish;
-import edu.senla.enums.DishType;
-import edu.senla.enums.Roles;
-import edu.senla.service.serviceinterface.ClientServiceInterface;
-import edu.senla.service.serviceinterface.OrderServiceInterface;
+import edu.senla.controller.impl.ShoppingCartControllerImpl;
+import edu.senla.dao.ClientRepository;
+import edu.senla.dao.DishRepository;
+import edu.senla.dao.RoleRepository;
+import edu.senla.model.dto.ContainerComponentsDTO;
+import edu.senla.model.dto.ShoppingCartDTO;
+import edu.senla.model.entity.Client;
+import edu.senla.model.entity.Dish;
+import edu.senla.model.enums.DishType;
+import edu.senla.model.enums.Roles;
+import edu.senla.service.ClientService;
+import edu.senla.service.OrderService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ShoppingCartControllerTest {
 
     @Autowired
-    private ShoppingCartController shoppingCartController;
+    private ShoppingCartControllerImpl shoppingCartController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -54,19 +55,19 @@ public class ShoppingCartControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientServiceInterface clientService;
+    private ClientService clientService;
 
     @SpyBean
-    private OrderServiceInterface orderService;
+    private OrderService orderService;
 
     @SpyBean
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     @SpyBean
-    private DishRepositoryInterface dishRepository;
+    private DishRepository dishRepository;
 
     @SpyBean
-    private RoleRepositoryInterface roleRepository;
+    private RoleRepository roleRepository;
 
     private Client client;
     private Dish meat;

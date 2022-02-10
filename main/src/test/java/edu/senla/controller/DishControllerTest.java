@@ -1,12 +1,13 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.DishRepositoryInterface;
-import edu.senla.dto.DishDTO;
-import edu.senla.entity.Dish;
-import edu.senla.enums.DishType;
-import edu.senla.service.DishService;
-import edu.senla.service.ValidationService;
+import edu.senla.controller.impl.DishControllerImpl;
+import edu.senla.dao.DishRepository;
+import edu.senla.model.dto.DishDTO;
+import edu.senla.model.entity.Dish;
+import edu.senla.model.enums.DishType;
+import edu.senla.service.impl.DishServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DishControllerTest{
 
     @Autowired
-    private DishController dishController;
+    private DishControllerImpl dishController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -46,13 +47,13 @@ public class DishControllerTest{
     private MockMvc mockMvc;
 
     @SpyBean
-    private DishService dishService;
+    private DishServiceImpl dishService;
 
     @SpyBean
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @SpyBean
-    private DishRepositoryInterface dishRepository;
+    private DishRepository dishRepository;
 
     private Dish dishToOperateWith;
 
@@ -80,7 +81,7 @@ public class DishControllerTest{
                 .get("/dishes"))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(dishService, times(1)).getAllDishes();
+        verify(dishService, times(1)).getAllDishes(10);
     }
 
     @SneakyThrows

@@ -1,17 +1,18 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dao.CourierRepositoryInterface;
-import edu.senla.dao.RoleRepositoryInterface;
-import edu.senla.dto.AuthRequestDTO;
-import edu.senla.dto.CourierAuthRequestDTO;
-import edu.senla.entity.Client;
-import edu.senla.entity.Courier;
-import edu.senla.enums.Roles;
+import edu.senla.controller.impl.AuthenticationControllerImpl;
+import edu.senla.dao.ClientRepository;
+import edu.senla.dao.CourierRepository;
+import edu.senla.dao.RoleRepository;
+import edu.senla.model.dto.AuthRequestDTO;
+import edu.senla.model.dto.CourierAuthRequestDTO;
+import edu.senla.model.entity.Client;
+import edu.senla.model.entity.Courier;
+import edu.senla.model.enums.Roles;
 import edu.senla.security.JwtProvider;
-import edu.senla.service.ClientService;
-import edu.senla.service.CourierService;
+import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.CourierServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthenticationControllerTest {
 
     @Autowired
-    private AuthenticationController authenticationController;
+    private AuthenticationControllerImpl authenticationController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -53,22 +54,22 @@ class AuthenticationControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @SpyBean
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @SpyBean
-    private CourierService courierService;
+    private CourierServiceImpl courierService;
 
     @SpyBean
     private JwtProvider jwtProvider;
 
     @SpyBean
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     @SpyBean
-    private CourierRepositoryInterface courierRepository;
+    private CourierRepository courierRepository;
 
     @SpyBean
-    private RoleRepositoryInterface roleRepository;
+    private RoleRepository roleRepository;
 
     private Client client;
 

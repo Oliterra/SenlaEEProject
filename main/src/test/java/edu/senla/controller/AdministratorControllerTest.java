@@ -1,11 +1,12 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.ClientRepositoryInterface;
-import edu.senla.dao.RoleRepositoryInterface;
-import edu.senla.entity.Client;
-import edu.senla.enums.Roles;
-import edu.senla.service.ClientService;
+import edu.senla.controller.impl.AdministratorControllerImpl;
+import edu.senla.dao.ClientRepository;
+import edu.senla.dao.RoleRepository;
+import edu.senla.model.entity.Client;
+import edu.senla.model.enums.Roles;
+import edu.senla.service.impl.ClientServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdministratorControllerTest {
 
     @Autowired
-    private AdministratorController administratorController;
+    private AdministratorControllerImpl administratorController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -43,13 +44,13 @@ public class AdministratorControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @SpyBean
-    private ClientRepositoryInterface clientRepository;
+    private ClientRepository clientRepository;
 
     @SpyBean
-    private RoleRepositoryInterface roleRepository;
+    private RoleRepository roleRepository;
 
     private Client clientAdmin;
 
@@ -82,7 +83,7 @@ public class AdministratorControllerTest {
                 .get("/administrators"))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
-        verify(clientService, never()).getAllAdmins();
+        verify(clientService, never()).getAllAdmins(10);
     }
 
     @SneakyThrows
@@ -93,7 +94,7 @@ public class AdministratorControllerTest {
                 .get("/administrators"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-        verify(clientService, never()).getAllAdmins();
+        verify(clientService, never()).getAllAdmins(10);
     }
 
     @SneakyThrows
@@ -104,7 +105,7 @@ public class AdministratorControllerTest {
                 .get("/administrators"))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(clientService, times(1)).getAllAdmins();
+        verify(clientService, times(1)).getAllAdmins(10);
     }
 
     @SneakyThrows
