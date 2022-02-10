@@ -1,7 +1,6 @@
 package edu.senla.service;
 
 import edu.senla.model.dto.DishInformationDTO;
-import edu.senla.model.dto.DishInformationForUpdateDTO;
 
 import java.util.List;
 
@@ -9,11 +8,11 @@ public interface DishInformationService {
 
     List<DishInformationDTO> getAllDishesInformation(int pages);
 
-    void createDishInformation(DishInformationDTO newDishInformationDTO);
+    void createDishInformation(String dishInformationJson);
 
     DishInformationDTO getDishInformation(long id);
 
-    void updateDishInformation(long id, DishInformationForUpdateDTO updatedDishInformationDTO);
+    void updateDishInformation(long id, String updatedDishInformationJson);
 
     void deleteDishInformation(long id);
 }

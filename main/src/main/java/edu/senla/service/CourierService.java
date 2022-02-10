@@ -10,7 +10,7 @@ public interface CourierService {
 
     List<CourierBasicInfoDTO> getAllActiveCouriersDTO();
 
-    void createCourier(CourierRegistrationRequestDTO newCourierDTO);
+    void createCourier(String courierRegistrationRequestJson);
 
     CourierMainInfoDTO getCourier(long id);
 
@@ -18,9 +18,9 @@ public interface CourierService {
 
     CourierCurrentOrderInfoDTO getCurrentOrderForCourier(long id);
 
-    CourierFullInfoDTO getCourierByPhoneAndPassword(String phone, String password);
+    CourierFullInfoDTO getCourierByPhoneAndPassword(String authRequestCourierJson);
 
-    void updateCourier(long id, CourierMainInfoDTO updatedCourierDTO);
+    void updateCourier(long id, String updatedCourierJson);
 
     void deleteCourier(long id);
 

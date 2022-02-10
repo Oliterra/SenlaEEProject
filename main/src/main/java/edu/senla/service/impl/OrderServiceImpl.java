@@ -16,8 +16,8 @@ import edu.senla.model.enums.OrderStatus;
 import edu.senla.service.ContainerService;
 import edu.senla.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -35,23 +35,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends AbstractService implements OrderService {
 
     private final ContainerService containerService;
     private final OrderRepository orderRepository;
     private final ContainerRepository containerRepository;
     private final ClientRepository clientRepository;
     private final CourierRepository courierRepository;
-    private final ModelMapper mapper;
     private static final int deliveryTimeStandard = 120;
 
     public List<OrderDTO> getAllOrders(int pages) {
         log.info("Getting all orders");
         Page<Order> orders = orderRepository.findAll(PageRequest.of(0, pages, Sort.by("date").descending()));
-        return orders.stream().map(o -> mapper.map(o, OrderDTO.class)).toList();
+        return orders.stream().map(o -> modelMapper.map(o, OrderDTO.class)).toList();
     }
 
-    public OrderTotalCostDTO checkIncomingOrderDataAndCreateIfItIsCorrect(long clientId, ShoppingCartDTO shoppingCartDTO) {
+    @SneakyThrows
+    public OrderTotalCostDTO checkIncomingOrderDataAndCreateIfItIsCorrect(long clientId, String shoppingCartJson) {
+        ShoppingCartDTO shoppingCartDTO = objectMapper.readValue(shoppingCartJson, ShoppingCartDTO.class);
         List<ContainerComponentsDTO> correctContainers = containerService.filterContainers(shoppingCartDTO.getContainers());
         if (correctContainers.isEmpty()) {
             log.error("Attempt to place an order failed, there is no items in shopping cart");
@@ -67,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrder(long id) {
         log.info("Getting order with id {}: ", id);
         Order order = getOrderIfExists(id);
-        OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
         orderDTO.setStatus(order.getStatus().toString().toLowerCase());
         orderDTO.setPaymentType(order.getPaymentType().toString().toLowerCase());
         log.info("Order found: {}: ", orderDTO);

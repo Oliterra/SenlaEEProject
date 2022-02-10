@@ -14,7 +14,7 @@ public interface ContainerService {
 
     double calculateTotalOrderCost(List<Container> containers);
 
-    ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO);
+    ContainerComponentsParamsDTO calculateWeightOfDishes(String containerComponentsJson);
 
     ContainerComponentsNamesDTO mapFromContainerEntityToContainerComponentsNamesDTO(Container container);
 

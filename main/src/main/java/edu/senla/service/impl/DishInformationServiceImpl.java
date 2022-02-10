@@ -11,8 +11,8 @@ import edu.senla.model.entity.DishInformation;
 import edu.senla.model.enums.CRUDOperations;
 import edu.senla.service.DishInformationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,23 +25,24 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class DishInformationServiceImpl implements DishInformationService {
+public class DishInformationServiceImpl extends AbstractService implements DishInformationService {
 
     private final DishServiceImpl dishService;
     private final DishInformationRepository dishInformationRepository;
     private final DishRepository dishRepository;
-    private final ModelMapper mapper;
 
     public List<DishInformationDTO> getAllDishesInformation(int pages) {
         log.info("Getting all dishes information");
         Page<DishInformation> dishesInformation = dishInformationRepository.findAll(PageRequest.of(0, 10, Sort.by("caloricContent").descending()));
-        return dishesInformation.stream().map(d -> mapper.map(d, DishInformationDTO.class)).toList();
+        return dishesInformation.stream().map(d -> modelMapper.map(d, DishInformationDTO.class)).toList();
     }
 
-    public void createDishInformation(DishInformationDTO newDishInformationDTO) {
+    @SneakyThrows
+    public void createDishInformation(String dishInformationJson) {
+        DishInformationDTO newDishInformationDTO = objectMapper.readValue(dishInformationJson, DishInformationDTO.class);
         log.info("Creating new dish information: {}", newDishInformationDTO);
         checkDishInformation(newDishInformationDTO);
-        DishInformation newDishInformation = mapper.map(newDishInformationDTO, DishInformation.class);
+        DishInformation newDishInformation = modelMapper.map(newDishInformationDTO, DishInformation.class);
         Dish dish = dishRepository.getById(newDishInformationDTO.getDishId());
         dish.setDishInformation(dishInformationRepository.saveAndFlush(newDishInformation));
         dishRepository.save(dish);
@@ -51,15 +52,17 @@ public class DishInformationServiceImpl implements DishInformationService {
     public DishInformationDTO getDishInformation(long id) {
         log.info("Getting dish info with id {}: ", id);
         DishInformation dishInformation = getDishInformationIfExists(id, CRUDOperations.READ);
-        DishInformationDTO dishInformationDTO = mapper.map(dishInformation, DishInformationDTO.class);
+        DishInformationDTO dishInformationDTO = modelMapper.map(dishInformation, DishInformationDTO.class);
         log.info("Dish info found: {}: ", dishInformationDTO);
         return dishInformationDTO;
     }
 
-    public void updateDishInformation(long id, DishInformationForUpdateDTO updatedDishInformationDTO) {
+    @SneakyThrows
+    public void updateDishInformation(long id, String updatedDishInformationJson) {
+        DishInformationForUpdateDTO updatedDishInformationDTO = objectMapper.readValue(updatedDishInformationJson, DishInformationForUpdateDTO.class);
         DishInformation dishInformationToUpdate = getDishInformationIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating dish information with id {} with new data {}: ", id, updatedDishInformationDTO);
-        DishInformation updatedDishInformation = mapper.map(updatedDishInformationDTO, DishInformation.class);
+        DishInformation updatedDishInformation = modelMapper.map(updatedDishInformationDTO, DishInformation.class);
         DishInformation dishInformationWithNewParameters = updateDishInformationOptions(dishInformationToUpdate, updatedDishInformation);
         dishInformationRepository.save(dishInformationWithNewParameters);
         log.info("Dish information with id {} successfully updated", id);
@@ -80,12 +83,11 @@ public class DishInformationServiceImpl implements DishInformationService {
         return dishInformationRepository.getById(id);
     }
 
-    private DishInformation checkDishInformationExistent(long id) {
+    private void checkDishInformationExistent(long id) {
         if (!dishInformationRepository.existsById(id)) {
             log.info("The attempt to delete a dish information failed, there is no dish information with id {}", id);
             throw new NotFound("There is no dish information with id " + id);
         }
-        return dishInformationRepository.getById(id);
     }
 
     private void checkDishInformation(DishInformationDTO newDishInformationDTO) {

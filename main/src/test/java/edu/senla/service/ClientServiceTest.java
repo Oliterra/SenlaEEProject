@@ -140,7 +140,7 @@ public class ClientServiceTest {
     void testCreateClientWithIncorrectSymbolsInFirstName() {
         RegistrationRequestDTO newRegistrationRequestDTO = new RegistrationRequestDTO();
         newRegistrationRequestDTO.setFirstName("@!*%");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(1)).isNameCorrect(any());
         verify(validationService, never()).isNameLengthValid(any());
         verify(validationService, never()).isEmailCorrect(any());
@@ -157,7 +157,7 @@ public class ClientServiceTest {
     void testCreateClientWithTooShortFirstName() {
         RegistrationRequestDTO newRegistrationRequestDTO = new RegistrationRequestDTO();
         newRegistrationRequestDTO.setFirstName("c");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(1)).isNameCorrect(any());
         verify(validationService, times(1)).isNameLengthValid(any());
         verify(validationService, never()).isEmailCorrect(any());
@@ -175,7 +175,7 @@ public class ClientServiceTest {
         RegistrationRequestDTO newRegistrationRequestDTO = new RegistrationRequestDTO();
         newRegistrationRequestDTO.setFirstName("CorrectName");
         newRegistrationRequestDTO.setLastName("@!*%");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(1)).isNameLengthValid(any());
         verify(validationService, never()).isEmailCorrect(any());
@@ -193,7 +193,7 @@ public class ClientServiceTest {
         RegistrationRequestDTO newRegistrationRequestDTO = new RegistrationRequestDTO();
         newRegistrationRequestDTO.setFirstName("CorrectName");
         newRegistrationRequestDTO.setLastName("c");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, never()).isEmailCorrect(any());
@@ -212,7 +212,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setFirstName("CorrectName");
         newRegistrationRequestDTO.setLastName("CorrectName");
         newRegistrationRequestDTO.setEmail("wrong");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -232,7 +232,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setLastName("CorrectName");
         newRegistrationRequestDTO.setEmail("test@test.com");
         newRegistrationRequestDTO.setPhone("wrong");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -253,7 +253,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setEmail("test@test.com");
         newRegistrationRequestDTO.setPhone("+375333333333");
         when(clientRepository.getByEmail(any(String.class))).thenReturn(new Client());
-        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -274,7 +274,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setEmail("test@test.com");
         newRegistrationRequestDTO.setPhone("+375333333333");
         when(clientRepository.getByPhone(any(String.class))).thenReturn(new Client());
-        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -296,7 +296,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setPhone("+375333333333");
         newRegistrationRequestDTO.setUsername("Username");
         when(clientRepository.getByUsername(any(String.class))).thenReturn(new Client());
-        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(ConflictBetweenData.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -319,7 +319,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setUsername("Username");
         newRegistrationRequestDTO.setPassword("testPassword");
         newRegistrationRequestDTO.setPasswordConfirm("AnotherTestPassword");
-        assertThrows(BadRequest.class, () ->  clientService.createClient(newRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  clientService.createClient(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -342,7 +342,7 @@ public class ClientServiceTest {
         newRegistrationRequestDTO.setUsername("Username");
         newRegistrationRequestDTO.setPassword("testPassword");
         newRegistrationRequestDTO.setPasswordConfirm("testPassword");
-        clientService.createClient(newRegistrationRequestDTO);
+        clientService.createClient(new String());
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, times(1)).isEmailCorrect(any());
@@ -374,7 +374,7 @@ public class ClientServiceTest {
         client.setPassword("somePassword");
         when(clientRepository.getByUsername(any(String.class))).thenReturn(client);
         when(passwordEncoder.matches(any(String.class), any(String.class))).thenReturn(true);
-        ClientFullInfoDTO clientFullInfoDTO = clientService.getClientByUsernameAndPassword("username", "somePassword");
+        ClientFullInfoDTO clientFullInfoDTO = clientService.getClientByUsernameAndPassword(new String());
         verify(clientRepository, times(1)).getByUsername(any());
         verify(passwordEncoder, times(1)).matches(any(), any());
         assertEquals(client.getFirstName(), clientFullInfoDTO.getFirstName());
@@ -387,21 +387,21 @@ public class ClientServiceTest {
         client.setFirstName("Some name");
         client.setPassword("somePassword");
         when(clientRepository.getByUsername(any(String.class))).thenReturn(client);
-        assertThrows(NotFound.class, () -> clientService.getClientByUsernameAndPassword("username", "somePassword"));
+        assertThrows(NotFound.class, () -> clientService.getClientByUsernameAndPassword(new String()));
         verify(clientRepository, times(1)).getByUsername(any());
         verify(passwordEncoder, times(1)).matches(any(), any());
     }
 
     @Test
     void testGetNonExistentClientByUsernameAndPassword() {
-        assertThrows(NotFound.class, () -> clientService.getClientByUsernameAndPassword("username", "somePassword"));
+        assertThrows(NotFound.class, () -> clientService.getClientByUsernameAndPassword(new String()));
     }
 
     @Test
     void testUpdateNonExistentClient() {
         ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
         clientMainInfoDTO.setFirstName("CorrectName");
-        assertThrows(NotFound.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(NotFound.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, never()).getById(any());
         verify(validationService, never()).isNameCorrect(any());
@@ -419,7 +419,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setFirstName("@!*%");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(1)).isNameCorrect(any());
@@ -437,7 +437,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setFirstName("c");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(1)).isNameCorrect(any());
@@ -456,7 +456,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setLastName("@!*%");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -475,7 +475,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setLastName("c");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -495,7 +495,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setEmail("wrong");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -516,7 +516,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setPhone("wrong");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(BadRequest.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -538,7 +538,7 @@ public class ClientServiceTest {
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
         when(clientRepository.getByEmail(any(String.class))).thenReturn(new Client());
-        assertThrows(ConflictBetweenData.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(ConflictBetweenData.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -560,7 +560,7 @@ public class ClientServiceTest {
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
         when(clientRepository.getByPhone(any(String.class))).thenReturn(new Client());
-        assertThrows(ConflictBetweenData.class, () ->  clientService.updateClient(1, clientMainInfoDTO));
+        assertThrows(ConflictBetweenData.class, () ->  clientService.updateClient(1, new String()));
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -582,7 +582,7 @@ public class ClientServiceTest {
         clientMainInfoDTO.setAddress("address");
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(new Client());
-        clientService.updateClient(1, clientMainInfoDTO);
+        clientService.updateClient(1, new String());
         verify(clientRepository, times(1)).existsById(any());
         verify(clientRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());

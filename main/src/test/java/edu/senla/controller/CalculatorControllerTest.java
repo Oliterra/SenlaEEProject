@@ -72,7 +72,7 @@ public class CalculatorControllerTest {
         meatDishInformationDTO.setCaloricContent(300);
         meatDishInformationDTO.setDishId(savedMeat.getId());
         meatDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(meatDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         garnish = new Dish();
         garnish.setDishType(DishType.GARNISH);
@@ -82,7 +82,7 @@ public class CalculatorControllerTest {
         garnishDishInformationDTO.setCaloricContent(400);
         garnishDishInformationDTO.setDishId(savedGarnish.getId());
         garnishDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(garnishDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         salad = new Dish();
         salad.setDishType(DishType.SALAD);
@@ -92,7 +92,7 @@ public class CalculatorControllerTest {
         saladDishInformationDTO.setCaloricContent(200);
         saladDishInformationDTO.setDishId(savedSalad.getId());
         saladDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(saladDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         sauce = new Dish();
         sauce.setDishType(DishType.SAUCE);
@@ -102,7 +102,7 @@ public class CalculatorControllerTest {
         sauceDishInformationDTO.setCaloricContent(200);
         sauceDishInformationDTO.setDishId(savedSauce.getId());
         sauceDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(sauceDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
     }
 
     @SneakyThrows

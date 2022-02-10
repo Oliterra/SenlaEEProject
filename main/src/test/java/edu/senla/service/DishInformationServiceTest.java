@@ -46,7 +46,7 @@ class DishInformationServiceTest {
         DishInformationDTO dishInformationDTO = new DishInformationDTO();
         dishInformationDTO.setDishId(1);
         dishInformationDTO.setDescription("some description");
-        assertThrows(NotFound.class, () ->  dishInformationService.createDishInformation(dishInformationDTO));
+        assertThrows(NotFound.class, () ->  dishInformationService.createDishInformation(new String()));
         verify(dishRepository, times(1)).existsById(any());
         verify(dishRepository, never()).getById(any());
         verify(dishRepository, never()).save(any());
@@ -59,7 +59,7 @@ class DishInformationServiceTest {
         dishInformationDTO.setDescription("some description");
         when(dishRepository.existsById(any(Long.class))).thenReturn(true);
         when(dishService.isDishHasDishInformation(any(Long.class))).thenReturn(true);
-        assertThrows(ConflictBetweenData.class, () ->  dishInformationService.createDishInformation(dishInformationDTO));
+        assertThrows(ConflictBetweenData.class, () ->  dishInformationService.createDishInformation(new String()));
         verify(dishRepository, times(1)).existsById(any());
         verify(dishRepository, never()).getById(any());
         verify(dishRepository, never()).save(any());
@@ -72,7 +72,7 @@ class DishInformationServiceTest {
         dishInformationDTO.setDescription("some description");
         when(dishRepository.existsById(any(Long.class))).thenReturn(true);
         when(dishRepository.getById(any(Long.class))).thenReturn(new Dish());
-        dishInformationService.createDishInformation(dishInformationDTO);
+        dishInformationService.createDishInformation(new String());
         verify(dishRepository, times(1)).existsById(any());
         verify(dishRepository, times(1)).getById(any());
         verify(dishRepository, times(1)).save(any());
@@ -82,7 +82,7 @@ class DishInformationServiceTest {
     void testUpdateNonExistentDishInformation() {
         DishInformationForUpdateDTO dishInformationForUpdateDTO = new DishInformationForUpdateDTO();
         dishInformationForUpdateDTO.setDescription("some description");
-        assertThrows(NotFound.class, () -> dishInformationService.updateDishInformation(1, dishInformationForUpdateDTO));
+        assertThrows(NotFound.class, () -> dishInformationService.updateDishInformation(1, new String()));
         verify(dishInformationRepository, times(1)).existsById(any());
         verify(dishInformationRepository, never()).getById(any());
         verify(dishInformationRepository, never()).save(any());
@@ -94,7 +94,7 @@ class DishInformationServiceTest {
         dishInformationForUpdateDTO.setDescription("some description");
         when(dishInformationRepository.existsById(any(Long.class))).thenReturn(true);
         when(dishInformationRepository.getById(any(Long.class))).thenReturn(new DishInformation());
-        dishInformationService.updateDishInformation(1, dishInformationForUpdateDTO);
+        dishInformationService.updateDishInformation(1, new String());
         verify(dishInformationRepository, times(1)).existsById(any());
         verify(dishInformationRepository, times(1)).getById(any());
         verify(dishInformationRepository, times(1)).save(any());

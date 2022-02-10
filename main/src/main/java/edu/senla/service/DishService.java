@@ -9,11 +9,11 @@ public interface DishService {
 
     List<DishDTO> getAllDishes(int pages);
 
-    void createDish(DishDTO newDishDTO);
+    void createDish(String newDishJson);
 
     DishDTO getDish(long id);
 
-    void updateDish(long id, DishDTO updatedDishDTO);
+    void updateDish(long id, String updatedDishJson);
 
     void deleteDish(long id);
 

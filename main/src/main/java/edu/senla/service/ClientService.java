@@ -16,15 +16,15 @@ public interface ClientService {
 
     void revokeAdministratorRights(long id);
 
-    void createClient(RegistrationRequestDTO newClientDTO);
+    void createClient(String registrationRequestJson);
 
     ClientMainInfoDTO getClient(long id);
 
-    ClientFullInfoDTO getClientByUsernameAndPassword(String username, String password);
+    ClientFullInfoDTO getClientByUsernameAndPassword(String authRequestJson);
 
     long getCurrentClientId();
 
-    void updateClient(long id, ClientMainInfoDTO updatedClientDTO);
+    void updateClient(long id, String updatedClientJson);
 
     void deleteClient(long id);
 }

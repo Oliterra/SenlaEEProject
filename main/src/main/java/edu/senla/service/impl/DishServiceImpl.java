@@ -10,10 +10,9 @@ import edu.senla.model.entity.Dish;
 import edu.senla.model.enums.CRUDOperations;
 import edu.senla.model.enums.DishType;
 import edu.senla.service.DishService;
-import edu.senla.service.ValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,19 +25,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class DishServiceImpl implements DishService {
+public class DishServiceImpl extends AbstractService implements DishService {
 
     private final DishRepository dishRepository;
-    private final ValidationService validationService;
-    private final ModelMapper mapper;
 
     public List<DishDTO> getAllDishes(int pages) {
         log.info("Getting all dishes");
         Page<Dish> dishes = dishRepository.findAll(PageRequest.of(0, pages, Sort.by("name").descending()));
-        return dishes.stream().map(d -> mapper.map(d, DishDTO.class)).toList();
+        return dishes.stream().map(d -> modelMapper.map(d, DishDTO.class)).toList();
     }
 
-    public void createDish(DishDTO newDishDTO) {
+    @SneakyThrows
+    public void createDish(String newDishJson) {
+        DishDTO newDishDTO = objectMapper.readValue(newDishJson, DishDTO.class);
         log.info("A request to create a dish {} was received", newDishDTO);
         checkDishDTOName(newDishDTO, CRUDOperations.CREATE);
         Dish dish = setDishDTOTypeToDishEntity(newDishDTO);
@@ -49,13 +48,15 @@ public class DishServiceImpl implements DishService {
     public DishDTO getDish(long id) {
         log.info("Getting dish with id {}: ", id);
         Dish dish = getDishIfExists(id, CRUDOperations.READ);
-        DishDTO dishDTO = mapper.map(dish, DishDTO.class);
+        DishDTO dishDTO = modelMapper.map(dish, DishDTO.class);
         dishDTO.setDishType(dish.getDishType().toString().toLowerCase());
         log.info("Dish found: {}: ", dishDTO);
         return dishDTO;
     }
 
-    public void updateDish(long id, DishDTO updatedDishDTO) {
+    @SneakyThrows
+    public void updateDish(long id, String updatedDishJson) {
+        DishDTO updatedDishDTO = objectMapper.readValue(updatedDishJson, DishDTO.class);
         Dish dishToUpdate = getDishIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating dish with id {} with new data {}: ", id, updatedDishDTO);
         checkDishDTOName(updatedDishDTO, CRUDOperations.UPDATE);
@@ -88,7 +89,7 @@ public class DishServiceImpl implements DishService {
     }
 
     private Dish setDishDTOTypeToDishEntity(DishDTO newDishDTO) {
-        Dish dish = mapper.map(newDishDTO, Dish.class);
+        Dish dish = modelMapper.map(newDishDTO, Dish.class);
         DishType dishType = translateDishType(newDishDTO.getDishType(), CRUDOperations.CREATE);
         dish.setDishType(dishType);
         return dish;

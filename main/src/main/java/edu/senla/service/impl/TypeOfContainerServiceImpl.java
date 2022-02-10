@@ -9,10 +9,9 @@ import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
 import edu.senla.model.entity.TypeOfContainer;
 import edu.senla.model.enums.CRUDOperations;
 import edu.senla.service.TypeOfContainerService;
-import edu.senla.service.ValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,24 +24,24 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class TypeOfContainerServiceImpl implements TypeOfContainerService {
+public class TypeOfContainerServiceImpl extends AbstractService implements TypeOfContainerService {
 
     private final TypeOfContainerRepository typeOfContainerRepository;
-    private final ValidationService validationService;
-    private final ModelMapper mapper;
 
     public List<TypeOfContainerDTO> getAllTypesOfContainer(int pages) {
         log.info("Getting all types of container");
         Page<TypeOfContainer> typeOfContainers = typeOfContainerRepository.findAll(PageRequest.of(0, pages, Sort.by("numberOfCalories").descending()));
-        return typeOfContainers.stream().map(t -> mapper.map(t, TypeOfContainerDTO.class)).toList();
+        return typeOfContainers.stream().map(t -> modelMapper.map(t, TypeOfContainerDTO.class)).toList();
     }
 
-    public void createTypeOfContainer(TypeOfContainerDTO newTypeOfContainerDTO) {
+    @SneakyThrows
+    public void createTypeOfContainer(String typeOfContainerJson) {
+        TypeOfContainerDTO newTypeOfContainerDTO = objectMapper.readValue(typeOfContainerJson, TypeOfContainerDTO.class);
         log.info("A request to create a type of container {} was received", newTypeOfContainerDTO);
         isTypeOfContainerExists(newTypeOfContainerDTO.getName(), newTypeOfContainerDTO.getNumberOfCalories());
         checkTypeOfContainerName(newTypeOfContainerDTO.getName());
         checkTypeOfContainerNumberOfCalories(newTypeOfContainerDTO.getNumberOfCalories());
-        TypeOfContainer typeOfContainer = mapper.map(newTypeOfContainerDTO, TypeOfContainer.class);
+        TypeOfContainer typeOfContainer = modelMapper.map(newTypeOfContainerDTO, TypeOfContainer.class);
         typeOfContainerRepository.save(typeOfContainer);
         log.info("Type of container with name and number of calories successfully created");
     }
@@ -50,17 +49,19 @@ public class TypeOfContainerServiceImpl implements TypeOfContainerService {
     public TypeOfContainerDTO getTypeOfContainer(long id) {
         log.info("Getting type of container with id {}: ", id);
         TypeOfContainer typeOfContainer = getTypeOfContainerIfExists(id, CRUDOperations.READ);
-        TypeOfContainerDTO typeOfContainerDTO = mapper.map(typeOfContainer, TypeOfContainerDTO.class);
+        TypeOfContainerDTO typeOfContainerDTO = modelMapper.map(typeOfContainer, TypeOfContainerDTO.class);
         log.info("Type of container found: {}: ", typeOfContainerDTO);
         return typeOfContainerDTO;
     }
 
-    public void updateTypeOfContainer(long id, TypeOfContainerForUpdateDTO updatedTypeOfContainerDTODTO) {
+    @SneakyThrows
+    public void updateTypeOfContainer(long id, String updatedTypeOfContainerJson) {
+        TypeOfContainerForUpdateDTO updatedTypeOfContainerDTODTO = objectMapper.readValue(updatedTypeOfContainerJson, TypeOfContainerForUpdateDTO.class);
         TypeOfContainer typeOfContainerToUpdate = getTypeOfContainerIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating type of container with id {} with new data {}: ", id, updatedTypeOfContainerDTODTO);
         checkTypeOfContainerNameExistence(updatedTypeOfContainerDTODTO.getName());
         checkTypeOfContainerName(updatedTypeOfContainerDTODTO.getName());
-        TypeOfContainer updatedTypeOfContainer = mapper.map(updatedTypeOfContainerDTODTO, TypeOfContainer.class);
+        TypeOfContainer updatedTypeOfContainer = modelMapper.map(updatedTypeOfContainerDTODTO, TypeOfContainer.class);
         TypeOfContainer typeOfContainerWithNewParameters = updateTypeOfContainerOptions(typeOfContainerToUpdate, updatedTypeOfContainer);
         typeOfContainerRepository.save(typeOfContainerWithNewParameters);
         log.info("Type of container with id {} successfully updated", id);

@@ -4,6 +4,9 @@ import edu.senla.dao.ClientRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
+import edu.senla.exeption.BadRequest;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
 import edu.senla.model.entity.Client;
 import edu.senla.model.entity.Courier;
@@ -11,9 +14,6 @@ import edu.senla.model.entity.Order;
 import edu.senla.model.enums.CourierStatus;
 import edu.senla.model.enums.OrderPaymentType;
 import edu.senla.model.enums.OrderStatus;
-import edu.senla.exeption.BadRequest;
-import edu.senla.exeption.ConflictBetweenData;
-import edu.senla.exeption.NotFound;
 import edu.senla.service.impl.ContainerServiceImpl;
 import edu.senla.service.impl.CourierServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
@@ -55,7 +55,7 @@ class CourierServiceTest {
     private ContainerServiceImpl containerService;
 
     @Spy
-    private ModelMapper mapper;
+    private ModelMapper modelMapper;
 
     @Spy
     private ValidationServiceImpl validationService;
@@ -94,7 +94,7 @@ class CourierServiceTest {
     void testCreateCourierWithIncorrectSymbolsInFirstName() {
         CourierRegistrationRequestDTO courierRegistrationRequestDTO = new CourierRegistrationRequestDTO();
         courierRegistrationRequestDTO.setFirstName("@!*%");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(1)).isNameCorrect(any());
         verify(validationService, never()).isNameLengthValid(any());
         verify(validationService, never()).isPhoneCorrect(any());
@@ -107,7 +107,7 @@ class CourierServiceTest {
     void testCreateCourierWithTooShortFirstName() {
         CourierRegistrationRequestDTO courierRegistrationRequestDTO = new CourierRegistrationRequestDTO();
         courierRegistrationRequestDTO.setFirstName("c");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(1)).isNameCorrect(any());
         verify(validationService, times(1)).isNameLengthValid(any());
         verify(validationService, never()).isPhoneCorrect(any());
@@ -121,7 +121,7 @@ class CourierServiceTest {
         CourierRegistrationRequestDTO courierRegistrationRequestDTO = new CourierRegistrationRequestDTO();
         courierRegistrationRequestDTO.setFirstName("CorrectName");
         courierRegistrationRequestDTO.setLastName("@!*%");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(1)).isNameLengthValid(any());
         verify(validationService, never()).isPhoneCorrect(any());
@@ -135,7 +135,7 @@ class CourierServiceTest {
         CourierRegistrationRequestDTO courierRegistrationRequestDTO = new CourierRegistrationRequestDTO();
         courierRegistrationRequestDTO.setFirstName("CorrectName");
         courierRegistrationRequestDTO.setLastName("c");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(validationService, never()).isPhoneCorrect(any());
@@ -151,7 +151,7 @@ class CourierServiceTest {
         courierRegistrationRequestDTO.setLastName("CorrectName");
         courierRegistrationRequestDTO.setPhone("+375333333333");
         when(courierRepository.getByPhone(any(String.class))).thenReturn(new Courier());
-        assertThrows(ConflictBetweenData.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(ConflictBetweenData.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(courierRepository,times(1)).getByPhone(any());
@@ -166,7 +166,7 @@ class CourierServiceTest {
         courierRegistrationRequestDTO.setFirstName("CorrectName");
         courierRegistrationRequestDTO.setLastName("CorrectName");
         courierRegistrationRequestDTO.setPhone("wrong");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(courierRepository, times(1)).getByPhone(any());
@@ -183,7 +183,7 @@ class CourierServiceTest {
         courierRegistrationRequestDTO.setPhone("+375333333333");
         courierRegistrationRequestDTO.setPassword("SomePassword");
         courierRegistrationRequestDTO.setPasswordConfirm("AnotherPassword");
-        assertThrows(BadRequest.class, () ->  courierService.createCourier(courierRegistrationRequestDTO));
+        assertThrows(BadRequest.class, () ->  courierService.createCourier(new String()));
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(courierRepository, times(1)).getByPhone(any());
@@ -200,7 +200,7 @@ class CourierServiceTest {
         courierRegistrationRequestDTO.setPhone("+375333333333");
         courierRegistrationRequestDTO.setPassword("SomePassword");
         courierRegistrationRequestDTO.setPasswordConfirm("SomePassword");
-        courierService.createCourier(courierRegistrationRequestDTO);
+        courierService.createCourier(new String());
         verify(validationService, times(2)).isNameCorrect(any());
         verify(validationService, times(2)).isNameLengthValid(any());
         verify(courierRepository, times(1)).getByPhone(any());
@@ -250,7 +250,7 @@ class CourierServiceTest {
         courier.setPassword("somePassword");
         when(courierRepository.getByPhone(any(String.class))).thenReturn(courier);
         when(passwordEncoder.matches(any(String.class), any(String.class))).thenReturn(true);
-        CourierFullInfoDTO courierFullInfoDTO = courierService.getCourierByPhoneAndPassword("phone", "somePassword");
+        CourierFullInfoDTO courierFullInfoDTO = courierService.getCourierByPhoneAndPassword(new String());
         verify(courierRepository, times(1)).getByPhone(any());
         verify(passwordEncoder, times(1)).matches(any(), any());
         assertEquals(courier.getFirstName(), courierFullInfoDTO.getFirstName());
@@ -259,14 +259,14 @@ class CourierServiceTest {
 
     @Test
     void testGetNonExistentCourierByPhoneAndPassword() {
-        assertThrows(NotFound.class, () ->  courierService.getCourierByPhoneAndPassword("phone", "somePassword"));
+        assertThrows(NotFound.class, () ->  courierService.getCourierByPhoneAndPassword(new String()));
     }
 
     @Test
     void testUpdateNonExistentClient() {
         CourierMainInfoDTO courierMainInfoDTO = new CourierMainInfoDTO();
         courierMainInfoDTO.setFirstName("CorrectName");
-        assertThrows(NotFound.class, () ->  courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(NotFound.class, () ->  courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository,  never()).getById(any());
         verify(validationService,  never()).isNameCorrect(any());
@@ -282,7 +282,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setFirstName("@!*%");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(1)).isNameCorrect(any());
@@ -298,7 +298,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setFirstName("c");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        assertThrows(BadRequest.class, () ->courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(BadRequest.class, () ->courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(1)).isNameCorrect(any());
@@ -315,7 +315,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setLastName("@!*%");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -332,7 +332,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setLastName("c");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -350,7 +350,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setPhone("wrong");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(BadRequest.class, () -> courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -369,7 +369,7 @@ class CourierServiceTest {
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
         when(courierRepository.getByPhone(any(String.class))).thenReturn(new Courier());
-        assertThrows(ConflictBetweenData.class, () ->  courierService.updateCourier(1, courierMainInfoDTO));
+        assertThrows(ConflictBetweenData.class, () ->  courierService.updateCourier(1, new String()));
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());
@@ -387,7 +387,7 @@ class CourierServiceTest {
         courierMainInfoDTO.setPhone("+375333333333");
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(new Courier());
-        courierService.updateCourier(1, courierMainInfoDTO);
+        courierService.updateCourier(1, new String());
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
         verify(validationService, times(2)).isNameCorrect(any());

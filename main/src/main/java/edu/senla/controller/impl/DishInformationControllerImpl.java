@@ -1,9 +1,7 @@
 package edu.senla.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.DishInformationController;
 import edu.senla.model.dto.DishInformationDTO;
-import edu.senla.model.dto.DishInformationForUpdateDTO;
 import edu.senla.service.DishInformationService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,7 +16,6 @@ import java.util.List;
 public class DishInformationControllerImpl implements DishInformationController {
 
     private final DishInformationService dishInformationService;
-    private final ObjectMapper mapper;
 
     @SneakyThrows
     @GetMapping
@@ -27,10 +24,9 @@ public class DishInformationControllerImpl implements DishInformationController 
     }
 
     @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @PostMapping
     public void createDishInformation(@RequestBody String dishInformationJson) {
-        dishInformationService.createDishInformation(mapper.readValue(dishInformationJson, DishInformationDTO.class));
+        dishInformationService.createDishInformation(dishInformationJson);
     }
 
     @Secured({"ROLE_ADMIN"})
@@ -40,10 +36,9 @@ public class DishInformationControllerImpl implements DishInformationController 
     }
 
     @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @PutMapping(value = "{id}")
     public void updateDishInformation(@PathVariable long id, @RequestBody String updatedDishInformationJson) {
-        dishInformationService.updateDishInformation(id, mapper.readValue(updatedDishInformationJson, DishInformationForUpdateDTO.class));
+        dishInformationService.updateDishInformation(id, updatedDishInformationJson);
     }
 
     @Secured({"ROLE_ADMIN"})

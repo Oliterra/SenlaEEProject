@@ -17,10 +17,9 @@ import edu.senla.model.enums.OrderStatus;
 import edu.senla.model.enums.Roles;
 import edu.senla.service.ClientService;
 import edu.senla.service.ContainerService;
-import edu.senla.service.ValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,28 +36,26 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class ClientServiceImpl implements ClientService {
+public class ClientServiceImpl extends AbstractService implements ClientService {
 
     private final ContainerService containerService;
-    private final ValidationService validationService;
     private final ContainerRepository containerRepository;
     private final ClientRepository clientRepository;
     private final RoleRepository roleRepository;
     private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper mapper;
 
     public List<ClientMainInfoDTO> getAllClients(int pages) {
         log.info("Getting all couriers");
         Page<Client> clients = clientRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
-        return clients.stream().map(c -> mapper.map(c, ClientMainInfoDTO.class)).toList();
+        return clients.stream().map(c -> modelMapper.map(c, ClientMainInfoDTO.class)).toList();
     }
 
     public List<AdminInfoDTO> getAllAdmins(int pages) {
         log.info("Getting all users with the administrator role");
         Role adminRole = roleRepository.getByName(Roles.ROLE_ADMIN.toString());
         List<Client> admins = clientRepository.getAllByRole(adminRole, PageRequest.of(0, pages, Sort.by("lastName").descending()));
-        return admins.stream().map(a -> mapper.map(a, AdminInfoDTO.class)).toList();
+        return admins.stream().map(a -> modelMapper.map(a, AdminInfoDTO.class)).toList();
     }
 
     public List<ClientOrderInfoDTO> getAllOrdersOfClient(long clientId) {
@@ -92,7 +89,9 @@ public class ClientServiceImpl implements ClientService {
         log.info("User {} {} is a user now", clientRoleInfoDTO.getFirstName(), clientRoleInfoDTO.getLastName());
     }
 
-    public void createClient(RegistrationRequestDTO newClientDTO) {
+    @SneakyThrows
+    public void createClient(String registrationRequestJson) {
+        RegistrationRequestDTO newClientDTO = objectMapper.readValue(registrationRequestJson, RegistrationRequestDTO.class);
         log.info("A new client wants to register in the service: " + newClientDTO);
         checkClientName(newClientDTO.getFirstName(), CRUDOperations.CREATE);
         checkClientName(newClientDTO.getLastName(), CRUDOperations.CREATE);
@@ -101,23 +100,27 @@ public class ClientServiceImpl implements ClientService {
         findPossibleDuplicate(newClientDTO);
         checkClientPasswordConfirmation(newClientDTO);
         ClientFullInfoDTO clientFullInfoDTO = formFullClientRegistrationInformation(newClientDTO);
-        Client client = clientRepository.save(mapper.map(clientFullInfoDTO, Client.class));
+        Client client = clientRepository.save(modelMapper.map(clientFullInfoDTO, Client.class));
         log.info("A new client is registered in the service: " + client);
     }
 
     public ClientMainInfoDTO getClient(long id) {
         log.info("Getting client with id {}: ", id);
         checkClientExistent(id, CRUDOperations.READ);
-        ClientMainInfoDTO clientMainInfoDTO = mapper.map(clientRepository.getById(id), ClientMainInfoDTO.class);
+        ClientMainInfoDTO clientMainInfoDTO = modelMapper.map(clientRepository.getById(id), ClientMainInfoDTO.class);
         log.info("Client found: {}: ", clientMainInfoDTO);
         return clientMainInfoDTO;
     }
 
-    public ClientFullInfoDTO getClientByUsernameAndPassword(String username, String password) {
+    @SneakyThrows
+    public ClientFullInfoDTO getClientByUsernameAndPassword(String authRequestJson) {
+        AuthRequestDTO authRequestDTO = objectMapper.readValue(authRequestJson, AuthRequestDTO.class);
+        String username = authRequestDTO.getUsername();
+        String password = authRequestDTO.getPassword();
         try {
             Client client = clientRepository.getByUsername(username);
             if (!passwordEncoder.matches(password, client.getPassword())) throw new BadRequest();
-            return mapper.map(client, ClientFullInfoDTO.class);
+            return modelMapper.map(client, ClientFullInfoDTO.class);
         } catch (RuntimeException exception) {
             log.error("No user found with username {} and password {}", username, password);
             throw new NotFound("Invalid username or password");
@@ -129,7 +132,9 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.getByUsername(clientUsername).getId();
     }
 
-    public void updateClient(long id, ClientMainInfoDTO clientDTO) {
+    @SneakyThrows
+    public void updateClient(long id, String updatedClientJson) {
+        ClientMainInfoDTO clientDTO = objectMapper.readValue(updatedClientJson, ClientMainInfoDTO.class);
         Client clientToUpdate = getClientIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating client with id {} with new data {}: ", id, clientDTO);
         checkClientName(clientDTO.getFirstName(), CRUDOperations.UPDATE);
@@ -137,7 +142,7 @@ public class ClientServiceImpl implements ClientService {
         checkClientEmail(clientDTO.getEmail(), CRUDOperations.UPDATE);
         checkClientPhone(clientDTO.getPhone(), CRUDOperations.UPDATE);
         findPossibleDuplicate(clientDTO);
-        Client updatedClient = mapper.map(clientDTO, Client.class);
+        Client updatedClient = modelMapper.map(clientDTO, Client.class);
         Client clientWithNewParameters = updateClientsOptions(clientToUpdate, updatedClient);
         clientRepository.save(clientWithNewParameters);
         log.info("Client with id {} successfully updated", id);
@@ -167,7 +172,7 @@ public class ClientServiceImpl implements ClientService {
 
     private ClientRoleInfoDTO getClientRole(long id) {
         Client client = getClientIfExists(id, CRUDOperations.READ);
-        return mapper.map(client, ClientRoleInfoDTO.class);
+        return modelMapper.map(client, ClientRoleInfoDTO.class);
     }
 
     private void findPossibleDuplicate(RegistrationRequestDTO registrationRequestDTO) {
@@ -263,7 +268,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private ClientFullInfoDTO formFullClientRegistrationInformation(RegistrationRequestDTO registrationRequestDTO) {
-        ClientFullInfoDTO clientFullInfoDTO = mapper.map(registrationRequestDTO, ClientFullInfoDTO.class);
+        ClientFullInfoDTO clientFullInfoDTO = modelMapper.map(registrationRequestDTO, ClientFullInfoDTO.class);
         clientFullInfoDTO.setUsername(registrationRequestDTO.getUsername());
         clientFullInfoDTO.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
         clientFullInfoDTO.setPassword(passwordEncoder.encode(registrationRequestDTO.getPassword()));

@@ -1,11 +1,9 @@
 package edu.senla.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.DishController;
 import edu.senla.model.dto.DishDTO;
 import edu.senla.service.DishService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +15,6 @@ import java.util.List;
 public class DishControllerImpl implements DishController {
 
     private final DishService dishService;
-    private final ObjectMapper mapper;
 
     @GetMapping
     public List<DishDTO> getAllDishes(@RequestParam(value = "pages", required = false, defaultValue = "10") int pages) {
@@ -25,10 +22,9 @@ public class DishControllerImpl implements DishController {
     }
 
     @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @PostMapping
     public void createDish(@RequestBody String dishJson) {
-        dishService.createDish(mapper.readValue(dishJson, DishDTO.class));
+        dishService.createDish(dishJson);
     }
 
     @GetMapping(value = "{id}")
@@ -37,10 +33,9 @@ public class DishControllerImpl implements DishController {
     }
 
     @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @PutMapping(value = "{id}")
     public void updateDish(@PathVariable("id") long id, @RequestBody String updatedDishJson) {
-        dishService.updateDish(id, mapper.readValue(updatedDishJson, DishDTO.class));
+        dishService.updateDish(id, updatedDishJson);
     }
 
     @Secured({"ROLE_ADMIN"})

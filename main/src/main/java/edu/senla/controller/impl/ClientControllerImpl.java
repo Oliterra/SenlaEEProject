@@ -1,11 +1,9 @@
 package edu.senla.controller.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.ClientController;
 import edu.senla.model.dto.ClientMainInfoDTO;
 import edu.senla.service.ClientService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +15,6 @@ import java.util.List;
 public class ClientControllerImpl implements ClientController {
 
     private final ClientService clientService;
-    private final ObjectMapper mapper;
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping
@@ -32,10 +29,9 @@ public class ClientControllerImpl implements ClientController {
     }
 
     @Secured({"ROLE_ADMIN"})
-    @SneakyThrows
     @PutMapping(value = "{id}")
     public void updateClient(@PathVariable long id, @RequestBody String updatedClientJson) {
-        clientService.updateClient(id, mapper.readValue(updatedClientJson, ClientMainInfoDTO.class));
+        clientService.updateClient(id, updatedClientJson);
     }
 
     @Secured({"ROLE_ADMIN"})

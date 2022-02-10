@@ -17,10 +17,9 @@ import edu.senla.model.enums.CourierStatus;
 import edu.senla.model.enums.OrderStatus;
 import edu.senla.service.ContainerService;
 import edu.senla.service.CourierService;
-import edu.senla.service.ValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -38,33 +37,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class CourierServiceImpl implements CourierService {
+public class CourierServiceImpl extends AbstractService implements CourierService {
 
     private final ContainerService containerService;
-    private final ValidationService validationService;
     private final ContainerRepository containerRepository;
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final CourierRepository courierRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper mapper;
     private static final double normOfOrdersPerDay = 4;
     private static final double normalPercentageOfOrdersDeliveredOnTime = 75;
 
     public List<CourierMainInfoDTO> getAllCouriers(int pages) {
         log.info("Getting all couriers");
         Page<Courier> couriers = courierRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
-        return couriers.stream().map(c -> mapper.map(c, CourierMainInfoDTO.class)).toList();
+        return couriers.stream().map(c -> modelMapper.map(c, CourierMainInfoDTO.class)).toList();
     }
 
     public List<CourierBasicInfoDTO> getAllActiveCouriersDTO() {
-        List<CourierBasicInfoDTO> courierBasicInfoDTOS = getAllActiveCouriers().stream().map(c -> mapper.map(c, CourierBasicInfoDTO.class)).toList();
+        List<CourierBasicInfoDTO> courierBasicInfoDTOS = getAllActiveCouriers().stream().map(c -> modelMapper.map(c, CourierBasicInfoDTO.class)).toList();
         if (courierBasicInfoDTOS.isEmpty())
             throw new NotFound("Currently there are no active couriers to assign orders");
         return courierBasicInfoDTOS;
     }
 
-    public void createCourier(CourierRegistrationRequestDTO newCourierDTO) {
+    @SneakyThrows
+    public void createCourier(String courierRegistrationRequestJson) {
+        CourierRegistrationRequestDTO newCourierDTO = objectMapper.readValue(courierRegistrationRequestJson, CourierRegistrationRequestDTO.class);
         log.info("A new courier wants to register in the service: " + newCourierDTO);
         checkCourierName(newCourierDTO.getFirstName(), CRUDOperations.CREATE);
         checkCourierName(newCourierDTO.getLastName(), CRUDOperations.CREATE);
@@ -72,7 +71,7 @@ public class CourierServiceImpl implements CourierService {
         checkCourierPhone(newCourierDTO.getPhone(), CRUDOperations.CREATE);
         checkCourierPasswordConfirmation(newCourierDTO);
         newCourierDTO.setPassword(passwordEncoder.encode(newCourierDTO.getPassword()));
-        Courier courier = mapper.map(newCourierDTO, Courier.class);
+        Courier courier = modelMapper.map(newCourierDTO, Courier.class);
         courier.setStatus(CourierStatus.INACTIVE);
         Courier savedCourier = courierRepository.save(courier);
         log.info("A new courier is registered in the service: " + savedCourier);
@@ -81,14 +80,14 @@ public class CourierServiceImpl implements CourierService {
     public CourierMainInfoDTO getCourier(long id) {
         log.info("Getting courier with id {}: ", id);
         checkCourierExistent(id, CRUDOperations.READ);
-        CourierMainInfoDTO courierMainInfoDTO = mapper.map(courierRepository.getById(id), CourierMainInfoDTO.class);
+        CourierMainInfoDTO courierMainInfoDTO = modelMapper.map(courierRepository.getById(id), CourierMainInfoDTO.class);
         log.info("Courier found: {}: ", courierMainInfoDTO);
         return courierMainInfoDTO;
     }
 
     public CourierBasicInfoDTO getCourierBasicInfo(long id) {
         Courier courier = getCourierIfExists(id, CRUDOperations.READ);
-        return mapper.map(courier, CourierBasicInfoDTO.class);
+        return modelMapper.map(courier, CourierBasicInfoDTO.class);
     }
 
     public CourierCurrentOrderInfoDTO getCurrentOrderForCourier(long id) {
@@ -102,25 +101,31 @@ public class CourierServiceImpl implements CourierService {
         return currentOrderInfoDTO;
     }
 
-    public CourierFullInfoDTO getCourierByPhoneAndPassword(String phone, String password) {
+    @SneakyThrows
+    public CourierFullInfoDTO getCourierByPhoneAndPassword(String authRequestCourierJson) {
+        CourierAuthRequestDTO courierAuthRequestDTO = objectMapper.readValue(authRequestCourierJson, CourierAuthRequestDTO.class);
+        String phone = courierAuthRequestDTO.getPhone();
+        String password = courierAuthRequestDTO.getPassword();
         try {
             Courier courier = courierRepository.getByPhone(phone);
             if (!passwordEncoder.matches(password, courier.getPassword())) throw new BadRequest();
-            return mapper.map(courier, CourierFullInfoDTO.class);
+            return modelMapper.map(courier, CourierFullInfoDTO.class);
         } catch (RuntimeException exception) {
             log.error("No courier found with phone {} and password {}", phone, password);
             throw new NotFound("Invalid phone or password");
         }
     }
 
-    public void updateCourier(long id, CourierMainInfoDTO courierDTO) {
+    @SneakyThrows
+    public void updateCourier(long id, String updatedCourierJson) {
+        CourierMainInfoDTO courierDTO = objectMapper.readValue(updatedCourierJson, CourierMainInfoDTO.class);
         Courier courierToUpdate = getCourierIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating courier with id {} with new data {}: ", id, courierDTO);
         checkCourierName(courierDTO.getFirstName(), CRUDOperations.UPDATE);
         checkCourierName(courierDTO.getLastName(), CRUDOperations.UPDATE);
         checkCourierPhone(courierDTO.getPhone(), CRUDOperations.UPDATE);
         isCourierExistsByPhone(courierDTO.getPhone(), CRUDOperations.UPDATE);
-        Courier updatedCourier = mapper.map(courierDTO, Courier.class);
+        Courier updatedCourier = modelMapper.map(courierDTO, Courier.class);
         Courier courierWithNewParameters = updateCouriersOptions(courierToUpdate, updatedCourier);
         courierRepository.save(courierWithNewParameters);
         log.info("Courier with id {} successfully updated", id);

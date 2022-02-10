@@ -14,8 +14,8 @@ import edu.senla.service.ContainerService;
 import edu.senla.service.DishService;
 import edu.senla.service.TypeOfContainerService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,13 +26,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class ContainerServiceImpl implements ContainerService {
+public class ContainerServiceImpl extends AbstractService implements ContainerService {
 
     private final DishService dishService;
     private final TypeOfContainerService typeOfContainerService;
     private final DishRepository dishRepository;
     private final TypeOfContainerRepository typeOfContainerRepository;
-    private final ModelMapper mapper;
     private static final double percentageOfMeatByTotalWeight = 0.2;
     private static final double percentageOfGarnishByTotalWeight = 0.4;
     private static final double percentageOfSaladByTotalWeight = 0.3;
@@ -47,7 +46,9 @@ public class ContainerServiceImpl implements ContainerService {
                 .map(c -> typeOfContainerRepository.getPriceByName(c.getTypeOfContainer().getName())).mapToDouble(Double::doubleValue).sum();
     }
 
-    public ContainerComponentsParamsDTO calculateWeightOfDishes(ContainerComponentsDTO containerComponentsDTO) {
+    @SneakyThrows
+    public ContainerComponentsParamsDTO calculateWeightOfDishes(String containerComponentsJson) {
+        ContainerComponentsDTO containerComponentsDTO = objectMapper.readValue(containerComponentsJson, ContainerComponentsDTO.class);
         if (!isContainerComponentsCorrect(containerComponentsDTO))
             throw new NotFound("There is no such type of container or non-existent dish found in container");
         if (!dishService.isAllDishesHaveDishInformation(containerComponentsDTO))
@@ -68,7 +69,7 @@ public class ContainerServiceImpl implements ContainerService {
     }
 
     public Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order) {
-        Container container = mapper.map(containerComponentsDTO, Container.class);
+        Container container = modelMapper.map(containerComponentsDTO, Container.class);
         container.setTypeOfContainer(typeOfContainerService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
         container.setOrder(order);
         return container;
@@ -131,5 +132,4 @@ public class ContainerServiceImpl implements ContainerService {
     private double calculateCaloricContentOfDish(double dishWeight, double dishCaloricContentIn100Grams) {
         return 0.01 * dishWeight * dishCaloricContentIn100Grams;
     }
-
 }
