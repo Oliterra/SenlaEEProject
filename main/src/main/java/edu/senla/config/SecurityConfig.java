@@ -1,7 +1,7 @@
 package edu.senla.config;
 
-import edu.senla.exeptions.AccessHandler;
-import edu.senla.exeptions.AuthenticationHandler;
+import edu.senla.exeption.AccessHandler;
+import edu.senla.exeption.AuthenticationHandler;
 import edu.senla.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,24 +17,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled=true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtFilter jwtFilter;
 
     @Bean
-    public AuthenticationHandler authenticationHandler(){
+    public AuthenticationHandler authenticationHandler() {
         return new AuthenticationHandler();
     }
 
-   @Bean
-    public AccessHandler accessHandler(){
+    @Bean
+    public AccessHandler accessHandler() {
         return new AccessHandler();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

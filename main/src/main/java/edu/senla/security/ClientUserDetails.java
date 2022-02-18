@@ -1,7 +1,7 @@
 package edu.senla.security;
 
-import edu.senla.entity.Client;
-import edu.senla.entity.Courier;
+import edu.senla.model.entity.Client;
+import edu.senla.model.entity.Courier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +12,6 @@ import java.util.Collections;
 public class ClientUserDetails implements UserDetails {
 
     private String username;
-
     private String password;
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
@@ -67,5 +66,4 @@ public class ClientUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

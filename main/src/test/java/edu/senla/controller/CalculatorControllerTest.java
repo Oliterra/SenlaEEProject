@@ -1,13 +1,14 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.DishRepositoryInterface;
-import edu.senla.dto.ContainerComponentsDTO;
-import edu.senla.dto.DishInformationDTO;
-import edu.senla.entity.Dish;
-import edu.senla.enums.DishType;
-import edu.senla.service.ContainerService;
-import edu.senla.service.serviceinterface.DishInformationServiceInterface;
+import edu.senla.controller.impl.CalculatorControllerImpl;
+import edu.senla.dao.DishRepository;
+import edu.senla.model.dto.ContainerComponentsDTO;
+import edu.senla.model.dto.DishInformationDTO;
+import edu.senla.model.entity.Dish;
+import edu.senla.model.enums.DishType;
+import edu.senla.service.impl.ContainerServiceImpl;
+import edu.senla.service.DishInformationService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CalculatorControllerTest {
 
     @Autowired
-    private CalculatorController calculatorController;
+    private CalculatorControllerImpl calculatorController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -46,13 +47,13 @@ public class CalculatorControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private ContainerService containerService;
+    private ContainerServiceImpl containerService;
 
     @SpyBean
-    private DishInformationServiceInterface dishInformationService;
+    private DishInformationService dishInformationService;
 
     @SpyBean
-    private DishRepositoryInterface dishRepository;
+    private DishRepository dishRepository;
 
     private Dish meat;
     private Dish garnish;
@@ -71,7 +72,7 @@ public class CalculatorControllerTest {
         meatDishInformationDTO.setCaloricContent(300);
         meatDishInformationDTO.setDishId(savedMeat.getId());
         meatDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(meatDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         garnish = new Dish();
         garnish.setDishType(DishType.GARNISH);
@@ -81,7 +82,7 @@ public class CalculatorControllerTest {
         garnishDishInformationDTO.setCaloricContent(400);
         garnishDishInformationDTO.setDishId(savedGarnish.getId());
         garnishDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(garnishDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         salad = new Dish();
         salad.setDishType(DishType.SALAD);
@@ -91,7 +92,7 @@ public class CalculatorControllerTest {
         saladDishInformationDTO.setCaloricContent(200);
         saladDishInformationDTO.setDishId(savedSalad.getId());
         saladDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(saladDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
 
         sauce = new Dish();
         sauce.setDishType(DishType.SAUCE);
@@ -101,7 +102,7 @@ public class CalculatorControllerTest {
         sauceDishInformationDTO.setCaloricContent(200);
         sauceDishInformationDTO.setDishId(savedSauce.getId());
         sauceDishInformationDTO.setDescription("some description");
-        dishInformationService.createDishInformation(sauceDishInformationDTO);
+        dishInformationService.createDishInformation(new String());
     }
 
     @SneakyThrows

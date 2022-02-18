@@ -1,12 +1,13 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.dao.TypeOfContainerRepositoryInterface;
-import edu.senla.dto.TypeOfContainerDTO;
-import edu.senla.dto.TypeOfContainerForUpdateDTO;
-import edu.senla.entity.TypeOfContainer;
-import edu.senla.service.TypeOfContainerService;
-import edu.senla.service.ValidationService;
+import edu.senla.controller.impl.TypeOfContainerControllerImpl;
+import edu.senla.dao.TypeOfContainerRepository;
+import edu.senla.model.dto.TypeOfContainerDTO;
+import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
+import edu.senla.model.entity.TypeOfContainer;
+import edu.senla.service.impl.TypeOfContainerServiceImpl;
+import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TypeOfContainerControllerTest {
 
     @Autowired
-    private TypeOfContainerController typeOfContainerController;
+    private TypeOfContainerControllerImpl typeOfContainerController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -45,13 +46,13 @@ public class TypeOfContainerControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private TypeOfContainerService typeOfContainerService;
+    private TypeOfContainerServiceImpl typeOfContainerService;
 
     @SpyBean
-    private ValidationService validationService;
+    private ValidationServiceImpl validationService;
 
     @SpyBean
-    private TypeOfContainerRepositoryInterface typeOfContainerRepository;
+    private TypeOfContainerRepository typeOfContainerRepository;
 
     private TypeOfContainer typeOfContainerToOperateWith;
 
