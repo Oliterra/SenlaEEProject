@@ -2,12 +2,9 @@ package edu.senla.model.entity;
 
 import edu.senla.model.enums.OrderPaymentType;
 import edu.senla.model.enums.OrderStatus;
-import edu.senla.model.enums.PostgreSQLEnumType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,36 +16,34 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@TypeDef(
-        name = "pgsql_enum",
-        typeClass = PostgreSQLEnumType.class
-)
 @Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courier_id")
     private Courier courier;
 
+    @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "time")
     private LocalTime time;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
-    @Type( type = "pgsql_enum" )
     private OrderPaymentType paymentType;
 
     @Enumerated(EnumType.STRING)
-    @Type( type = "pgsql_enum" )
+    @Column(name = "status")
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

@@ -1,13 +1,13 @@
 package edu.senla.service;
 
 import edu.senla.dao.TypeOfContainerRepository;
-import edu.senla.model.dto.TypeOfContainerDTO;
-import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
-import edu.senla.model.entity.TypeOfContainer;
+import edu.senla.model.dto.ContainerTypeDTO;
+import edu.senla.model.dto.ContainerTypeForUpdateDTO;
+import edu.senla.model.entity.ContainerType;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
-import edu.senla.service.impl.TypeOfContainerServiceImpl;
+import edu.senla.service.impl.ContainerTypeServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class TypeOfContainerServiceTest {
+class ContainerTypeServiceTest {
 
     @Mock
     private TypeOfContainerRepository typeOfContainerRepository;
@@ -34,14 +34,14 @@ class TypeOfContainerServiceTest {
     private ValidationServiceImpl validationService;
 
     @InjectMocks
-    private TypeOfContainerServiceImpl typeOfContainerService;
+    private ContainerTypeServiceImpl typeOfContainerService;
 
     @Test
     void testCreteTypeOfContainerWithAlreadyExistentName() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        when(typeOfContainerRepository.getByName(any(String.class))).thenReturn(new TypeOfContainer());
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(1200);
+        when(typeOfContainerRepository.getByName(any(String.class))).thenReturn(new ContainerType());
         assertThrows(ConflictBetweenData.class, () ->  typeOfContainerService.createTypeOfContainer(new String()));
         verify(typeOfContainerRepository, times(1)).getByName(any());
         verify(typeOfContainerRepository, never()).existsById(any());
@@ -51,9 +51,9 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testCreteTypeOfContainerWithAlreadyExistentNumberOfCalories() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(1200);
         when(typeOfContainerRepository.existsById(any(Long.class))).thenReturn(true);
         assertThrows(ConflictBetweenData.class, () ->  typeOfContainerService.createTypeOfContainer(new String()));
         verify(typeOfContainerRepository, times(1)).getByName(any());
@@ -64,9 +64,9 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testCreteTypeOfContainerWithInvalidName() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("wrong");
-        typeOfContainerDTO.setNumberOfCalories(1200);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("wrong");
+        containerTypeDTO.setNumberOfCalories(1200);
         assertThrows(BadRequest.class, () ->  typeOfContainerService.createTypeOfContainer(new String()));
         verify(typeOfContainerRepository, times(1)).getByName(any());
         verify(typeOfContainerRepository, times(1)).existsById(any());
@@ -76,9 +76,9 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testCreteTypeOfContainerWithInvalidNumberOfCalories() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(50000);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(50000);
         assertThrows(BadRequest.class, () ->  typeOfContainerService.createTypeOfContainer(new String()));
         verify(typeOfContainerRepository, times(1)).getByName(any());
         verify(typeOfContainerRepository, times(1)).existsById(any());
@@ -88,9 +88,9 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testCreteTypeOfContainerOk() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(1200);
         typeOfContainerService.createTypeOfContainer(new String());
         verify(typeOfContainerRepository, times(1)).getByName(any());
         verify(typeOfContainerRepository, times(1)).existsById(any());
@@ -100,9 +100,9 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testUpdateNonExistentTypeOfContainer() {
-        TypeOfContainerForUpdateDTO typeOfContainerForUpdateDTO = new TypeOfContainerForUpdateDTO();
-        typeOfContainerForUpdateDTO.setName("L");
-        typeOfContainerForUpdateDTO.setPrice(16);
+        ContainerTypeForUpdateDTO containerTypeForUpdateDTO = new ContainerTypeForUpdateDTO();
+        containerTypeForUpdateDTO.setName("L");
+        containerTypeForUpdateDTO.setPrice(16);
         assertThrows(NotFound.class, () -> typeOfContainerService.updateTypeOfContainer(1, new String()));
         verify(typeOfContainerRepository, times(1)).existsById(any());
         verify(validationService, never()).isTypeOContainerNameCorrect(any());
@@ -111,12 +111,12 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testUpdateTypeOfContainerWithAlreadyExistentName() {
-        TypeOfContainerForUpdateDTO typeOfContainerForUpdateDTO = new TypeOfContainerForUpdateDTO();
-        typeOfContainerForUpdateDTO.setName("L");
-        typeOfContainerForUpdateDTO.setPrice(16);
+        ContainerTypeForUpdateDTO containerTypeForUpdateDTO = new ContainerTypeForUpdateDTO();
+        containerTypeForUpdateDTO.setName("L");
+        containerTypeForUpdateDTO.setPrice(16);
         when(typeOfContainerRepository.existsById(any(Long.class))).thenReturn(true);
-        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new TypeOfContainer());
-        when(typeOfContainerRepository.getByName(any(String.class))).thenReturn(new TypeOfContainer());
+        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new ContainerType());
+        when(typeOfContainerRepository.getByName(any(String.class))).thenReturn(new ContainerType());
         assertThrows(ConflictBetweenData.class, () -> typeOfContainerService.updateTypeOfContainer(1, new String()));
         verify(typeOfContainerRepository, times(1)).existsById(any());
         verify(validationService, never()).isTypeOContainerNameCorrect(any());
@@ -125,11 +125,11 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testUpdateTypeOfContainerWithInvalidName() {
-        TypeOfContainerForUpdateDTO typeOfContainerForUpdateDTO = new TypeOfContainerForUpdateDTO();
-        typeOfContainerForUpdateDTO.setName("wrong");
-        typeOfContainerForUpdateDTO.setPrice(16);
+        ContainerTypeForUpdateDTO containerTypeForUpdateDTO = new ContainerTypeForUpdateDTO();
+        containerTypeForUpdateDTO.setName("wrong");
+        containerTypeForUpdateDTO.setPrice(16);
         when(typeOfContainerRepository.existsById(any(Long.class))).thenReturn(true);
-        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new TypeOfContainer());
+        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new ContainerType());
         assertThrows(BadRequest.class, () -> typeOfContainerService.updateTypeOfContainer(1, new String()));
         verify(typeOfContainerRepository, times(1)).existsById(any());
         verify(validationService, times(1)).isTypeOContainerNameCorrect(any());
@@ -138,11 +138,11 @@ class TypeOfContainerServiceTest {
 
     @Test
     void testUpdateTypeOfContainerOk() {
-        TypeOfContainerForUpdateDTO typeOfContainerForUpdateDTO = new TypeOfContainerForUpdateDTO();
-        typeOfContainerForUpdateDTO.setName("L");
-        typeOfContainerForUpdateDTO.setPrice(16);
+        ContainerTypeForUpdateDTO containerTypeForUpdateDTO = new ContainerTypeForUpdateDTO();
+        containerTypeForUpdateDTO.setName("L");
+        containerTypeForUpdateDTO.setPrice(16);
         when(typeOfContainerRepository.existsById(any(Long.class))).thenReturn(true);
-        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new TypeOfContainer());
+        when(typeOfContainerRepository.getById(any(Long.class))).thenReturn(new ContainerType());
         typeOfContainerService.updateTypeOfContainer(1, new String());
         verify(typeOfContainerRepository, times(1)).existsById(any());
         verify(validationService, times(1)).isTypeOContainerNameCorrect(any());

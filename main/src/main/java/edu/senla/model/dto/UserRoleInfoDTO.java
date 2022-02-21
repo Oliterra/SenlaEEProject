@@ -1,5 +1,6 @@
 package edu.senla.model.dto;
 
+import edu.senla.model.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TypeOfContainerForUpdateDTO {
+public class UserRoleInfoDTO {
 
-    private String name;
+    private String firstName;
 
-    private int price;
+    private String lastName;
+
+    private Role role;
 
 }

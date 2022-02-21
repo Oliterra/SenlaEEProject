@@ -12,7 +12,7 @@ import edu.senla.model.entity.Order;
 import edu.senla.model.enums.DishType;
 import edu.senla.service.ContainerService;
 import edu.senla.service.DishService;
-import edu.senla.service.TypeOfContainerService;
+import edu.senla.service.ContainerTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class ContainerServiceImpl extends AbstractService implements ContainerService {
 
     private final DishService dishService;
-    private final TypeOfContainerService typeOfContainerService;
+    private final ContainerTypeService containerTypeService;
     private final DishRepository dishRepository;
     private final TypeOfContainerRepository typeOfContainerRepository;
     private static final double percentageOfMeatByTotalWeight = 0.2;
@@ -43,7 +43,7 @@ public class ContainerServiceImpl extends AbstractService implements ContainerSe
 
     public double calculateTotalOrderCost(List<Container> containers) {
         return containers.stream()
-                .map(c -> typeOfContainerRepository.getPriceByName(c.getTypeOfContainer().getName())).mapToDouble(Double::doubleValue).sum();
+                .map(c -> typeOfContainerRepository.getPriceByName(c.getContainerType().getName())).mapToDouble(Double::doubleValue).sum();
     }
 
     @SneakyThrows
@@ -60,28 +60,29 @@ public class ContainerServiceImpl extends AbstractService implements ContainerSe
 
     public ContainerComponentsNamesDTO mapFromContainerEntityToContainerComponentsNamesDTO(Container container) {
         ContainerComponentsNamesDTO containerComponentsNamesDTO = new ContainerComponentsNamesDTO();
-        containerComponentsNamesDTO.setMeat(dishRepository.getNameById(container.getMeat()));
+        /*containerComponentsNamesDTO.setMeat(dishRepository.getNameById(container.getMeat()));
         containerComponentsNamesDTO.setGarnish(dishRepository.getNameById(container.getGarnish()));
         containerComponentsNamesDTO.setSalad(dishRepository.getNameById(container.getSalad()));
         containerComponentsNamesDTO.setSauce(dishRepository.getNameById(container.getSauce()));
-        containerComponentsNamesDTO.setTypeOfContainer(typeOfContainerRepository.getNameById(container.getTypeOfContainer().getNumberOfCalories()));
+        containerComponentsNamesDTO.setTypeOfContainer(typeOfContainerRepository.getNameById(container.getContainerType().getNumberOfCalories()));*/
         return containerComponentsNamesDTO;
     }
 
     public Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order) {
         Container container = modelMapper.map(containerComponentsDTO, Container.class);
-        container.setTypeOfContainer(typeOfContainerService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
+        container.setContainerType(containerTypeService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
         container.setOrder(order);
         return container;
     }
 
     private boolean isContainerComponentsCorrect(ContainerComponentsDTO containerComponentsDTO) {
-        return typeOfContainerService.isTypeOfContainerExists(containerComponentsDTO.getTypeOfContainer()) && isContainerFilledCorrectly(containerComponentsDTO);
+        return containerTypeService.isContainerTypeExists(containerComponentsDTO.getTypeOfContainer()) && isContainerFilledCorrectly(containerComponentsDTO);
     }
 
     private ContainerComponentsParamsDTO calculateWeightAndCaloricContent(ContainerComponentsDTO containerComponentsDTO) {
         ContainerComponentsParamsDTO containerComponentsParamsDTO = new ContainerComponentsParamsDTO();
-        int numberOfCalories = (int) typeOfContainerRepository.getByName(containerComponentsDTO.getTypeOfContainer()).getNumberOfCalories();
+        int numberOfCalories = 0;
+        //int numberOfCalories = (int) typeOfContainerRepository.getByName(containerComponentsDTO.getTypeOfContainer()).getNumberOfCalories();
         containerComponentsParamsDTO.setTotalCaloricContent(Math.round(numberOfCalories));
         double meatCaloricContentIn100Grams = dishRepository.getById(containerComponentsDTO.getMeat()).getDishInformation().getCaloricContent();
         double garnishCaloricContentIn100Grams = dishRepository.getById(containerComponentsDTO.getGarnish()).getDishInformation().getCaloricContent();
@@ -119,10 +120,10 @@ public class ContainerServiceImpl extends AbstractService implements ContainerSe
 
     private boolean isContainerFilledCorrectly(ContainerComponentsDTO containerComponentsDTO) {
         try {
-            boolean isMeatTypeCorrect = dishRepository.getById(containerComponentsDTO.getMeat()).getDishType().equals(DishType.MEAT);
-            boolean isGarnishTypeCorrect = dishRepository.getById(containerComponentsDTO.getGarnish()).getDishType().equals(DishType.GARNISH);
-            boolean isSaladTypeCorrect = dishRepository.getById(containerComponentsDTO.getSalad()).getDishType().equals(DishType.SALAD);
-            boolean isSauceTypeCorrect = dishRepository.getById(containerComponentsDTO.getSauce()).getDishType().equals(DishType.SAUCE);
+            boolean isMeatTypeCorrect = dishRepository.getById(containerComponentsDTO.getMeat()).getType().equals(DishType.MEAT);
+            boolean isGarnishTypeCorrect = dishRepository.getById(containerComponentsDTO.getGarnish()).getType().equals(DishType.GARNISH);
+            boolean isSaladTypeCorrect = dishRepository.getById(containerComponentsDTO.getSalad()).getType().equals(DishType.SALAD);
+            boolean isSauceTypeCorrect = dishRepository.getById(containerComponentsDTO.getSauce()).getType().equals(DishType.SAUCE);
             return isMeatTypeCorrect && isGarnishTypeCorrect && isSaladTypeCorrect && isSauceTypeCorrect;
         } catch (RuntimeException exception) {
             return false;

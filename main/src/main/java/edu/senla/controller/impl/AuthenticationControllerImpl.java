@@ -2,7 +2,7 @@ package edu.senla.controller.impl;
 
 import edu.senla.controller.AuthenticationController;
 import edu.senla.model.dto.AuthResponseDTO;
-import edu.senla.model.dto.ClientFullInfoDTO;
+import edu.senla.model.dto.UserFullInfoDTO;
 import edu.senla.model.dto.CourierFullInfoDTO;
 import edu.senla.security.JwtProvider;
 import edu.senla.service.ClientService;
@@ -24,7 +24,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @GetMapping(value = "/clients")
     public AuthResponseDTO authenticateClient(@RequestBody String authRequestJson) {
-        ClientFullInfoDTO clientDTO = clientService.getClientByUsernameAndPassword(authRequestJson);
+        UserFullInfoDTO clientDTO = clientService.getClientByUsernameAndPassword(authRequestJson);
         String token = jwtProvider.generateToken(clientDTO.getUsername());
         return new AuthResponseDTO(token);
     }

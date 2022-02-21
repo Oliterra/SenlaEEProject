@@ -1,7 +1,7 @@
 package edu.senla.controller.impl;
 
 import edu.senla.controller.OrdersHistoryController;
-import edu.senla.model.dto.ClientOrderInfoDTO;
+import edu.senla.model.dto.UserOrderInfoDTO;
 import edu.senla.model.dto.CourierOrderInfoDTO;
 import edu.senla.service.ClientService;
 import edu.senla.service.CourierService;
@@ -24,7 +24,7 @@ public class OrdersHistoryControllerImpl implements OrdersHistoryController {
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping(value = "clients/{id}")
-    public List<ClientOrderInfoDTO> getClientOrdersHistory(@PathVariable long id) {
+    public List<UserOrderInfoDTO> getClientOrdersHistory(@PathVariable long id) {
         return clientService.getAllOrdersOfClient(id);
     }
 

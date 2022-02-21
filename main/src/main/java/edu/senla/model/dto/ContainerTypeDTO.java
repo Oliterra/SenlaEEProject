@@ -1,6 +1,5 @@
 package edu.senla.model.dto;
 
-import edu.senla.model.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +7,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClientRoleInfoDTO {
+public class ContainerTypeDTO {
 
-    private String firstName;
+    private long numberOfCalories;
 
-    private String lastName;
+    private String name;
 
-    private Role role;
+    private int price;
 
 }

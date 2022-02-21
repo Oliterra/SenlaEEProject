@@ -1,2 +1,0 @@
-CREATE INDEX dish_information_dish_id_index
-ON dish_information(dish_id);

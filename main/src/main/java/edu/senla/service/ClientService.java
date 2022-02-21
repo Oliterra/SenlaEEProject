@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ClientService {
 
-    List<ClientMainInfoDTO> getAllClients(int pages);
+    List<UserMainInfoDTO> getAllClients(int pages);
 
     List<AdminInfoDTO> getAllAdmins(int pages);
 
-    List<ClientOrderInfoDTO> getAllOrdersOfClient(long clientId);
+    List<UserOrderInfoDTO> getAllOrdersOfClient(long clientId);
 
     void grantAdministratorRights(long id);
 
@@ -18,9 +18,9 @@ public interface ClientService {
 
     void createClient(String registrationRequestJson);
 
-    ClientMainInfoDTO getClient(long id);
+    UserMainInfoDTO getClient(long id);
 
-    ClientFullInfoDTO getClientByUsernameAndPassword(String authRequestJson);
+    UserFullInfoDTO getClientByUsernameAndPassword(String authRequestJson);
 
     long getCurrentClientId();
 

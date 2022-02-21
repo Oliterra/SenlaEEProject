@@ -2,9 +2,9 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.impl.AdministratorControllerImpl;
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.RoleRepository;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.enums.Roles;
 import edu.senla.service.impl.ClientServiceImpl;
 import lombok.SneakyThrows;
@@ -47,33 +47,33 @@ public class AdministratorControllerTest {
     private ClientServiceImpl clientService;
 
     @SpyBean
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
     @SpyBean
     private RoleRepository roleRepository;
 
-    private Client clientAdmin;
+    private User userAdmin;
 
-    private Client clientUser;
+    private User userUser;
 
     @SneakyThrows
     @BeforeEach
     void creteClientsToOperateWith() {
-        clientAdmin = new Client();
-        clientAdmin.setFirstName("admin");
-        clientAdmin.setLastName("admin");
-        clientAdmin.setEmail("admin");
-        clientAdmin.setPhone("admin");
-        clientAdmin.setRole(roleRepository.getByName(Roles.ROLE_ADMIN.toString()));
-        clientRepository.save(clientAdmin);
+        userAdmin = new User();
+        userAdmin.setFirstName("admin");
+        userAdmin.setLastName("admin");
+        userAdmin.setEmail("admin");
+        userAdmin.setPhone("admin");
+        userAdmin.getRoles().add(roleRepository.getByName(Roles.ROLE_ADMIN.toString()));
+        userRepository.save(userAdmin);
 
-        clientUser = new Client();
-        clientUser.setFirstName("user");
-        clientUser.setLastName("user");
-        clientUser.setEmail("user");
-        clientUser.setPhone("user");
-        clientUser.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
-        clientRepository.save(clientUser);
+        userUser = new User();
+        userUser.setFirstName("user");
+        userUser.setLastName("user");
+        userUser.setEmail("user");
+        userUser.setPhone("user");
+        userUser.getRoles().add(roleRepository.getByName(Roles.ROLE_USER.toString()));
+        userRepository.save(userUser);
     }
 
     @SneakyThrows
@@ -144,7 +144,7 @@ public class AdministratorControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testGrantAdministratorRightsWhenUserIsAlreadyAnAdminBadRequestStatus() {
-        long idOfClientAdmin = clientAdmin.getId();
+        long idOfClientAdmin = userAdmin.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .patch("/administrators/assigning/{idOfClientAdmin}", idOfClientAdmin))
                 .andDo(print())
@@ -156,7 +156,7 @@ public class AdministratorControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testGrantAdministratorRightsOkStatus() {
-        long idOfClientUser = clientUser.getId();
+        long idOfClientUser = userUser.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .patch("/administrators/assigning/{idOfClientUser}", idOfClientUser))
                 .andDo(print())
@@ -200,7 +200,7 @@ public class AdministratorControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testRevokeAdministratorRightsWhenUserIsAlreadyAUserBadRequestStatus() {
-        long idOfClientUser = clientUser.getId();
+        long idOfClientUser = userUser.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/administrators/deprivation/{idOfClientUser}", idOfClientUser))
                 .andDo(print())
@@ -212,7 +212,7 @@ public class AdministratorControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testRevokeAdministratorRightsOkStatus() {
-        long idOfClientAdmin = clientAdmin.getId();
+        long idOfClientAdmin = userAdmin.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/administrators/deprivation/{idOfClientAdmin}", idOfClientAdmin))
                 .andDo(print())

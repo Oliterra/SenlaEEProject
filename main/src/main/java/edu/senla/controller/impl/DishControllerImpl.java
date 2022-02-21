@@ -21,7 +21,7 @@ public class DishControllerImpl implements DishController {
         return dishService.getAllDishes(pages);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    //@Secured({"ROLE_ADMIN"})
     @PostMapping
     public void createDish(@RequestBody String dishJson) {
         dishService.createDish(dishJson);

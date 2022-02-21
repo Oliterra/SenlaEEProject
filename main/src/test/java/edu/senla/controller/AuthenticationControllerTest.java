@@ -2,11 +2,11 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.impl.AuthenticationControllerImpl;
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.RoleRepository;
 import edu.senla.model.dto.CourierAuthRequestDTO;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.enums.Roles;
 import edu.senla.security.JwtProvider;
@@ -62,7 +62,7 @@ class AuthenticationControllerTest {
     private JwtProvider jwtProvider;
 
     @SpyBean
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
     @SpyBean
     private CourierRepository courierRepository;
@@ -70,23 +70,23 @@ class AuthenticationControllerTest {
     @SpyBean
     private RoleRepository roleRepository;
 
-    private Client client;
+    private User user;
 
     private Courier courier;
 
     @SneakyThrows
     @BeforeEach
     void creteUsersToOperateWith() {
-        client = new Client();
-        client.setFirstName("client");
-        client.setLastName("client");
-        client.setEmail("client");
-        client.setPhone("client");
-        client.setUsername("client");
-        client.setPassword(passwordEncoder.encode("client"));
-        client.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
-        Client client1 = clientRepository.save(client);
-        System.out.println(client1);
+        user = new User();
+        user.setFirstName("user");
+        user.setLastName("user");
+        user.setEmail("user");
+        user.setPhone("user");
+        user.setUsername("user");
+        user.setPassword(passwordEncoder.encode("user"));
+        user.getRoles().add(roleRepository.getByName(Roles.ROLE_USER.toString()));
+        User user1 = userRepository.save(user);
+        System.out.println(user1);
 
         courier = new Courier();
         courier.setFirstName("courier");
@@ -131,8 +131,8 @@ class AuthenticationControllerTest {
     @Test
     void testAuthenticateClientOkStatus() {
         AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-        authRequestDTO.setUsername("client");
-        authRequestDTO.setPassword("client");
+        authRequestDTO.setUsername("user");
+        authRequestDTO.setPassword("user");
         String authRequestJson = mapper.writeValueAsString(authRequestDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/authentication/clients")

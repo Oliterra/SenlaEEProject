@@ -1,16 +1,16 @@
 package edu.senla.controller;
 
-import edu.senla.model.dto.TypeOfContainerDTO;
+import edu.senla.model.dto.ContainerTypeDTO;
 
 import java.util.List;
 
-public interface TypeOfContainerController {
+public interface ContainerTypeController {
 
-    List<TypeOfContainerDTO> getAllTypesOfContainer(int pages);
+    List<ContainerTypeDTO> getAllTypesOfContainer(int pages);
 
     void createTypeOfContainer(String typeOfContainerJson);
 
-    TypeOfContainerDTO getTypeOfContainer(long id);
+    ContainerTypeDTO getTypeOfContainer(long id);
 
     void updateTypeOfContainer(long id, String updatedTypeOfContainerJson);
 

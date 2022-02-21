@@ -1,6 +1,9 @@
-package edu.senla.exeption;
+package edu.senla.controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import edu.senla.exeption.BadRequest;
+import edu.senla.exeption.ConflictBetweenData;
+import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.ErrorDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,14 +1,14 @@
 package edu.senla.controller;
 
-import edu.senla.model.dto.ClientMainInfoDTO;
+import edu.senla.model.dto.UserMainInfoDTO;
 
 import java.util.List;
 
 public interface ClientController {
 
-    List<ClientMainInfoDTO> getAllClients(int pages);
+    List<UserMainInfoDTO> getAllClients(int pages);
 
-    ClientMainInfoDTO getClient(long id);
+    UserMainInfoDTO getClient(long id);
 
     void updateClient(long id, String updatedClientJson);
 

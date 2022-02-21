@@ -65,7 +65,7 @@ public class CalculatorControllerTest {
     @BeforeEach
     void creteDishesToOperateWith() {
         meat = new Dish();
-        meat.setDishType(DishType.MEAT);
+        meat.setType(DishType.MEAT);
         meat.setName("meat");
         Dish savedMeat = dishRepository.save(meat);
         DishInformationDTO meatDishInformationDTO = new DishInformationDTO();
@@ -75,7 +75,7 @@ public class CalculatorControllerTest {
         dishInformationService.createDishInformation(new String());
 
         garnish = new Dish();
-        garnish.setDishType(DishType.GARNISH);
+        garnish.setType(DishType.GARNISH);
         garnish.setName("garnish");
         Dish savedGarnish = dishRepository.save(garnish);
         DishInformationDTO garnishDishInformationDTO = new DishInformationDTO();
@@ -85,7 +85,7 @@ public class CalculatorControllerTest {
         dishInformationService.createDishInformation(new String());
 
         salad = new Dish();
-        salad.setDishType(DishType.SALAD);
+        salad.setType(DishType.SALAD);
         salad.setName("salad");
         Dish savedSalad = dishRepository.save(salad);
         DishInformationDTO saladDishInformationDTO = new DishInformationDTO();
@@ -95,7 +95,7 @@ public class CalculatorControllerTest {
         dishInformationService.createDishInformation(new String());
 
         sauce = new Dish();
-        sauce.setDishType(DishType.SAUCE);
+        sauce.setType(DishType.SAUCE);
         sauce.setName("sauce");
         Dish savedSauce = dishRepository.save(sauce);
         DishInformationDTO sauceDishInformationDTO = new DishInformationDTO();

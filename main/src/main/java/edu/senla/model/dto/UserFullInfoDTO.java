@@ -1,13 +1,17 @@
 package edu.senla.model.dto;
 
+import edu.senla.model.entity.Order;
+import edu.senla.model.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClientMainInfoDTO {
+public class UserFullInfoDTO {
 
     private String firstName;
 
@@ -18,5 +22,13 @@ public class ClientMainInfoDTO {
     private String email;
 
     private String address;
+
+    private String username;
+
+    private String password;
+
+    private List<Order> orders;
+
+    private Role role;
 
 }

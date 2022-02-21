@@ -142,7 +142,7 @@ class DishServiceTest {
     void testGetExistentDish() {
         Dish dish = new Dish();
         dish.setName("SomeName");
-        dish.setDishType(DishType.SALAD);
+        dish.setType(DishType.SALAD);
         when(dishRepository.existsById(any(Long.class))).thenReturn(true);
         when(dishRepository.getById(any(Long.class))).thenReturn(dish);
         DishDTO dishDTO = dishService.getDish(1);

@@ -62,7 +62,7 @@ public class DishControllerTest{
     void creteDishToOperateWith() {
         dishToOperateWith = new Dish();
         dishToOperateWith.setName("DishToOperateWith");
-        dishToOperateWith.setDishType(DishType.SALAD);
+        dishToOperateWith.setType(DishType.SALAD);
         dishRepository.save(dishToOperateWith);
     }
 
