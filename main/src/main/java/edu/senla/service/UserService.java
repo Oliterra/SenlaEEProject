@@ -4,7 +4,7 @@ import edu.senla.model.dto.*;
 
 import java.util.List;
 
-public interface ClientService {
+public interface UserService {
 
     List<ClientMainInfoDTO> getAllClients(int pages);
 

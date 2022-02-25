@@ -6,7 +6,7 @@ import edu.senla.dao.ClientRepository;
 import edu.senla.dao.RoleRepository;
 import edu.senla.model.entity.Client;
 import edu.senla.model.enums.Roles;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.UserServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class AdministratorControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
     @SpyBean
     private ClientRepository clientRepository;

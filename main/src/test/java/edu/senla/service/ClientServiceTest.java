@@ -1,18 +1,26 @@
 package edu.senla.service;
 
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
 import edu.senla.dao.ClientRepository;
+=======
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.OrderRepository;
 import edu.senla.dao.RoleRepository;
-import edu.senla.model.dto.*;
-import edu.senla.model.entity.Client;
-import edu.senla.model.entity.Order;
-import edu.senla.model.entity.Role;
-import edu.senla.model.enums.OrderStatus;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.model.dto.*;
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
+import edu.senla.model.entity.Client;
+=======
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
+import edu.senla.model.entity.Order;
+import edu.senla.model.entity.Role;
+import edu.senla.model.entity.User;
+import edu.senla.model.enums.OrderStatus;
+import edu.senla.service.impl.UserServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +29,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -61,10 +66,11 @@ public class ClientServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
-    @Test
+    /*@Test
     void testGetAllClients() {
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
         List<Client> clientList = new ArrayList<>();
         Client client = new Client();
         client.setFirstName("Some name");
@@ -75,17 +81,37 @@ public class ClientServiceTest {
         verify(clientRepository, times(1)).findAll((Pageable) any());
         assertTrue(clientMainInfoDTOs.size() == 1);
         assertEquals(client.getFirstName(), clientMainInfoDTOs.get(0).getFirstName());
+=======
+        List<User> userList = new ArrayList<>();
+        User user = new User();
+        user.setFirstName("Some name");
+        userList.add(user);
+        Page<User> clients = new PageImpl<>(userList);
+        when(userRepository.findAll(any(PageRequest.class))).thenReturn(clients);
+        List<UserMainInfoDTO> userMainInfoDTOS = clientService.getAllClients(10);
+        verify(userRepository, times(1)).findAll((PageRequest) any());
+        assertTrue(userMainInfoDTOS.size() == 1);
+        assertEquals(user.getFirstName(), userMainInfoDTOS.get(0).getFirstName());
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
     }
 
     @Test
     void testGetAllClientsWhenThereAreNoClients() {
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
         List<Client> clientList = new ArrayList<>();
         Page<Client> clients = new PageImpl<>(clientList);
         when(clientRepository.findAll(any(Pageable.class))).thenReturn(clients);
         List<ClientMainInfoDTO> courierMainInfoDTOs = clientService.getAllClients(10);
         verify(clientRepository, times(1)).findAll((Pageable) any());
+=======
+        List<User> userList = new ArrayList<>();
+        Page<User> clients = new PageImpl<>(userList);
+        when(userRepository.findAll(any(PageRequest.class))).thenReturn(clients);
+        List<UserMainInfoDTO> courierMainInfoDTOs = clientService.getAllClients(10);
+        verify(userRepository, times(1)).findAll((PageRequest) any());
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
         assertTrue(courierMainInfoDTOs.isEmpty());
-    }
+    }*/
 
     @Test
     void testGetAllAdmins() {
@@ -97,10 +123,17 @@ public class ClientServiceTest {
         clientAdmin.setRole(adminRole);
         clientList.add(clientAdmin);
         when(roleRepository.getByName(any(String.class))).thenReturn(adminRole);
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
         when(clientRepository.getAllByRole(any(Role.class), any(Pageable.class))).thenReturn(clientList);
         List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
         verify(roleRepository, times(1)).getByName(any());
         verify(clientRepository, times(1)).getAllByRole(any(), any());
+=======
+        when(userRepository.getAllByRoles(any(Role.class))).thenReturn(userList);
+        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
+        verify(roleRepository, times(1)).getByName(any());
+        verify(userRepository, times(1)).getAllByRoles(any());
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
         assertTrue(adminInfoDTOs.size() == 1);
         assertEquals(clientAdmin.getFirstName(), adminInfoDTOs.get(0).getFirstName());
     }
@@ -108,10 +141,17 @@ public class ClientServiceTest {
     @Test
     void testGetAllAdminsWhenThereAreNoAdmins() {
         when(roleRepository.getByName(any(String.class))).thenReturn(new Role());
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
         List<Client> clientList = new ArrayList<>();
         when(clientRepository.getAllByRole(any(Role.class), any(Pageable.class))).thenReturn(clientList);
         List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
         verify(clientRepository, times(1)).getAllByRole(any(), any());
+=======
+        List<User> userList = new ArrayList<>();
+        when(userRepository.getAllByRoles(any(Role.class))).thenReturn(userList);
+        List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
+        verify(userRepository, times(1)).getAllByRoles(any());
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
         assertTrue(adminInfoDTOs.isEmpty());
     }
 
@@ -126,6 +166,7 @@ public class ClientServiceTest {
         Order incorrectOrder2 = new Order();
         incorrectOrder2.setStatus(OrderStatus.IN_PROCESS);
         orders.add(incorrectOrder2);
+<<<<<<< Updated upstream:main/src/test/java/edu/senla/service/ClientServiceTest.java
         when(clientRepository.existsById(any(Long.class))).thenReturn(true);
         when(clientRepository.getById(any(Long.class))).thenReturn(client);
         when(orderRepository.getAllByClient(any(Client.class), any(Pageable.class))).thenReturn(orders);
@@ -134,6 +175,16 @@ public class ClientServiceTest {
         verify(clientRepository, times(1)).getById(any());
         verify(orderRepository, times(1)).getAllByClient(any(), any());
         assertTrue(clientOrderInfoDTOs.isEmpty());
+=======
+        when(userRepository.existsById(any(Long.class))).thenReturn(true);
+        when(userRepository.getById(any(Long.class))).thenReturn(user);
+        when(orderRepository.getAllByUser(any(User.class))).thenReturn(orders);
+        List<UserOrderInfoDTO> userOrderInfoDTOS = clientService.getAllOrdersOfClient(1);
+        verify(userRepository, times(1)).existsById(any());
+        verify(userRepository, times(1)).getById(any());
+        verify(orderRepository, times(1)).getAllByUser(any());
+        assertTrue(userOrderInfoDTOS.isEmpty());
+>>>>>>> Stashed changes:main/src/test/java/edu/senla/service/UserServiceTest.java
     }
 
     @Test

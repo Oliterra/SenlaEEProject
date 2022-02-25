@@ -13,11 +13,11 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    @Value("$(jwt.secret)")
-    private String jwtSecret;
+    @Value("${jwt.secret}")
+    public String jwtSecret;
 
     @Value("${jwt.sessionTime}")
-    private int jwtSessionTime;
+    public int jwtSessionTime;
 
     public String generateToken(String username) {
         Date expDate = Date.from(LocalDateTime.now().plusMinutes(jwtSessionTime).atZone(ZoneId.systemDefault()).toInstant());

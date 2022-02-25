@@ -1,9 +1,13 @@
 package edu.senla.service.impl;
 
+<<<<<<< Updated upstream:main/src/main/java/edu/senla/service/impl/ClientServiceImpl.java
 import edu.senla.dao.ClientRepository;
+=======
+>>>>>>> Stashed changes:main/src/main/java/edu/senla/service/impl/UserServiceImpl.java
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.OrderRepository;
 import edu.senla.dao.RoleRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
@@ -15,28 +19,28 @@ import edu.senla.model.entity.Role;
 import edu.senla.model.enums.CRUDOperations;
 import edu.senla.model.enums.OrderStatus;
 import edu.senla.model.enums.Roles;
-import edu.senla.service.ClientService;
 import edu.senla.service.ContainerService;
+import edu.senla.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class ClientServiceImpl extends AbstractService implements ClientService {
+public class UserServiceImpl extends AbstractService implements UserService {
 
     private final ContainerService containerService;
     private final ContainerRepository containerRepository;
@@ -47,13 +51,20 @@ public class ClientServiceImpl extends AbstractService implements ClientService 
 
     public List<ClientMainInfoDTO> getAllClients(int pages) {
         log.info("Getting all couriers");
+<<<<<<< Updated upstream:main/src/main/java/edu/senla/service/impl/ClientServiceImpl.java
         Page<Client> clients = clientRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
         return clients.stream().map(c -> modelMapper.map(c, ClientMainInfoDTO.class)).toList();
+=======
+        //Page<User> clients = (Page<User>) userRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        Page<User> clients = null;
+        return clients.stream().map(c -> modelMapper.map(c, UserMainInfoDTO.class)).toList();
+>>>>>>> Stashed changes:main/src/main/java/edu/senla/service/impl/UserServiceImpl.java
     }
 
     public List<AdminInfoDTO> getAllAdmins(int pages) {
         log.info("Getting all users with the administrator role");
         Role adminRole = roleRepository.getByName(Roles.ROLE_ADMIN.toString());
+<<<<<<< Updated upstream:main/src/main/java/edu/senla/service/impl/ClientServiceImpl.java
         List<Client> admins = clientRepository.getAllByRole(adminRole, PageRequest.of(0, pages, Sort.by("lastName").descending()));
         return admins.stream().map(a -> modelMapper.map(a, AdminInfoDTO.class)).toList();
     }
@@ -62,9 +73,21 @@ public class ClientServiceImpl extends AbstractService implements ClientService 
         Client client = getClientIfExists(clientId, CRUDOperations.READ);
         log.info("Requested order history for the client {} {}", client.getFirstName(), client.getLastName());
         return orderRepository.getAllByClient(client, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
+=======
+        //List<User> admins = userRepository.getAllByRoles(adminRole, PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        List<User> admins = null;
+        return admins.stream().map(a -> modelMapper.map(a, AdminInfoDTO.class)).toList();
+    }
+
+    public List<UserOrderInfoDTO> getAllOrdersOfClient(long clientId) {
+        User user = getClientIfExists(clientId, CRUDOperations.READ);
+        log.info("Requested order history for the user {} {}", user.getFirstName(), user.getLastName());
+        /*return orderRepository.getAllByUser(user, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
+>>>>>>> Stashed changes:main/src/main/java/edu/senla/service/impl/UserServiceImpl.java
                 .filter(o -> o.getStatus().equals(OrderStatus.COMPLETED_LATE) || o.getStatus().equals(OrderStatus.COMPLETED_ON_TIME))
                 .map(this::formClientOrderInfoDTO)
-                .toList();
+                .toList();*/
+        return null;
     }
 
     public void grantAdministratorRights(long id) {
@@ -99,9 +122,19 @@ public class ClientServiceImpl extends AbstractService implements ClientService 
         checkClientPhone(newClientDTO.getPhone(), CRUDOperations.CREATE);
         findPossibleDuplicate(newClientDTO);
         checkClientPasswordConfirmation(newClientDTO);
+<<<<<<< Updated upstream:main/src/main/java/edu/senla/service/impl/ClientServiceImpl.java
         ClientFullInfoDTO clientFullInfoDTO = formFullClientRegistrationInformation(newClientDTO);
         Client client = clientRepository.save(modelMapper.map(clientFullInfoDTO, Client.class));
         log.info("A new client is registered in the service: " + client);
+=======
+        UserFullInfoDTO userFullInfoDTO = formFullClientRegistrationInformation(newClientDTO);
+        User user = new User();
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.getByName(Roles.ROLE_USER.toString()));
+        user.setRoles(roles);
+        userRepository.save(modelMapper.map(userFullInfoDTO, User.class));
+        log.info("A new user is registered in the service: " + user);
+>>>>>>> Stashed changes:main/src/main/java/edu/senla/service/impl/UserServiceImpl.java
     }
 
     public ClientMainInfoDTO getClient(long id) {
@@ -267,12 +300,20 @@ public class ClientServiceImpl extends AbstractService implements ClientService 
         return authentication.getName();
     }
 
+<<<<<<< Updated upstream:main/src/main/java/edu/senla/service/impl/ClientServiceImpl.java
     private ClientFullInfoDTO formFullClientRegistrationInformation(RegistrationRequestDTO registrationRequestDTO) {
         ClientFullInfoDTO clientFullInfoDTO = modelMapper.map(registrationRequestDTO, ClientFullInfoDTO.class);
         clientFullInfoDTO.setUsername(registrationRequestDTO.getUsername());
         clientFullInfoDTO.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
         clientFullInfoDTO.setPassword(passwordEncoder.encode(registrationRequestDTO.getPassword()));
         return clientFullInfoDTO;
+=======
+    private UserFullInfoDTO formFullClientRegistrationInformation(RegistrationRequestDTO registrationRequestDTO) {
+        UserFullInfoDTO userFullInfoDTO = modelMapper.map(registrationRequestDTO, UserFullInfoDTO.class);
+        userFullInfoDTO.setUsername(registrationRequestDTO.getUsername());
+        userFullInfoDTO.setPassword(passwordEncoder.encode(registrationRequestDTO.getPassword()));
+        return userFullInfoDTO;
+>>>>>>> Stashed changes:main/src/main/java/edu/senla/service/impl/UserServiceImpl.java
     }
 
     private ClientOrderInfoDTO formClientOrderInfoDTO(Order order) {

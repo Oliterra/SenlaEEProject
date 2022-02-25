@@ -1,28 +1,45 @@
 package edu.senla.dao;
 
+<<<<<<< Updated upstream
 import edu.senla.model.entity.Client;
+=======
+>>>>>>> Stashed changes
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
+import edu.senla.model.entity.User;
+import edu.senla.model.enums.OrderPaymentType;
 import edu.senla.model.enums.OrderStatus;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository {
+    List<Order> findAll();
 
-    @Query("SELECT order FROM Order order WHERE order.courier =?1 AND order.status =?2")
+    Order save(Order orderEntity);
+
+    Order getById(long id);
+
+    void updateStatus(long id, OrderStatus status);
+
+    void updatePaymentType(long id, OrderPaymentType paymentType);
+
+    void deleteById(long id);
+
+    boolean existsById(long id);
+
     Order getByCourierAndStatus(Courier courier, OrderStatus status);
 
-    List<Order> getAllByCourier(Courier courier, Pageable pageable);
+    List<Order> getAllByCourier(Courier courier);
 
+<<<<<<< Updated upstream
     List<Order> getAllByClient(Client client, Pageable pageable);
+=======
+    List<Order> getAllByUser(User user);
+>>>>>>> Stashed changes
 
     List<Order> getByStatusOrderByTimeAsc(OrderStatus status);
 
-    @Query("SELECT order.courier FROM Order order WHERE order.status =?1")
     List<Courier> getAllCouriersByStatus(OrderStatus status);
 }

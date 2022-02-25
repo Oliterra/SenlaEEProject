@@ -24,6 +24,7 @@ import java.util.List;
         typeClass = PostgreSQLEnumType.class
 )
 @Table(name = "orders")
+//@JsonIgnoreProperties("courier")
 public class Order implements Serializable {
 
     @Id

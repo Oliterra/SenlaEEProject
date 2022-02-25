@@ -11,8 +11,13 @@ import edu.senla.model.entity.Container;
 import edu.senla.model.entity.Order;
 import edu.senla.model.enums.DishType;
 import edu.senla.service.ContainerService;
+<<<<<<< Updated upstream
 import edu.senla.service.DishService;
 import edu.senla.service.TypeOfContainerService;
+=======
+import edu.senla.service.ContainerTypeService;
+import edu.senla.service.DishService;
+>>>>>>> Stashed changes
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -69,9 +74,21 @@ public class ContainerServiceImpl extends AbstractService implements ContainerSe
     }
 
     public Container mapFromContainerComponentsDTOToContainerEntity(ContainerComponentsDTO containerComponentsDTO, Order order) {
+        Container container = new Container();
+/*Dish meat = dishRepository.getById(containerComponentsDTO.getMeat());
+        Dish garnish = dishRepository.getById(containerComponentsDTO.getGarnish());
+        Dish salad = dishRepository.getById(containerComponentsDTO.getSalad());
+        Dish sauce = dishRepository.getById(containerComponentsDTO.getSauce());
+        List<Dish> dishes = new ArrayList<>();
+        Stream.of(meat, garnish, salad, sauce).
         Container container = modelMapper.map(containerComponentsDTO, Container.class);
+<<<<<<< Updated upstream
         container.setTypeOfContainer(typeOfContainerService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
         container.setOrder(order);
+=======
+        container.setContainerType(containerTypeService.getTypeOfContainerByName(containerComponentsDTO.getTypeOfContainer()));
+        container.setOrder(order);*/
+>>>>>>> Stashed changes
         return container;
     }
 

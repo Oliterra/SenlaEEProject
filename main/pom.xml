@@ -100,6 +100,14 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.5.3</version>
             </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <configuration>
+                    <changeLogFile>src/main/resources/changelog-master.xml</changeLogFile>
+                    <liquibaseProLicenseKey>ABwwGgQUzETj8yEKpl2xlRAJOUpl788EQEgCAgQAULsacPXlOQyb35iTIBT9AmDKNWyMroPeZj2V4R5c7QDv6EHy6hmx6TFQoXe6xlrICm+3QJdiuT2DD66vlZsmUtFuItbhFQKfz0FnhTBteT3vsJwSbrZ39sz15ePKZ4mBn5ZJmhVVogXuWbQA7BuKDef4kq+H+GBSf5Hyfb3wvZehE0z288pEI5rYTT+jWjAq0QTbhvjpUDm9/WUtLHmRAks8wkMN5FOdCtpUtC1aYSpVK01C+CqsLtTja41dJzhhgTFb5L7z9zOxS94oiAMwYDbKkR4D27xCxU2o81XpG0sIAsTj5aXiagYX0+8+HKfLJ3Y2ekqkMYTtl6SqEEBKIFOJBxb1bWgbVf/87ucup/IUsWJyXWM7ZnE5MjCl2rbia4/uW9Y7HhXBQh8kaAqxfzzVVfLwxUb8NZy4CzmVX67CVuLS/NbAiQ4MvIOwjZZU2Eia1pNeXI9aEaH7guHJPelG3OfQUVDaNEX6KKoAfh6Tohl0/juXFnTjEBSdwAmHGYoBpt26rtjWhSIHJU67B5RlpjfXEklC9eFm7jba/qI/i5WeMi2q0n3aSyNyrbfTqudYaxdzvPPUmmIRiDNGOAK0hU8bRwZ21hdt89GoHp7SP8mHcBQ7Blb6h5yqALs8tqMz8NHWkB4tGXU1n2cYwQ==</liquibaseProLicenseKey>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

@@ -50,7 +50,8 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
 
     public List<CourierMainInfoDTO> getAllCouriers(int pages) {
         log.info("Getting all couriers");
-        Page<Courier> couriers = courierRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        //Page<Courier> couriers = courierRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        Page<Courier> couriers = null;
         return couriers.stream().map(c -> modelMapper.map(c, CourierMainInfoDTO.class)).toList();
     }
 
@@ -214,10 +215,11 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
     public List<CourierOrderInfoDTO> getAllOrdersOfCourier(long courierId) {
         Courier courier = getCourierIfExists(courierId, CRUDOperations.READ);
         log.info("Requested order history for the courier {} {}", courier.getFirstName(), courier.getLastName());
-        return orderRepository.getAllByCourier(courier, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
+        /*return orderRepository.getAllByCourier(courier, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
                 .filter(o -> o.getStatus().equals(OrderStatus.COMPLETED_LATE) || o.getStatus().equals(OrderStatus.COMPLETED_ON_TIME))
                 .map(this::formCourierOrderInfoDTO)
-                .toList();
+                .toList();*/
+        return null;
     }
 
     private boolean isCourierActiveNow(long id) {
@@ -293,7 +295,8 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
     }
 
     private List<Courier> getAllActiveCouriers() {
-        return courierRepository.getByStatus(CourierStatus.ACTIVE, PageRequest.of(0, 10, Sort.by("lastName").descending()));
+        //return courierRepository.getByStatus(CourierStatus.ACTIVE, PageRequest.of(0, 10, Sort.by("lastName").descending()));
+        return null;
     }
 
     private List<Courier> getAllUnoccupiedCouriers() {

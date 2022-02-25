@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,7 +29,8 @@ public class DishServiceImpl extends AbstractService implements DishService {
 
     public List<DishDTO> getAllDishes(int pages) {
         log.info("Getting all dishes");
-        Page<Dish> dishes = dishRepository.findAll(PageRequest.of(0, pages, Sort.by("name").descending()));
+        //Page<Dish> dishes = dishRepository.findAll(PageRequest.of(0, pages, Sort.by("name").descending()));
+        Page<Dish> dishes = null;
         return dishes.stream().map(d -> modelMapper.map(d, DishDTO.class)).toList();
     }
 

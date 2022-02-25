@@ -3,7 +3,7 @@ package edu.senla.controller.impl;
 import edu.senla.controller.OrdersHistoryController;
 import edu.senla.model.dto.ClientOrderInfoDTO;
 import edu.senla.model.dto.CourierOrderInfoDTO;
-import edu.senla.service.ClientService;
+import edu.senla.service.UserService;
 import edu.senla.service.CourierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -19,13 +19,18 @@ import java.util.List;
 @RequestMapping("/history")
 public class OrdersHistoryControllerImpl implements OrdersHistoryController {
 
-    private final ClientService clientService;
+    private final UserService userService;
     private final CourierService courierService;
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping(value = "clients/{id}")
+<<<<<<< Updated upstream
     public List<ClientOrderInfoDTO> getClientOrdersHistory(@PathVariable long id) {
         return clientService.getAllOrdersOfClient(id);
+=======
+    public List<UserOrderInfoDTO> getClientOrdersHistory(@PathVariable long id) {
+        return userService.getAllOrdersOfClient(id);
+>>>>>>> Stashed changes
     }
 
     @Secured({"ROLE_ADMIN"})

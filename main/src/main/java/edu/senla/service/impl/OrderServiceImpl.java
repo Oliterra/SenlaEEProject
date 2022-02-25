@@ -1,16 +1,24 @@
 package edu.senla.service.impl;
 
+<<<<<<< Updated upstream
 import edu.senla.dao.ClientRepository;
+=======
+>>>>>>> Stashed changes
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
+<<<<<<< Updated upstream
 import edu.senla.model.entity.Client;
+=======
+>>>>>>> Stashed changes
 import edu.senla.model.entity.Container;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
+import edu.senla.model.entity.User;
 import edu.senla.model.enums.OrderPaymentType;
 import edu.senla.model.enums.OrderStatus;
 import edu.senla.service.ContainerService;
@@ -19,8 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,7 +52,8 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     public List<OrderDTO> getAllOrders(int pages) {
         log.info("Getting all orders");
-        Page<Order> orders = orderRepository.findAll(PageRequest.of(0, pages, Sort.by("date").descending()));
+        //Page<Order> orders = orderRepository.findAll(PageRequest.of(0, pages, Sort.by("date").descending()));
+        Page<Order> orders = null;
         return orders.stream().map(o -> modelMapper.map(o, OrderDTO.class)).toList();
     }
 
@@ -119,7 +126,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
         order.setPaymentType(translateOrderPaymentType(shoppingCartDTO.getPaymentType()));
         order.setDate(LocalDate.now());
         order.setTime(LocalTime.now());
-        orderRepository.saveAndFlush(order);
+        orderRepository.save(order);
         List<Container> containers = shoppingCartDTO.getContainers().stream()
                 .map(container -> containerService.mapFromContainerComponentsDTOToContainerEntity(container, order))
                 .toList();
@@ -144,8 +151,9 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     private OrderStatusInfoDTO getOrderStatusInfo(long courierId) {
         Courier courier = courierRepository.getById(courierId);
-        Optional<Order> order = orderRepository.getAllByCourier(courier, PageRequest.of(0, 1, Sort.by("date").descending())).stream()
-                .filter(o -> o.getStatus().equals(OrderStatus.RECEIPT_CONFIRMED) || o.getStatus().equals(OrderStatus.IN_PROCESS)).findFirst();
+        /*Optional<Order> order = orderRepository.getAllByCourier(courier, PageRequest.of(0, 1, Sort.by("date").descending())).stream()
+                .filter(o -> o.getStatus().equals(OrderStatus.RECEIPT_CONFIRMED) || o.getStatus().equals(OrderStatus.IN_PROCESS)).findFirst();*/
+        Optional<Order> order = null;
         return formOrderStatusInfoDTO(order);
     }
 
