@@ -1,6 +1,6 @@
 package edu.senla.dao;
 
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
 import edu.senla.model.enums.OrderStatus;
@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> getAllByCourier(Courier courier, Pageable pageable);
 
-    List<Order> getAllByClient(Client client, Pageable pageable);
+    List<Order> getAllByUser(User user, Pageable pageable);
 
     List<Order> getByStatusOrderByTimeAsc(OrderStatus status);
 

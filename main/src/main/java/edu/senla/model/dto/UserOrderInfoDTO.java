@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClientOrderInfoDTO {
+public class UserOrderInfoDTO {
 
     private LocalDate date;
 

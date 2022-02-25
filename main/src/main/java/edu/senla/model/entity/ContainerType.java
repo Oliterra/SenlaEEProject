@@ -12,18 +12,20 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="types_of_container")
-public class TypeOfContainer implements Serializable{
+@Table(name="container_types")
+public class ContainerType implements Serializable{
 
     @Id
-    @Column(name = "number_of_calories")
-    private long numberOfCalories;
+    @Column(name = "caloric_content")
+    private long caloricContent;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "price")
     private int price;
 
-    @OneToMany(mappedBy = "typeOfContainer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "containerType", cascade = CascadeType.ALL)
     private List<Container> containers;
 
 }

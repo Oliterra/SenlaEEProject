@@ -1,6 +1,6 @@
 package edu.senla.service;
 
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
@@ -8,7 +8,7 @@ import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
 import edu.senla.model.enums.CourierStatus;
@@ -46,7 +46,7 @@ class CourierServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
     @Mock
     private ContainerRepository containerRepository;
@@ -410,10 +410,10 @@ class CourierServiceTest {
     @Test
     void testGetAllOrdersOfCourier() {
         Courier courier = new Courier();
-        Client client = new Client();
+        User user = new User();
         List<Order> orders = new ArrayList<>();
         Order correctOrder = new Order();
-        correctOrder.setClient(client);
+        correctOrder.setUser(user);
         correctOrder.setPaymentType(OrderPaymentType.BY_CARD_ONLINE);
         correctOrder.setStatus(OrderStatus.COMPLETED_LATE);
         orders.add(correctOrder);

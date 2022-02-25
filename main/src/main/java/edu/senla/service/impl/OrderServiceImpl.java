@@ -1,13 +1,13 @@
 package edu.senla.service.impl;
 
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Container;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
@@ -40,7 +40,7 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
     private final ContainerService containerService;
     private final OrderRepository orderRepository;
     private final ContainerRepository containerRepository;
-    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
     private final CourierRepository courierRepository;
     private static final int deliveryTimeStandard = 120;
 
@@ -59,9 +59,9 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
             throw new BadRequest("There is no items in shopping cart");
         }
         shoppingCartDTO.setContainers(correctContainers);
-        Client client = clientRepository.getById(clientId);
-        OrderTotalCostDTO orderTotalCostDTO = createNewOrder(client, shoppingCartDTO);
-        client.setAddress(shoppingCartDTO.getAddress());
+        User user = userRepository.getById(clientId);
+        OrderTotalCostDTO orderTotalCostDTO = createNewOrder(user, shoppingCartDTO);
+        user.setAddress(shoppingCartDTO.getAddress());
         return orderTotalCostDTO;
     }
 
@@ -112,9 +112,9 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
         return orderClosingResponseDTO;
     }
 
-    private OrderTotalCostDTO createNewOrder(Client client, ShoppingCartDTO shoppingCartDTO) {
+    private OrderTotalCostDTO createNewOrder(User user, ShoppingCartDTO shoppingCartDTO) {
         Order order = new Order();
-        order.setClient(client);
+        order.setUser(user);
         order.setStatus(OrderStatus.NEW);
         order.setPaymentType(translateOrderPaymentType(shoppingCartDTO.getPaymentType()));
         order.setDate(LocalDate.now());
@@ -159,8 +159,8 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
 
     private boolean isOrderBelongToClient(long id, long clientId) {
         Order order = orderRepository.getById(id);
-        Client client = clientRepository.getById(clientId);
-        return order.getClient().equals(client);
+        User user = userRepository.getById(clientId);
+        return order.getUser().equals(user);
     }
 
     private OrderStatusInfoDTO formOrderStatusInfoDTO(Optional<Order> order) {

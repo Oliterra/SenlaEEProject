@@ -2,9 +2,9 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.impl.ClientControllerImpl;
-import edu.senla.dao.ClientRepository;
-import edu.senla.model.dto.ClientMainInfoDTO;
-import edu.senla.model.entity.Client;
+import edu.senla.dao.UserRepository;
+import edu.senla.model.dto.UserMainInfoDTO;
+import edu.senla.model.entity.User;
 import edu.senla.service.impl.ClientServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
-public class ClientControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private ClientControllerImpl registrationController;
@@ -51,21 +51,21 @@ public class ClientControllerTest {
     private ValidationServiceImpl validationService;
 
     @SpyBean
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
-    private Client clientToOperateWith;
+    private User userToOperateWith;
 
     @SneakyThrows
     @BeforeEach
     void creteClientToOperateWith() {
-        clientToOperateWith = new Client();
-        clientToOperateWith.setFirstName("CorrectName");
-        clientToOperateWith.setLastName("CorrectName");
-        clientToOperateWith.setEmail("test@test.com");
-        clientToOperateWith.setPhone("+375333333333");
-        clientToOperateWith.setUsername("Username");
-        clientToOperateWith.setPassword("testPassword");
-        clientRepository.save(clientToOperateWith);
+        userToOperateWith = new User();
+        userToOperateWith.setFirstName("CorrectName");
+        userToOperateWith.setLastName("CorrectName");
+        userToOperateWith.setEmail("test@test.com");
+        userToOperateWith.setPhone("+375333333333");
+        userToOperateWith.setUsername("Username");
+        userToOperateWith.setPassword("testPassword");
+        userRepository.save(userToOperateWith);
     }
 
     @SneakyThrows
@@ -115,7 +115,7 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testGetExistentClientOkStatus() {
-        long idOfClientToGet = clientToOperateWith.getId();
+        long idOfClientToGet = userToOperateWith.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/clients/{idOfClientToGet}", idOfClientToGet))
                 .andDo(print())
@@ -126,9 +126,9 @@ public class ClientControllerTest {
     @SneakyThrows
     @Test
     void testUpdateClientUnauthorizedStatus() {
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("CorrectName");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("CorrectName");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -146,9 +146,9 @@ public class ClientControllerTest {
     @WithMockUser(roles={"COURIER"})
     @Test
     void testUpdateClientForbiddenStatus() {
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("CorrectName");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("CorrectName");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -184,10 +184,10 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateClientWithIncorrectSymbolsInNameBadRequestStatus() {
-        long idOfClientToUpdate = clientToOperateWith.getId();
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("$%*&)(");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        long idOfClientToUpdate = userToOperateWith.getId();
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("$%*&)(");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -205,10 +205,10 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateClientWithTooShortNameBadRequestStatus() {
-        long idOfClientToUpdate = clientToOperateWith.getId();
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("c");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        long idOfClientToUpdate = userToOperateWith.getId();
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("c");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -226,12 +226,12 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateClientWithInvalidEmailBadRequestStatus() {
-        long idOfClientToUpdate = clientToOperateWith.getId();
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("CorrectName");
-        clientMainInfoDTO.setLastName("CorrectName");
-        clientMainInfoDTO.setEmail("wrong");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        long idOfClientToUpdate = userToOperateWith.getId();
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("CorrectName");
+        userMainInfoDTO.setLastName("CorrectName");
+        userMainInfoDTO.setEmail("wrong");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -249,13 +249,13 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateClientWithInvalidPhoneBadRequestStatus() {
-        long idOfClientToUpdate = clientToOperateWith.getId();
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("CorrectName");
-        clientMainInfoDTO.setLastName("CorrectName");
-        clientMainInfoDTO.setEmail("test@test.com");
-        clientMainInfoDTO.setPhone("wrong");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        long idOfClientToUpdate = userToOperateWith.getId();
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("CorrectName");
+        userMainInfoDTO.setLastName("CorrectName");
+        userMainInfoDTO.setEmail("test@test.com");
+        userMainInfoDTO.setPhone("wrong");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -273,13 +273,13 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateClientOkStatus() {
-        long idOfClientToUpdate = clientToOperateWith.getId();
-        ClientMainInfoDTO clientMainInfoDTO = new ClientMainInfoDTO();
-        clientMainInfoDTO.setFirstName("UpdatedName");
-        clientMainInfoDTO.setLastName("UpdatedName");
-        clientMainInfoDTO.setEmail("updated@test.com");
-        clientMainInfoDTO.setPhone("+3756666666");
-        String clientMainInfoJson = mapper.writeValueAsString(clientMainInfoDTO);
+        long idOfClientToUpdate = userToOperateWith.getId();
+        UserMainInfoDTO userMainInfoDTO = new UserMainInfoDTO();
+        userMainInfoDTO.setFirstName("UpdatedName");
+        userMainInfoDTO.setLastName("UpdatedName");
+        userMainInfoDTO.setEmail("updated@test.com");
+        userMainInfoDTO.setPhone("+3756666666");
+        String clientMainInfoJson = mapper.writeValueAsString(userMainInfoDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/clients/{idOfClientToUpdate}", idOfClientToUpdate)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -308,7 +308,7 @@ public class ClientControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testDeleteExistentClientOkStatus() {
-        long idOfClientToDelete = clientToOperateWith.getId();
+        long idOfClientToDelete = userToOperateWith.getId();
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/clients/{idOfClientToDelete}", idOfClientToDelete))
                 .andDo(print())

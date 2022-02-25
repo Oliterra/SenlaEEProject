@@ -1,12 +1,12 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.controller.impl.TypeOfContainerControllerImpl;
+import edu.senla.controller.impl.ContainerTypeControllerImpl;
 import edu.senla.dao.TypeOfContainerRepository;
-import edu.senla.model.dto.TypeOfContainerDTO;
-import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
-import edu.senla.model.entity.TypeOfContainer;
-import edu.senla.service.impl.TypeOfContainerServiceImpl;
+import edu.senla.model.dto.ContainerTypeDTO;
+import edu.senla.model.dto.ContainerTypeForUpdateDTO;
+import edu.senla.model.entity.ContainerType;
+import edu.senla.service.impl.ContainerTypeServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,10 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional
-public class TypeOfContainerControllerTest {
+public class ContainerTypeControllerTest {
 
     @Autowired
-    private TypeOfContainerControllerImpl typeOfContainerController;
+    private ContainerTypeControllerImpl typeOfContainerController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -46,7 +46,7 @@ public class TypeOfContainerControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private TypeOfContainerServiceImpl typeOfContainerService;
+    private ContainerTypeServiceImpl typeOfContainerService;
 
     @SpyBean
     private ValidationServiceImpl validationService;
@@ -54,26 +54,26 @@ public class TypeOfContainerControllerTest {
     @SpyBean
     private TypeOfContainerRepository typeOfContainerRepository;
 
-    private TypeOfContainer typeOfContainerToOperateWith;
+    private ContainerType containerTypeToOperateWith;
 
     @SneakyThrows
     @BeforeEach
     void creteTypeOfContainerToOperateWith() {
-        typeOfContainerToOperateWith = new TypeOfContainer();
-        typeOfContainerToOperateWith.setName("XXXXXL");
-        typeOfContainerToOperateWith.setNumberOfCalories(2300);
-        typeOfContainerToOperateWith.setPrice(45);
-        typeOfContainerRepository.save(typeOfContainerToOperateWith);
+        containerTypeToOperateWith = new ContainerType();
+        containerTypeToOperateWith.setName("XXXXXL");
+        //containerTypeToOperateWith.setNumberOfCalories(2300);
+        containerTypeToOperateWith.setPrice(45);
+        typeOfContainerRepository.save(containerTypeToOperateWith);
     }
 
     @SneakyThrows
     @Test
     void testCreateTypeOfContainerUnauthorizedStatus() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(1200);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,11 +88,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"USER"})
     @Test
     void testCreateTypeOfContainerForbiddenStatus() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XL");
+        containerTypeDTO.setNumberOfCalories(1200);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -122,11 +122,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testCreateTypeOfContainerWithAlreadyExistentNameConflictStatus(){
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XXL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XXL");
+        containerTypeDTO.setNumberOfCalories(1200);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -141,11 +141,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testCreateTypeOfContainerWithAlreadyExistentNumberOfCaloriesConflictStatus(){
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XXXXXXXL");
-        typeOfContainerDTO.setNumberOfCalories(1250);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XXXXXXXL");
+        containerTypeDTO.setNumberOfCalories(1250);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -160,11 +160,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testCreateTypeOfContainerWithInvalidNameBadRequestStatus(){
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("wrong");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("wrong");
+        containerTypeDTO.setNumberOfCalories(1200);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,11 +179,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testCreateTypeOfContainerWithInvalidNumberOfCaloriesBadRequestStatus(){
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XXXXXXXL");
-        typeOfContainerDTO.setNumberOfCalories(400000000);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XXXXXXXL");
+        containerTypeDTO.setNumberOfCalories(400000000);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -198,11 +198,11 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testCreateTypeOfContainerCreatedStatus() {
-        TypeOfContainerDTO typeOfContainerDTO = new TypeOfContainerDTO();
-        typeOfContainerDTO.setName("XXXXXXXL");
-        typeOfContainerDTO.setNumberOfCalories(1200);
-        typeOfContainerDTO.setPrice(40);
-        String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
+        ContainerTypeDTO containerTypeDTO = new ContainerTypeDTO();
+        containerTypeDTO.setName("XXXXXXXL");
+        containerTypeDTO.setNumberOfCalories(1200);
+        containerTypeDTO.setPrice(40);
+        String typeOfContainerJson = mapper.writeValueAsString(containerTypeDTO);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/typesOfContainer")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -216,7 +216,7 @@ public class TypeOfContainerControllerTest {
     @SneakyThrows
     @Test
     void testUpdateTypeOfContainerUnauthorizedStatus() {
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("XL");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
@@ -234,7 +234,7 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"USER"})
     @Test
     void testUpdateTypeOfContainerForbiddenStatus() {
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("XL");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
@@ -267,7 +267,7 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateNonExistentTypeOfContainerNotFoundStatus() {
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("XXXXXXXL");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
@@ -285,8 +285,9 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateTypeOfContainerWithAlreadyExistentNameConflictStatus() {
-        long idOfTypeOfContainerToUpdate = typeOfContainerToOperateWith.getNumberOfCalories();
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        //long idOfTypeOfContainerToUpdate = containerTypeToOperateWith.getNumberOfCalories();
+        long idOfTypeOfContainerToUpdate = 0;
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("XXL");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
@@ -304,8 +305,9 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateTypeOfContainerWithInvalidNameBadRequestStatus() {
-        long idOfTypeOfContainerToUpdate = typeOfContainerToOperateWith.getNumberOfCalories();
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        //long idOfTypeOfContainerToUpdate = containerTypeToOperateWith.getNumberOfCalories();
+        long idOfTypeOfContainerToUpdate = 0;
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("wrong");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);
@@ -323,8 +325,9 @@ public class TypeOfContainerControllerTest {
     @WithMockUser(roles={"ADMIN"})
     @Test
     void testUpdateTypeOfContainerOkStatus() {
-        long idOfTypeOfContainerToUpdate = typeOfContainerToOperateWith.getNumberOfCalories();
-        TypeOfContainerForUpdateDTO typeOfContainerDTO = new TypeOfContainerForUpdateDTO();
+        //long idOfTypeOfContainerToUpdate = containerTypeToOperateWith.getNumberOfCalories();
+        long idOfTypeOfContainerToUpdate = 0;;
+        ContainerTypeForUpdateDTO typeOfContainerDTO = new ContainerTypeForUpdateDTO();
         typeOfContainerDTO.setName("XXXXXXXL");
         typeOfContainerDTO.setPrice(40);
         String typeOfContainerJson = mapper.writeValueAsString(typeOfContainerDTO);

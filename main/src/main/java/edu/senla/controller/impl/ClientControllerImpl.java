@@ -1,7 +1,7 @@
 package edu.senla.controller.impl;
 
 import edu.senla.controller.ClientController;
-import edu.senla.model.dto.ClientMainInfoDTO;
+import edu.senla.model.dto.UserMainInfoDTO;
 import edu.senla.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -18,13 +18,13 @@ public class ClientControllerImpl implements ClientController {
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping
-    public List<ClientMainInfoDTO> getAllClients(@RequestParam(value = "pages", required = false, defaultValue = "10") int pages) {
+    public List<UserMainInfoDTO> getAllClients(@RequestParam(value = "pages", required = false, defaultValue = "10") int pages) {
         return clientService.getAllClients(pages);
     }
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping(value = "{id}")
-    public ClientMainInfoDTO getClient(@PathVariable("id") long id) {
+    public UserMainInfoDTO getClient(@PathVariable("id") long id) {
         return clientService.getClient(id);
     }
 

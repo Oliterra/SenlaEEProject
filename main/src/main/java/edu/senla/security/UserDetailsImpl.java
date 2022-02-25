@@ -1,35 +1,37 @@
 package edu.senla.security;
 
-import edu.senla.model.entity.Client;
 import edu.senla.model.entity.Courier;
+import edu.senla.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class ClientUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private String username;
     private String password;
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public static ClientUserDetails fromClientEntityToClientUserDetails(Client client) {
-        ClientUserDetails clientUserDetails = new ClientUserDetails();
-        clientUserDetails.username = client.getUsername();
-        clientUserDetails.password = client.getPassword();
-        clientUserDetails.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(client.getRole().getName()));
-        return clientUserDetails;
+    public static UserDetailsImpl fromClientEntityToClientUserDetails(User user) {
+        UserDetailsImpl userDetailsImpl = new UserDetailsImpl();
+        userDetailsImpl.username = user.getUsername();
+        userDetailsImpl.password = user.getPassword();
+        userDetailsImpl.grantedAuthorities = List.copyOf(user.getRoles()).stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+        return userDetailsImpl;
     }
 
-    public static ClientUserDetails fromCourierEntityToCourierUserDetails(Courier courier) {
-        ClientUserDetails courierUserDetails = new ClientUserDetails();
-        courierUserDetails.username = courier.getPhone();
-        courierUserDetails.password = courier.getPassword();
-        courierUserDetails.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_COURIER"));
-        return courierUserDetails;
+    public static UserDetailsImpl fromCourierEntityToCourierUserDetails(Courier courier) {
+        UserDetailsImpl courierUserDetailsImpl = new UserDetailsImpl();
+        courierUserDetailsImpl.username = courier.getPhone();
+        courierUserDetailsImpl.password = courier.getPassword();
+        courierUserDetailsImpl.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_COURIER"));
+        return courierUserDetailsImpl;
     }
 
     @Override

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Locale;
 
 @Transactional
 @RequiredArgsConstructor
@@ -42,14 +43,14 @@ public class DishServiceImpl extends AbstractService implements DishService {
         checkDishDTOName(newDishDTO, CRUDOperations.CREATE);
         Dish dish = setDishDTOTypeToDishEntity(newDishDTO);
         dishRepository.save(dish);
-        log.info("Dish with name {} and type {} successfully created", dish.getName(), dish.getDishType());
+        log.info("Dish with name {} and type {} successfully created", dish.getName(), dish.getType());
     }
 
     public DishDTO getDish(long id) {
         log.info("Getting dish with id {}: ", id);
         Dish dish = getDishIfExists(id, CRUDOperations.READ);
         DishDTO dishDTO = modelMapper.map(dish, DishDTO.class);
-        dishDTO.setDishType(dish.getDishType().toString().toLowerCase());
+        dishDTO.setDishType(dish.getType().toString().toLowerCase());
         log.info("Dish found: {}: ", dishDTO);
         return dishDTO;
     }
@@ -91,7 +92,7 @@ public class DishServiceImpl extends AbstractService implements DishService {
     private Dish setDishDTOTypeToDishEntity(DishDTO newDishDTO) {
         Dish dish = modelMapper.map(newDishDTO, Dish.class);
         DishType dishType = translateDishType(newDishDTO.getDishType(), CRUDOperations.CREATE);
-        dish.setDishType(dishType);
+        dish.setType(dishType);
         return dish;
     }
 
@@ -127,21 +128,19 @@ public class DishServiceImpl extends AbstractService implements DishService {
     }
 
     private DishType translateDishType(String dishType, CRUDOperations operation) {
-        return switch (dishType) {
-            case "meat" -> DishType.MEAT;
-            case "garnish" -> DishType.GARNISH;
-            case "salad" -> DishType.SALAD;
-            case "sauce" -> DishType.SAUCE;
-            default -> {
-                log.error("The attempt to {} a dish failed, a dish type {} invalid", operation.toString().toLowerCase(), dishType);
-                throw new BadRequest("Dish type " + dishType + " invalid");
-            }
-        };
+        DishType translatedDishType;
+        try {
+            translatedDishType = DishType.valueOf(dishType.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            log.error("The attempt to {} a dish failed, a dish type {} invalid", operation.toString().toLowerCase(), dishType);
+            throw new BadRequest("Dish type " + dishType + " invalid");
+        }
+        return translatedDishType;
     }
 
     private Dish updateDishOptions(Dish dishToUpdate, DishDTO updatedDishDTO) {
         dishToUpdate.setName(updatedDishDTO.getName());
-        dishToUpdate.setDishType(translateDishType(updatedDishDTO.getDishType(), CRUDOperations.UPDATE));
+        dishToUpdate.setType(translateDishType(updatedDishDTO.getDishType(), CRUDOperations.UPDATE));
         return dishToUpdate;
     }
 }

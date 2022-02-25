@@ -1,6 +1,6 @@
 package edu.senla.service.impl;
 
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
@@ -8,7 +8,7 @@ import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Container;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
@@ -42,7 +42,7 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
     private final ContainerService containerService;
     private final ContainerRepository containerRepository;
     private final OrderRepository orderRepository;
-    private final ClientRepository clientRepository;
+    private final UserRepository userRepository;
     private final CourierRepository courierRepository;
     private final PasswordEncoder passwordEncoder;
     private static final double normOfOrdersPerDay = 4;
@@ -254,12 +254,12 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
             log.warn("An attempt to get information about the current order for the courier failed, because, courier {} {} has no current order", courier.getFirstName(), courier.getLastName());
             throw new NotFound("Courier has no current order");
         }
-        Client client = clientRepository.getById(order.getClient().getId());
+        User user = userRepository.getById(order.getUser().getId());
         List<Container> containers = containerRepository.findAllByOrderId(order.getId());
         double orderCost = containerService.calculateTotalOrderCost(containers);
         List<ContainerComponentsNamesDTO> containersCourierInfoDTOs = containers.stream()
                 .map(containerService::mapFromContainerEntityToContainerComponentsNamesDTO).toList();
-        return formCourierOrderInfoResponseDTO(containersCourierInfoDTOs, client, order, orderCost);
+        return formCourierOrderInfoResponseDTO(containersCourierInfoDTOs, user, order, orderCost);
     }
 
     private void checkCourierName(String name, CRUDOperations operation) {
@@ -324,12 +324,12 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
     }
 
     private CourierCurrentOrderInfoDTO formCourierOrderInfoResponseDTO(List<ContainerComponentsNamesDTO> containersCourierInfoDTOs,
-                                                                       Client client, Order order, double orderCost) {
+                                                                       User user, Order order, double orderCost) {
         CourierCurrentOrderInfoDTO courierCurrentOrderInfoDTO = new CourierCurrentOrderInfoDTO();
         courierCurrentOrderInfoDTO.setContainers(containersCourierInfoDTOs);
-        courierCurrentOrderInfoDTO.setClientFirstName(client.getFirstName());
-        courierCurrentOrderInfoDTO.setClientLastName(client.getLastName());
-        courierCurrentOrderInfoDTO.setAddress(client.getAddress());
+        courierCurrentOrderInfoDTO.setClientFirstName(user.getFirstName());
+        courierCurrentOrderInfoDTO.setClientLastName(user.getLastName());
+        courierCurrentOrderInfoDTO.setAddress(user.getAddress());
         courierCurrentOrderInfoDTO.setTime(order.getTime());
         courierCurrentOrderInfoDTO.setPaymentType(order.getPaymentType().toString().toLowerCase(Locale.ROOT));
         courierCurrentOrderInfoDTO.setOrderCost(orderCost);
@@ -343,7 +343,7 @@ public class CourierServiceImpl extends AbstractService implements CourierServic
         CourierOrderInfoDTO courierOrderInfoDTO = new CourierOrderInfoDTO();
         courierOrderInfoDTO.setDate(order.getDate());
         courierOrderInfoDTO.setTime(order.getTime());
-        courierOrderInfoDTO.setClientName(order.getClient().getFirstName() + " " + order.getClient().getLastName());
+        courierOrderInfoDTO.setClientName(order.getUser().getFirstName() + " " + order.getUser().getLastName());
         courierOrderInfoDTO.setPaymentType(order.getPaymentType().toString().toLowerCase(Locale.ROOT));
         courierOrderInfoDTO.setOrderDeliveredOnTime(order.getStatus().equals(OrderStatus.COMPLETED_ON_TIME));
         courierOrderInfoDTO.setOrderCost(containerService.calculateTotalOrderCost(containers));

@@ -4,11 +4,11 @@ import edu.senla.dao.TypeOfContainerRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
-import edu.senla.model.dto.TypeOfContainerDTO;
-import edu.senla.model.dto.TypeOfContainerForUpdateDTO;
-import edu.senla.model.entity.TypeOfContainer;
+import edu.senla.model.dto.ContainerTypeDTO;
+import edu.senla.model.dto.ContainerTypeForUpdateDTO;
+import edu.senla.model.entity.ContainerType;
 import edu.senla.model.enums.CRUDOperations;
-import edu.senla.service.TypeOfContainerService;
+import edu.senla.service.ContainerTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -24,46 +24,46 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class TypeOfContainerServiceImpl extends AbstractService implements TypeOfContainerService {
+public class ContainerTypeServiceImpl extends AbstractService implements ContainerTypeService {
 
     private final TypeOfContainerRepository typeOfContainerRepository;
 
-    public List<TypeOfContainerDTO> getAllTypesOfContainer(int pages) {
+    public List<ContainerTypeDTO> getAllTypesOfContainer(int pages) {
         log.info("Getting all types of container");
-        Page<TypeOfContainer> typeOfContainers = typeOfContainerRepository.findAll(PageRequest.of(0, pages, Sort.by("numberOfCalories").descending()));
-        return typeOfContainers.stream().map(t -> modelMapper.map(t, TypeOfContainerDTO.class)).toList();
+        Page<ContainerType> typeOfContainers = typeOfContainerRepository.findAll(PageRequest.of(0, pages, Sort.by("numberOfCalories").descending()));
+        return typeOfContainers.stream().map(t -> modelMapper.map(t, ContainerTypeDTO.class)).toList();
     }
 
     @SneakyThrows
     public void createTypeOfContainer(String typeOfContainerJson) {
-        TypeOfContainerDTO newTypeOfContainerDTO = objectMapper.readValue(typeOfContainerJson, TypeOfContainerDTO.class);
-        log.info("A request to create a type of container {} was received", newTypeOfContainerDTO);
-        isTypeOfContainerExists(newTypeOfContainerDTO.getName(), newTypeOfContainerDTO.getNumberOfCalories());
-        checkTypeOfContainerName(newTypeOfContainerDTO.getName());
-        checkTypeOfContainerNumberOfCalories(newTypeOfContainerDTO.getNumberOfCalories());
-        TypeOfContainer typeOfContainer = modelMapper.map(newTypeOfContainerDTO, TypeOfContainer.class);
-        typeOfContainerRepository.save(typeOfContainer);
+        ContainerTypeDTO newContainerTypeDTO = objectMapper.readValue(typeOfContainerJson, ContainerTypeDTO.class);
+        log.info("A request to create a type of container {} was received", newContainerTypeDTO);
+        isTypeOfContainerExists(newContainerTypeDTO.getName(), newContainerTypeDTO.getNumberOfCalories());
+        checkTypeOfContainerName(newContainerTypeDTO.getName());
+        checkTypeOfContainerNumberOfCalories(newContainerTypeDTO.getNumberOfCalories());
+        ContainerType containerType = modelMapper.map(newContainerTypeDTO, ContainerType.class);
+        typeOfContainerRepository.save(containerType);
         log.info("Type of container with name and number of calories successfully created");
     }
 
-    public TypeOfContainerDTO getTypeOfContainer(long id) {
+    public ContainerTypeDTO getTypeOfContainer(long id) {
         log.info("Getting type of container with id {}: ", id);
-        TypeOfContainer typeOfContainer = getTypeOfContainerIfExists(id, CRUDOperations.READ);
-        TypeOfContainerDTO typeOfContainerDTO = modelMapper.map(typeOfContainer, TypeOfContainerDTO.class);
-        log.info("Type of container found: {}: ", typeOfContainerDTO);
-        return typeOfContainerDTO;
+        ContainerType containerType = getTypeOfContainerIfExists(id, CRUDOperations.READ);
+        ContainerTypeDTO containerTypeDTO = modelMapper.map(containerType, ContainerTypeDTO.class);
+        log.info("Type of container found: {}: ", containerTypeDTO);
+        return containerTypeDTO;
     }
 
     @SneakyThrows
     public void updateTypeOfContainer(long id, String updatedTypeOfContainerJson) {
-        TypeOfContainerForUpdateDTO updatedTypeOfContainerDTODTO = objectMapper.readValue(updatedTypeOfContainerJson, TypeOfContainerForUpdateDTO.class);
-        TypeOfContainer typeOfContainerToUpdate = getTypeOfContainerIfExists(id, CRUDOperations.UPDATE);
+        ContainerTypeForUpdateDTO updatedTypeOfContainerDTODTO = objectMapper.readValue(updatedTypeOfContainerJson, ContainerTypeForUpdateDTO.class);
+        ContainerType containerTypeToUpdate = getTypeOfContainerIfExists(id, CRUDOperations.UPDATE);
         log.info("Updating type of container with id {} with new data {}: ", id, updatedTypeOfContainerDTODTO);
         checkTypeOfContainerNameExistence(updatedTypeOfContainerDTODTO.getName());
         checkTypeOfContainerName(updatedTypeOfContainerDTODTO.getName());
-        TypeOfContainer updatedTypeOfContainer = modelMapper.map(updatedTypeOfContainerDTODTO, TypeOfContainer.class);
-        TypeOfContainer typeOfContainerWithNewParameters = updateTypeOfContainerOptions(typeOfContainerToUpdate, updatedTypeOfContainer);
-        typeOfContainerRepository.save(typeOfContainerWithNewParameters);
+        ContainerType updatedContainerType = modelMapper.map(updatedTypeOfContainerDTODTO, ContainerType.class);
+        ContainerType containerTypeWithNewParameters = updateTypeOfContainerOptions(containerTypeToUpdate, updatedContainerType);
+        typeOfContainerRepository.save(containerTypeWithNewParameters);
         log.info("Type of container with id {} successfully updated", id);
     }
 
@@ -74,11 +74,11 @@ public class TypeOfContainerServiceImpl extends AbstractService implements TypeO
         log.info("Type of container with id {} successfully deleted", id);
     }
 
-    public boolean isTypeOfContainerExists(String name) {
+    public boolean isContainerTypeExists(String name) {
         return typeOfContainerRepository.getByName(name) != null;
     }
 
-    public TypeOfContainer getTypeOfContainerByName(String name) {
+    public ContainerType getTypeOfContainerByName(String name) {
         return typeOfContainerRepository.getByName(name);
     }
 
@@ -86,7 +86,7 @@ public class TypeOfContainerServiceImpl extends AbstractService implements TypeO
         return typeOfContainerRepository.existsById(caloricContent);
     }
 
-    private TypeOfContainer getTypeOfContainerIfExists(long id, CRUDOperations operation) {
+    private ContainerType getTypeOfContainerIfExists(long id, CRUDOperations operation) {
         if (!typeOfContainerRepository.existsById(id)) {
             log.info("The attempt to {} a type of container failed, there is no type of container with id {}", operation.toString().toLowerCase(), id);
             throw new NotFound("There is no type of container with id " + id);
@@ -116,7 +116,7 @@ public class TypeOfContainerServiceImpl extends AbstractService implements TypeO
     }
 
     private void isTypeOfContainerExists(String typeOfContainerName, long typeOfContainerNumberOfCalories) {
-        if (isTypeOfContainerExists(typeOfContainerName)) {
+        if (isContainerTypeExists(typeOfContainerName)) {
             log.error("The attempt to create a new type of container failed, a type of container with name {} already exists", typeOfContainerName);
             throw new ConflictBetweenData("Type of container with name " + typeOfContainerName + " already exists");
         }
@@ -127,15 +127,15 @@ public class TypeOfContainerServiceImpl extends AbstractService implements TypeO
     }
 
     private void checkTypeOfContainerNameExistence(String typeOfContainerName) {
-        if (isTypeOfContainerExists(typeOfContainerName)) {
+        if (isContainerTypeExists(typeOfContainerName)) {
             log.error("The attempt to create a new type of container failed, a type of container with name {} already exists", typeOfContainerName);
             throw new ConflictBetweenData("Type of container with name " + typeOfContainerName + " already exists");
         }
     }
 
-    private TypeOfContainer updateTypeOfContainerOptions(TypeOfContainer typeOfContainer, TypeOfContainer updatedTypeOfContainer) {
-        typeOfContainer.setPrice(updatedTypeOfContainer.getPrice());
-        typeOfContainer.setName(updatedTypeOfContainer.getName());
-        return typeOfContainer;
+    private ContainerType updateTypeOfContainerOptions(ContainerType containerType, ContainerType updatedContainerType) {
+        containerType.setPrice(updatedContainerType.getPrice());
+        containerType.setName(updatedContainerType.getName());
+        return containerType;
     }
 }

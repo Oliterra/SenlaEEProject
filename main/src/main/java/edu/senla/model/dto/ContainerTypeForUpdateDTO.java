@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TypeOfContainerDTO {
-
-    private long numberOfCalories;
+public class ContainerTypeForUpdateDTO {
 
     private String name;
 

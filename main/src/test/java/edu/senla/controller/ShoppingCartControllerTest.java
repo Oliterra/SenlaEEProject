@@ -2,12 +2,12 @@ package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.impl.ShoppingCartControllerImpl;
-import edu.senla.dao.ClientRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.dao.DishRepository;
 import edu.senla.dao.RoleRepository;
 import edu.senla.model.dto.ContainerComponentsDTO;
 import edu.senla.model.dto.ShoppingCartDTO;
-import edu.senla.model.entity.Client;
+import edu.senla.model.entity.User;
 import edu.senla.model.entity.Dish;
 import edu.senla.model.enums.DishType;
 import edu.senla.model.enums.Roles;
@@ -61,7 +61,7 @@ public class ShoppingCartControllerTest {
     private OrderService orderService;
 
     @SpyBean
-    private ClientRepository clientRepository;
+    private UserRepository userRepository;
 
     @SpyBean
     private DishRepository dishRepository;
@@ -69,7 +69,7 @@ public class ShoppingCartControllerTest {
     @SpyBean
     private RoleRepository roleRepository;
 
-    private Client client;
+    private User user;
     private Dish meat;
     private Dish garnish;
     private Dish salad;
@@ -78,31 +78,31 @@ public class ShoppingCartControllerTest {
     @SneakyThrows
     @BeforeEach
     void creteClientToOperateWith() {
-        client = new Client();
-        client.setFirstName("client");
-        client.setLastName("client");
-        client.setEmail("client");
-        client.setPhone("client");
-        client.setRole(roleRepository.getByName(Roles.ROLE_USER.toString()));
-        clientRepository.save(client);
+        user = new User();
+        user.setFirstName("user");
+        user.setLastName("user");
+        user.setEmail("user");
+        user.setPhone("user");
+        user.getRoles().add(roleRepository.getByName(Roles.ROLE_USER.toString()));
+        userRepository.save(user);
 
         meat = new Dish();
-        meat.setDishType(DishType.MEAT);
+        meat.setType(DishType.MEAT);
         meat.setName("meat");
         dishRepository.save(meat);
 
         garnish = new Dish();
-        garnish.setDishType(DishType.GARNISH);
+        garnish.setType(DishType.GARNISH);
         garnish.setName("garnish");
         dishRepository.save(garnish);
 
         salad = new Dish();
-        salad.setDishType(DishType.SALAD);
+        salad.setType(DishType.SALAD);
         salad.setName("salad");
         dishRepository.save(salad);
 
         sauce = new Dish();
-        sauce.setDishType(DishType.SAUCE);
+        sauce.setType(DishType.SAUCE);
         sauce.setName("sauce");
         dishRepository.save(sauce);
     }
@@ -112,7 +112,7 @@ public class ShoppingCartControllerTest {
     void testMakeOrderUnauthorizedStatus() {
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isUnauthorized());
         verify(clientService, never()).getCurrentClientId();
         verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertNull(client.getAddress());
+        assertNull(user.getAddress());
     }
 
     @SneakyThrows
@@ -130,7 +130,7 @@ public class ShoppingCartControllerTest {
     void testMakeOrderForbiddenStatus() {
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isForbidden());
         verify(clientService, never()).getCurrentClientId();
         verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertNull(client.getAddress());
+        assertNull(user.getAddress());
     }
 
     @SneakyThrows
@@ -159,7 +159,7 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("wrong");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isBadRequest());
         verify(clientService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertNull(client.getAddress());
+        assertNull(user.getAddress());
     }
 
     @SneakyThrows
@@ -188,7 +188,7 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -197,7 +197,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isBadRequest());
         verify(clientService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertNull(client.getAddress());
+        assertNull(user.getAddress());
     }
 
     @SneakyThrows
@@ -217,7 +217,7 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -226,7 +226,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isBadRequest());
         verify(clientService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertNull(client.getAddress());
+        assertNull(user.getAddress());
     }
 
     @SneakyThrows
@@ -246,7 +246,7 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(client.getId());
+        when(clientService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -255,7 +255,7 @@ public class ShoppingCartControllerTest {
                 .andExpect(status().isOk());
         verify(clientService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
-        assertEquals("some address", client.getAddress());
+        assertEquals("some address", user.getAddress());
     }
 
 }
