@@ -1,12 +1,12 @@
 package edu.senla.service;
 
 import edu.senla.dao.DishRepository;
-import edu.senla.model.dto.DishDTO;
-import edu.senla.model.entity.Dish;
-import edu.senla.model.enums.DishType;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
+import edu.senla.model.dto.DishDTO;
+import edu.senla.model.entity.Dish;
+import edu.senla.model.enums.DishType;
 import edu.senla.service.impl.DishServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +48,9 @@ class DishServiceTest {
         Dish dish = new Dish();
         dish.setName("Some name");
         dishesList.add(dish);
-        Page<Dish> dishes = new PageImpl<>(dishesList);
-        when(dishRepository.findAll(any(Pageable.class))).thenReturn(dishes);
+        when(dishRepository.findAll()).thenReturn(dishesList);
         List<DishDTO> dishDTOS = dishService.getAllDishes(10);
-        verify(dishRepository, times(1)).findAll((Pageable) any());
+        verify(dishRepository, times(1)).findAll();
         assertTrue(dishDTOS.size() == 1);
         assertEquals(dish.getName(), dishDTOS.get(0).getName());
     }
@@ -62,10 +58,9 @@ class DishServiceTest {
     @Test
     void testGetAllDishesWhenThereAreNoDishes() {
         List<Dish> dishesList = new ArrayList<>();
-        Page<Dish> dishes = new PageImpl<>(dishesList);
-        when(dishRepository.findAll(any(Pageable.class))).thenReturn(dishes);
+        when(dishRepository.findAll()).thenReturn(dishesList );
         List<DishDTO> dishDTOS = dishService.getAllDishes(10);
-        verify(dishRepository, times(1)).findAll((Pageable) any());
+        verify(dishRepository, times(1)).findAll();
         assertTrue(dishDTOS.isEmpty());
     }
 

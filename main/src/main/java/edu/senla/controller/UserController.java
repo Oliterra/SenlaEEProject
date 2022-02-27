@@ -4,7 +4,7 @@ import edu.senla.model.dto.UserMainInfoDTO;
 
 import java.util.List;
 
-public interface ClientController {
+public interface UserController {
 
     List<UserMainInfoDTO> getAllClients(int pages);
 

@@ -11,7 +11,7 @@ import edu.senla.model.entity.User;
 import edu.senla.model.entity.Dish;
 import edu.senla.model.enums.DishType;
 import edu.senla.model.enums.Roles;
-import edu.senla.service.ClientService;
+import edu.senla.service.UserService;
 import edu.senla.service.OrderService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +55,7 @@ public class ShoppingCartControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClientService clientService;
+    private UserService userService;
 
     @SpyBean
     private OrderService orderService;
@@ -112,14 +112,14 @@ public class ShoppingCartControllerTest {
     void testMakeOrderUnauthorizedStatus() {
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
-        verify(clientService, never()).getCurrentClientId();
+        verify(userService, never()).getCurrentClientId();
         verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertNull(user.getAddress());
     }
@@ -130,14 +130,14 @@ public class ShoppingCartControllerTest {
     void testMakeOrderForbiddenStatus() {
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-        verify(clientService, never()).getCurrentClientId();
+        verify(userService, never()).getCurrentClientId();
         verify(orderService, never()).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertNull(user.getAddress());
     }
@@ -159,14 +159,14 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("wrong");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        verify(clientService, times(1)).getCurrentClientId();
+        verify(userService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertNull(user.getAddress());
     }
@@ -188,14 +188,14 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        verify(clientService, times(1)).getCurrentClientId();
+        verify(userService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertNull(user.getAddress());
     }
@@ -217,14 +217,14 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        verify(clientService, times(1)).getCurrentClientId();
+        verify(userService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertNull(user.getAddress());
     }
@@ -246,14 +246,14 @@ public class ShoppingCartControllerTest {
         shoppingCartDTO.setPaymentType("by card to courier");
         shoppingCartDTO.setAddress("some address");
         String shoppingCartJson = mapper.writeValueAsString(shoppingCartDTO);
-        when(clientService.getCurrentClientId()).thenReturn(user.getId());
+        when(userService.getCurrentClientId()).thenReturn(user.getId());
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/shoppingCart")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(shoppingCartJson))
                 .andDo(print())
                 .andExpect(status().isOk());
-        verify(clientService, times(1)).getCurrentClientId();
+        verify(userService, times(1)).getCurrentClientId();
         verify(orderService, times(1)).checkIncomingOrderDataAndCreateIfItIsCorrect(any(Long.class), any());
         assertEquals("some address", user.getAddress());
     }

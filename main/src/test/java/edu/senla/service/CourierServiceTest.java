@@ -1,16 +1,16 @@
 package edu.senla.service;
 
-import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.CourierRepository;
 import edu.senla.dao.OrderRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
 import edu.senla.model.dto.*;
-import edu.senla.model.entity.User;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.entity.Order;
+import edu.senla.model.entity.User;
 import edu.senla.model.enums.CourierStatus;
 import edu.senla.model.enums.OrderPaymentType;
 import edu.senla.model.enums.OrderStatus;
@@ -24,9 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -72,10 +69,9 @@ class CourierServiceTest {
         Courier courier  = new Courier();
         courier.setStatus(CourierStatus.ACTIVE);
         couriersList.add(courier);
-        Page<Courier> couriers = new PageImpl<>(couriersList);
-        when(courierRepository.findAll(any(Pageable.class))).thenReturn(couriers);
+        when(courierRepository.findAll()).thenReturn(couriersList);
         List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers(10);
-        verify(courierRepository, times(1)).findAll((Pageable)any());
+        verify(courierRepository, times(1)).findAll();
         assertTrue(courierMainInfoDTOs.size() == 1);
         assertEquals(CourierStatus.ACTIVE.toString(), courierMainInfoDTOs.get(0).getStatus());
     }
@@ -83,10 +79,9 @@ class CourierServiceTest {
     @Test
     void testGetAllCouriersWhenThereAreNoCouriers() {
         List<Courier> couriersList = new ArrayList<>();
-        Page<Courier> couriers = new PageImpl<>(couriersList);
-        when(courierRepository.findAll(any(Pageable.class))).thenReturn(couriers);
+        when(courierRepository.findAll()).thenReturn(couriersList);
         List<CourierMainInfoDTO> courierMainInfoDTOs = courierService.getAllCouriers(10);
-        verify(courierRepository, times(1)).findAll((Pageable)any());
+        verify(courierRepository, times(1)).findAll();
         assertTrue(courierMainInfoDTOs.isEmpty());
     }
 
@@ -423,12 +418,12 @@ class CourierServiceTest {
         double totalOderCost = 77.7;
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(courier);
-        when(orderRepository.getAllByCourier(any(Courier.class), any(Pageable.class))).thenReturn(orders);
+        when(orderRepository.getAllByCourier(any(Courier.class))).thenReturn(orders);
         when(containerService.calculateTotalOrderCost(any(List.class))).thenReturn(totalOderCost);
         List<CourierOrderInfoDTO> courierOrderInfoDTOSList = courierService.getAllOrdersOfCourier(1);
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
-        verify(orderRepository, times(1)).getAllByCourier(any(), any());
+        verify(orderRepository, times(1)).getAllByCourier(any());
         verify(containerService, times(1)).calculateTotalOrderCost(any());
         assertTrue(courierOrderInfoDTOSList.size() == 1);
         assertEquals(correctOrder.getPaymentType().toString().toLowerCase(), courierOrderInfoDTOSList.get(0).getPaymentType());
@@ -448,11 +443,11 @@ class CourierServiceTest {
         orders.add(incorrectOrder2);
         when(courierRepository.existsById(any(Long.class))).thenReturn(true);
         when(courierRepository.getById(any(Long.class))).thenReturn(courier);
-        when(orderRepository.getAllByCourier(any(Courier.class), any(Pageable.class))).thenReturn(orders);
+        when(orderRepository.getAllByCourier(any(Courier.class))).thenReturn(orders);
         List<CourierOrderInfoDTO> courierOrderInfoDTOSList = courierService.getAllOrdersOfCourier(1);
         verify(courierRepository, times(1)).existsById(any());
         verify(courierRepository, times(1)).getById(any());
-        verify(orderRepository, times(1)).getAllByCourier(any(), any());
+        verify(orderRepository, times(1)).getAllByCourier(any());
         assertTrue(courierOrderInfoDTOSList.isEmpty());
     }
 
