@@ -10,7 +10,7 @@ import edu.senla.model.entity.User;
 import edu.senla.model.entity.Courier;
 import edu.senla.model.enums.Roles;
 import edu.senla.security.JwtProvider;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.UserServiceImpl;
 import edu.senla.service.impl.CourierServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ class AuthenticationControllerTest {
     private PasswordEncoder passwordEncoder;
 
     @SpyBean
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
     @SpyBean
     private CourierServiceImpl courierService;

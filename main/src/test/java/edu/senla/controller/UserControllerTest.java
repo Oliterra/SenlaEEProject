@@ -1,11 +1,11 @@
 package edu.senla.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.senla.controller.impl.ClientControllerImpl;
+import edu.senla.controller.impl.UserControllerImpl;
 import edu.senla.dao.UserRepository;
 import edu.senla.model.dto.UserMainInfoDTO;
 import edu.senla.model.entity.User;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.UserServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     @Autowired
-    private ClientControllerImpl registrationController;
+    private UserControllerImpl registrationController;
 
     @Autowired
     private ObjectMapper mapper;
@@ -45,7 +45,7 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @SpyBean
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
     @SpyBean
     private ValidationServiceImpl validationService;

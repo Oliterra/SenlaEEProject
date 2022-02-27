@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.senla.controller.impl.RegistrationControllerImpl;
 import edu.senla.model.dto.CourierRegistrationRequestDTO;
 import edu.senla.model.dto.RegistrationRequestDTO;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.service.impl.UserServiceImpl;
 import edu.senla.service.impl.CourierServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import lombok.SneakyThrows;
@@ -43,7 +43,7 @@ class RegistrationControllerTest{
     private MockMvc mockMvc;
 
     @SpyBean
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
     @SpyBean
     private CourierServiceImpl courierService;

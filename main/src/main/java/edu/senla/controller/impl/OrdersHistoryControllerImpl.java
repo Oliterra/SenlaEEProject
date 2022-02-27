@@ -3,7 +3,7 @@ package edu.senla.controller.impl;
 import edu.senla.controller.OrdersHistoryController;
 import edu.senla.model.dto.UserOrderInfoDTO;
 import edu.senla.model.dto.CourierOrderInfoDTO;
-import edu.senla.service.ClientService;
+import edu.senla.service.UserService;
 import edu.senla.service.CourierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -19,13 +19,13 @@ import java.util.List;
 @RequestMapping("/history")
 public class OrdersHistoryControllerImpl implements OrdersHistoryController {
 
-    private final ClientService clientService;
+    private final UserService userService;
     private final CourierService courierService;
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping(value = "clients/{id}")
     public List<UserOrderInfoDTO> getClientOrdersHistory(@PathVariable long id) {
-        return clientService.getAllOrdersOfClient(id);
+        return userService.getAllOrdersOfClient(id);
     }
 
     @Secured({"ROLE_ADMIN"})

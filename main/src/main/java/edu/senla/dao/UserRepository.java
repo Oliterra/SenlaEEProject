@@ -1,24 +1,32 @@
 package edu.senla.dao;
 
-import edu.senla.model.entity.User;
 import edu.senla.model.entity.Role;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import edu.senla.model.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository {
+
+    List<User> findAll();
+
+    User save(User userEntity);
+
+    User getById(long id);
+
+    void update(long id, User updatedUserEntity);
+
+    void deleteById(long id);
+
+    boolean existsById(long id);
 
     User getByEmail(String email);
 
     User getByPhone(String phone);
 
-    @Query("SELECT client FROM User client LEFT JOIN FETCH client.roles WHERE client.username =?1")
     User getByUsername(String username);
 
-    List<User> getAllByRoles(Role role, Pageable pageable);
+    List<User> getAllByRoles(Role role);
 }
 

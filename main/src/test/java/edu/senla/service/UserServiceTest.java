@@ -1,18 +1,18 @@
 package edu.senla.service;
 
-import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.OrderRepository;
 import edu.senla.dao.RoleRepository;
-import edu.senla.model.dto.*;
-import edu.senla.model.entity.User;
-import edu.senla.model.entity.Order;
-import edu.senla.model.entity.Role;
-import edu.senla.model.enums.OrderStatus;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
-import edu.senla.service.impl.ClientServiceImpl;
+import edu.senla.model.dto.*;
+import edu.senla.model.entity.Order;
+import edu.senla.model.entity.Role;
+import edu.senla.model.entity.User;
+import edu.senla.model.enums.OrderStatus;
+import edu.senla.service.impl.UserServiceImpl;
 import edu.senla.service.impl.ValidationServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -61,7 +58,7 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private ClientServiceImpl clientService;
+    private UserServiceImpl clientService;
 
     @Test
     void testGetAllClients() {
@@ -69,10 +66,9 @@ public class UserServiceTest {
         User user = new User();
         user.setFirstName("Some name");
         userList.add(user);
-        Page<User> clients = new PageImpl<>(userList);
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(clients);
+        when(userRepository.findAll()).thenReturn(userList);
         List<UserMainInfoDTO> userMainInfoDTOS = clientService.getAllClients(10);
-        verify(userRepository, times(1)).findAll((Pageable) any());
+        verify(userRepository, times(1)).findAll();
         assertTrue(userMainInfoDTOS.size() == 1);
         assertEquals(user.getFirstName(), userMainInfoDTOS.get(0).getFirstName());
     }
@@ -80,10 +76,9 @@ public class UserServiceTest {
     @Test
     void testGetAllClientsWhenThereAreNoClients() {
         List<User> userList = new ArrayList<>();
-        Page<User> clients = new PageImpl<>(userList);
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(clients);
+        when(userRepository.findAll()).thenReturn(userList);
         List<UserMainInfoDTO> courierMainInfoDTOs = clientService.getAllClients(10);
-        verify(userRepository, times(1)).findAll((Pageable) any());
+        verify(userRepository, times(1)).findAll();
         assertTrue(courierMainInfoDTOs.isEmpty());
     }
 
@@ -97,10 +92,10 @@ public class UserServiceTest {
         userAdmin.getRoles().add(adminRole);
         userList.add(userAdmin);
         when(roleRepository.getByName(any(String.class))).thenReturn(adminRole);
-        when(userRepository.getAllByRoles(any(Role.class), any(Pageable.class))).thenReturn(userList);
+        when(userRepository.getAllByRoles(any(Role.class))).thenReturn(userList);
         List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
         verify(roleRepository, times(1)).getByName(any());
-        verify(userRepository, times(1)).getAllByRoles(any(), any());
+        verify(userRepository, times(1)).getAllByRoles(any());
         assertTrue(adminInfoDTOs.size() == 1);
         assertEquals(userAdmin.getFirstName(), adminInfoDTOs.get(0).getFirstName());
     }
@@ -109,9 +104,9 @@ public class UserServiceTest {
     void testGetAllAdminsWhenThereAreNoAdmins() {
         when(roleRepository.getByName(any(String.class))).thenReturn(new Role());
         List<User> userList = new ArrayList<>();
-        when(userRepository.getAllByRoles(any(Role.class), any(Pageable.class))).thenReturn(userList);
+        when(userRepository.getAllByRoles(any(Role.class))).thenReturn(userList);
         List<AdminInfoDTO> adminInfoDTOs = clientService.getAllAdmins(10);
-        verify(userRepository, times(1)).getAllByRoles(any(), any());
+        verify(userRepository, times(1)).getAllByRoles(any());
         assertTrue(adminInfoDTOs.isEmpty());
     }
 
@@ -128,11 +123,11 @@ public class UserServiceTest {
         orders.add(incorrectOrder2);
         when(userRepository.existsById(any(Long.class))).thenReturn(true);
         when(userRepository.getById(any(Long.class))).thenReturn(user);
-        when(orderRepository.getAllByUser(any(User.class), any(Pageable.class))).thenReturn(orders);
+        when(orderRepository.getAllByUser(any(User.class))).thenReturn(orders);
         List<UserOrderInfoDTO> userOrderInfoDTOS = clientService.getAllOrdersOfClient(1);
         verify(userRepository, times(1)).existsById(any());
         verify(userRepository, times(1)).getById(any());
-        verify(orderRepository, times(1)).getAllByUser(any(), any());
+        verify(orderRepository, times(1)).getAllByUser(any());
         assertTrue(userOrderInfoDTOS.isEmpty());
     }
 

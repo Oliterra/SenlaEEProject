@@ -1,9 +1,9 @@
 package edu.senla.service.impl;
 
-import edu.senla.dao.UserRepository;
 import edu.senla.dao.ContainerRepository;
 import edu.senla.dao.OrderRepository;
 import edu.senla.dao.RoleRepository;
+import edu.senla.dao.UserRepository;
 import edu.senla.exeption.BadRequest;
 import edu.senla.exeption.ConflictBetweenData;
 import edu.senla.exeption.NotFound;
@@ -15,14 +15,12 @@ import edu.senla.model.entity.User;
 import edu.senla.model.enums.CRUDOperations;
 import edu.senla.model.enums.OrderStatus;
 import edu.senla.model.enums.Roles;
-import edu.senla.service.ClientService;
 import edu.senla.service.ContainerService;
+import edu.senla.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +34,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Service
 @Log4j2
-public class ClientServiceImpl extends AbstractService implements ClientService {
+public class UserServiceImpl extends AbstractService implements UserService {
 
     private final ContainerService containerService;
     private final ContainerRepository containerRepository;
@@ -47,24 +45,27 @@ public class ClientServiceImpl extends AbstractService implements ClientService 
 
     public List<UserMainInfoDTO> getAllClients(int pages) {
         log.info("Getting all couriers");
-        Page<User> clients = userRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        //Page<User> clients = userRepository.findAll(PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        Page<User> clients = null;
         return clients.stream().map(c -> modelMapper.map(c, UserMainInfoDTO.class)).toList();
     }
 
     public List<AdminInfoDTO> getAllAdmins(int pages) {
         log.info("Getting all users with the administrator role");
         Role adminRole = roleRepository.getByName(Roles.ROLE_ADMIN.toString());
-        List<User> admins = userRepository.getAllByRoles(adminRole, PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        //List<User> admins = userRepository.getAllByRoles(adminRole, PageRequest.of(0, pages, Sort.by("lastName").descending()));
+        List<User> admins = null;
         return admins.stream().map(a -> modelMapper.map(a, AdminInfoDTO.class)).toList();
     }
 
     public List<UserOrderInfoDTO> getAllOrdersOfClient(long clientId) {
         User user = getClientIfExists(clientId, CRUDOperations.READ);
         log.info("Requested order history for the user {} {}", user.getFirstName(), user.getLastName());
-        return orderRepository.getAllByUser(user, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
+        /*return orderRepository.getAllByUser(user, PageRequest.of(0, 10, Sort.by("date").descending())).stream()
                 .filter(o -> o.getStatus().equals(OrderStatus.COMPLETED_LATE) || o.getStatus().equals(OrderStatus.COMPLETED_ON_TIME))
                 .map(this::formClientOrderInfoDTO)
-                .toList();
+                .toList();*/
+        return null;
     }
 
     public void grantAdministratorRights(long id) {

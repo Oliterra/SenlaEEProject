@@ -1,7 +1,7 @@
 package edu.senla.controller.impl;
 
 import edu.senla.controller.RegistrationController;
-import edu.senla.service.ClientService;
+import edu.senla.service.UserService;
 import edu.senla.service.CourierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RegistrationControllerImpl implements RegistrationController {
 
-    private final ClientService clientService;
+    private final UserService userService;
     private final CourierService courierService;
 
     @PostMapping(value = "/clients")
     public void registerClient(@RequestBody String registrationRequestJson) {
-        clientService.createClient(registrationRequestJson);
+        userService.createClient(registrationRequestJson);
     }
 
     @PostMapping(value = "/couriers")
